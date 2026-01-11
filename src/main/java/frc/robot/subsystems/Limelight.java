@@ -26,7 +26,7 @@ public class Limelight extends SubsystemBase {
 
     public Limelight(String name, CommandSwerveDrivetrain swerve) {
         this.name = "limelight-" + name;
-        table = NetworkTableInstance.getDefault().getTable("limelight");
+        table = NetworkTableInstance.getDefault().getTable(this.name);
 
         this.swerve = swerve;
     }

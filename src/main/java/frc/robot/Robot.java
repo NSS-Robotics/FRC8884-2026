@@ -19,7 +19,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run(); 
+    CommandScheduler.getInstance().run();
+
+    m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
   }
 
   @Override
