@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -37,17 +38,14 @@ public class Turret extends SubsystemBase {
 
         turretMotor.clearStickyFaults();
         turretMotor.getConfigurator().apply(slot0Configs);
-        turretMotor.getConfigurator().apply(turretMotorConfig);
+        // turretMotor.getConfigurator().apply(turretMotorConfig);
 
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
+        turretMotor.setPosition(0);
     }
 
     public void setRotations(double rotations) {
-        // pv = new PositionVoltage(rotations);
-        // turretMotor.setControl(pv);
-
-        PositionDutyCycle pdc = new PositionDutyCycle(rotations);
-        turretMotor.setControl(pdc);
+        turretMotor.setControl(pv.withPosition(rotations));
     }
 
     // public void increaseAngle(double degrees) {}
@@ -56,17 +54,20 @@ public class Turret extends SubsystemBase {
         return turretMotor.getPosition().getValueAsDouble();
     }
 
-    public void makeItSpin(double amount) {
-        turretMotor.set(amount);
-    }
-
     public void stop() {
         turretMotor.setControl(new VoltageOut(0));
+    }
+
+    private double getCurrentPositionAsDegrees() {
+        return 360*getRotations() / Constants.Turret.gearRatio;
     }
 
     @Override
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
+
+        SmartDashboard.putNumber("Turret Angle Degrees", getCurrentPositionAsDegrees());
+        SmartDashboard.putNumber("Turret Rotation", getRotations());
     }
 }

@@ -81,9 +81,8 @@ public class RobotContainer {
         //     0.05)
         // );
 
-        driverController.leftTrigger().onTrue(new InstantCommand(()-> turret.makeItSpin(0.1)));
-        driverController.leftBumper().onTrue(new InstantCommand(()->turret.stop()));
-        driverController.rightBumper().onTrue(new InstantCommand(() -> turret.setRotations(1)));
+        driverController.leftBumper().onTrue(new InstantCommand(()-> turret.setRotations(1)));
+        driverController.rightBumper().onTrue(new InstantCommand(() -> turret.setRotations(7)));
         driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
     }
 
