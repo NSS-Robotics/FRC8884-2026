@@ -26,10 +26,10 @@ public class Constants {
         public static final int intakeMotorID = 0;
 
         // Shooter
-        public static final int flywheelMotorID = 0; // Kraken x60 that powers the shooter.
+        public static final int flywheelMotorID = 41; // Kraken x60 that powers the shooter.
         public static final int shooterHoodMotorID = 0;
         public static final int shooterHoodEncoderID = 0;
-        public static final int turretMotorID = 0;
+        public static final int turretMotorID = 60;
         public static final int turretEncoderID = 0;
     }
 }
