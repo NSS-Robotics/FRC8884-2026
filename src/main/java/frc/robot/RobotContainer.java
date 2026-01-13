@@ -33,14 +33,15 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);*/
+    private final Telemetry logger = new Telemetry(MaxSpeed); */
     private final CommandXboxController driverController = new CommandXboxController(0);
     /* END CTRE SWERVE GEN */
 
     // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     // public final Limelight limelight = new Limelight("tom", drivetrain);
     public final Flywheels flywheels = new Flywheels();
-    public final Turret turret = new Turret();
+    public final Turret turret = new Turret(this);
+    // public final Finndexer finndexer = new Finndexer();
 
     public final Field2d fieldMap = new Field2d();
 
@@ -81,9 +82,10 @@ public class RobotContainer {
         //     0.05)
         // );
 
-        driverController.leftBumper().onTrue(new InstantCommand(()-> turret.setRotations(1)));
-        driverController.rightBumper().onTrue(new InstantCommand(() -> turret.setRotations(7)));
-        driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
+        // driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
+        driverController.rightBumper().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+90)));
+        driverController.rightTrigger().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+2)));
+        driverController.leftTrigger().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+5)));
     }
 
     public Command getAutonomousCommand() {

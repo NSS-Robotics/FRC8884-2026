@@ -10,11 +10,20 @@ public class Constants {
         public static final double kA = 0.0;
     }
 
-    public static class Turret {
-        public static final double kP = 0.5;
+    public static class Finndexer {
+        public static final double kP = 1.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kS = 0.0;
+        public static final double kV = 0.0;
+        public static final double kA = 0.0;
+    }
+
+    public static class Turret {
+        public static final double kP = 17;
+        public static final double kI = 0.01;
+        public static final double kD = 0.2;
+        public static final double kS = 2.5;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
 
@@ -33,5 +42,10 @@ public class Constants {
         public static final int shooterHoodEncoderID = 0;
         public static final int turretMotorID = 60;
         public static final int turretEncoderID = 0;
+
+        // Feeder/Indexer => drumroll, please... => Finndexer!!!
+        public static final int feederMotorID = 1;
+        public static final int mainIndexerMotorID = 2;
+        public static final int followerIndexerMotorID = 3;
     }
 }
