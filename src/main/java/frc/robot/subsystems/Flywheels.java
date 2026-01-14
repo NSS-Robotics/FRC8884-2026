@@ -1,11 +1,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -13,6 +16,7 @@ import frc.robot.Constants;
 
 public class Flywheels extends SubsystemBase {
     private final TalonFX flywheelMotor = new TalonFX(Constants.CanIDs.flywheelMotorID);
+    private final TalonFX followerFlywheelMotor = new TalonFX(Constants.CanIDs.followerFlyWheelMotorID);
 
     private VelocityVoltage flywheelVoltage;
 
@@ -27,6 +31,8 @@ public class Flywheels extends SubsystemBase {
         flywheelMotor.getConfigurator().apply(slot0Configs);
 
         flywheelMotor.setNeutralMode(NeutralModeValue.Coast);
+        
+        followerFlywheelMotor.setControl(new Follower(flywheelMotor.getDeviceID(), MotorAlignmentValue.Aligned));
     }
 
     public void setVelocity(double targetSpeedRPM) {
@@ -42,4 +48,11 @@ public class Flywheels extends SubsystemBase {
         VoltageOut voltageOut = new VoltageOut(0);
         flywheelMotor.setControl(voltageOut);
     }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
+    }
 }
+
+// TODO: motors shouldn't spin in same direction...

@@ -89,6 +89,8 @@ public class Turret extends SubsystemBase {
         double distanceToTarget = Math.hypot(currentPos.getX() - targetPos.getX(), currentPos.getY() - targetPos.getY()); // the distance to target # dr afsari core
         double degreesToTarget = currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
         setDegrees(degreesToTarget);
+        // TODO: offset target by robot rotations
+        // TODO: offset turret location based on robot position/rotations
     }
 
     @Override
