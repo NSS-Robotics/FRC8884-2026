@@ -37,12 +37,12 @@ public class RobotContainer {
     private final CommandXboxController driverController = new CommandXboxController(0);
     /* END CTRE SWERVE GEN */
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     // public final Limelight limelight = new Limelight("tom", drivetrain);
     public final Flywheels flywheels = new Flywheels();
     public final Feeder feeder = new Feeder();
-    public final Turret turret = new Turret(this);
-    // public final Spindexer spindexer = new Spindexer();
+    // public final Turret turret = new Turret(this);
+    public final Spindexer spindexer = new Spindexer();
 
     public final ShooterHood shooterHood = new ShooterHood();
 
@@ -58,7 +58,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
+        /*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
@@ -77,7 +77,7 @@ public class RobotContainer {
         // Zero gyro
         driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        drivetrain.registerTelemetry(logger::telemeterize);*/
 
         // driverController.a().whileTrue(new Align(
         //     this,
@@ -86,23 +86,19 @@ public class RobotContainer {
         // );
 
         // driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
-        driverController.rightBumper().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+90)));
-        driverController.rightTrigger().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+2)));
-        driverController.leftTrigger().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+5)));
-
-        driverController.x()
-            .onTrue(new InstantCommand(() -> flywheels.setVelocity(3000)));
-        driverController.y()
-            .onTrue(new InstantCommand(() -> flywheels.stop()));
-
-        driverController.povDown()
-            .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() - 0.5)));
-        driverController.povUp()
-            .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.5)));
+        driverController.leftTrigger()
+            .whileTrue(new InstantCommand(() -> {
+                flywheels.setVelocity(3000);
+                feeder.setSpeed(-4000);
+            }))
+            .onFalse(new InstantCommand(() -> {
+                flywheels.stop();
+                feeder.stop();
+            }));
 
         driverController.povLeft()
-            .whileTrue(new InstantCommand(() -> feeder.setSpeed(200)))
-            .onFalse(new InstantCommand(() -> feeder.stop()));
+            .whileTrue(new InstantCommand(() -> spindexer.setSpeed(500)))
+            .onFalse(new InstantCommand(() -> spindexer.stop()));
     }
 
     public Command getAutonomousCommand() {

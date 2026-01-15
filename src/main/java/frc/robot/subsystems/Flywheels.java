@@ -1,58 +1,85 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-// TODO: TEST PROTOTYPE CODE
-
 public class Flywheels extends SubsystemBase {
-    private final TalonFX flywheelMotor = new TalonFX(Constants.CanIDs.flywheelMotorID);
-    private final TalonFX followerFlywheelMotor = new TalonFX(Constants.CanIDs.followerFlyWheelMotorID);
+    private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID);
+    private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
-    private VelocityVoltage flywheelVoltage;
+    private VelocityVoltage flywheelVoltage = new VelocityVoltage(0).withSlot(0);
 
     public Flywheels() {
-        Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.kP = Constants.Flywheel.kP;
-        slot0Configs.kI = Constants.Flywheel.kI;
-        slot0Configs.kD = Constants.Flywheel.kD;
-        slot0Configs.kS = Constants.Flywheel.kS;
-        slot0Configs.kV = Constants.Flywheel.kV;
-        slot0Configs.kA = Constants.Flywheel.kA;
-        flywheelMotor.getConfigurator().apply(slot0Configs);
+        TalonFXConfiguration leftConfig = new TalonFXConfiguration();
+        leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        flywheelMotor.setNeutralMode(NeutralModeValue.Coast);
-        
-        followerFlywheelMotor.setControl(new Follower(flywheelMotor.getDeviceID(), MotorAlignmentValue.Aligned));
+        TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+        leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+        Slot0Configs leftPIDConfigs = new Slot0Configs();
+        leftPIDConfigs.kP = Constants.Flywheel.kP;
+        leftPIDConfigs.kI = Constants.Flywheel.kI;
+        leftPIDConfigs.kD = Constants.Flywheel.kD;
+        leftPIDConfigs.kS = Constants.Flywheel.kS;
+        leftPIDConfigs.kV = Constants.Flywheel.kV;
+        leftPIDConfigs.kA = Constants.Flywheel.kA;
+
+        Slot0Configs rightPIDConfigs = new Slot0Configs();
+        rightPIDConfigs.kP = Constants.Flywheel.kP;
+        rightPIDConfigs.kI = Constants.Flywheel.kI;
+        rightPIDConfigs.kD = Constants.Flywheel.kD;
+        rightPIDConfigs.kS = Constants.Flywheel.kS;
+        rightPIDConfigs.kV = Constants.Flywheel.kV;
+        rightPIDConfigs.kA = Constants.Flywheel.kA;
+
+        rightFlywheelMotor.getConfigurator().apply(rightConfig);
+        leftFlywheelMotor.getConfigurator().apply(leftConfig);
+
+        rightFlywheelMotor.getConfigurator().apply(rightPIDConfigs);
+        leftFlywheelMotor.getConfigurator().apply(leftPIDConfigs);
+
+        rightFlywheelMotor.setNeutralMode(NeutralModeValue.Coast);
+        leftFlywheelMotor.setNeutralMode(NeutralModeValue.Coast);
+
     }
 
     public void setVelocity(double targetSpeedRPM) {
-        flywheelVoltage = new VelocityVoltage(targetSpeedRPM / 60);
-        flywheelMotor.setControl(flywheelVoltage);
+        rightFlywheelMotor.setControl(new VelocityVoltage(targetSpeedRPM/60));
+        leftFlywheelMotor.setControl(new VelocityVoltage(-targetSpeedRPM/60));
     }
 
     public double getVelocity() {
-        return flywheelMotor.getVelocity().getValueAsDouble();
+        return rightFlywheelMotor.getVelocity().getValueAsDouble();
     }
 
     public void stop() {
         VoltageOut voltageOut = new VoltageOut(0);
-        flywheelMotor.setControl(voltageOut);
+        rightFlywheelMotor.setControl(voltageOut);
+        leftFlywheelMotor.setControl(voltageOut);
     }
+
+    // public void makeThemSpin(double power) {
+    //     flywheelMotor.set(power);
+    //     followerFlywheelMotor.set(power);
+    // }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
     }
-}
 
-// TODO: motors shouldn't spin in same direction...
+    @Override
+    public void simulationPeriodic() {
+        periodic();
+    }
+}

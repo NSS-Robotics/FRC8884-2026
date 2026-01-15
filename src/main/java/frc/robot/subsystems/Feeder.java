@@ -37,6 +37,10 @@ public class Feeder extends SubsystemBase {
         feederMotor.setControl(new VoltageOut(0));
     }
 
+    public void makeSpin(double power) {
+        feederMotor.set(power);
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Feeder Speed", getSpeed());

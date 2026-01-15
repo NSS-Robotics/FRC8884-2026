@@ -85,7 +85,7 @@ public class Turret extends SubsystemBase {
     public void pointAtTarget(Pose2d targetPos) {
         // Pose2d currentPos = swerve.getPoseMeters();
          
-        Pose2d currentPos = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+        Pose2d currentPos = new Pose2d();
         double distanceToTarget = Math.hypot(currentPos.getX() - targetPos.getX(), currentPos.getY() - targetPos.getY()); // the distance to target # dr afsari core
         double degreesToTarget = currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
         setDegrees(degreesToTarget);
@@ -97,6 +97,7 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
+        pointAtTarget(new Pose2d());
 
         SmartDashboard.putNumber("Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("Turret Rotation", getRotations());
