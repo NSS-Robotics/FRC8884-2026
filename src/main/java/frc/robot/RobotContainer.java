@@ -25,23 +25,26 @@ import frc.robot.subsystems.*;
 
 public class RobotContainer {
     /* START CTRE SWERVE GEN */
-    /*private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform 
+    /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-    private final Telemetry logger = new Telemetry(MaxSpeed); */
+    private final Telemetry logger = new Telemetry(MaxSpeed);
     private final CommandXboxController driverController = new CommandXboxController(0);
     /* END CTRE SWERVE GEN */
 
-    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     // public final Limelight limelight = new Limelight("tom", drivetrain);
     public final Flywheels flywheels = new Flywheels();
+    public final Feeder feeder = new Feeder();
     public final Turret turret = new Turret(this);
-    // public final Finndexer finndexer = new Finndexer();
+    // public final Spindexer spindexer = new Spindexer();
+
+    public final ShooterHood shooterHood = new ShooterHood();
 
     public final Field2d fieldMap = new Field2d();
 
@@ -55,7 +58,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        /*drivetrain.setDefaultCommand(
+        drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
@@ -72,9 +75,9 @@ public class RobotContainer {
         );
 
         // Zero gyro
-        // driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);*/
+        drivetrain.registerTelemetry(logger::telemeterize);
 
         // driverController.a().whileTrue(new Align(
         //     this,
@@ -86,6 +89,20 @@ public class RobotContainer {
         driverController.rightBumper().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+90)));
         driverController.rightTrigger().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+2)));
         driverController.leftTrigger().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees()+5)));
+
+        driverController.x()
+            .onTrue(new InstantCommand(() -> flywheels.setVelocity(3000)));
+        driverController.y()
+            .onTrue(new InstantCommand(() -> flywheels.stop()));
+
+        driverController.povDown()
+            .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() - 0.5)));
+        driverController.povUp()
+            .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.5)));
+
+        driverController.povLeft()
+            .whileTrue(new InstantCommand(() -> feeder.setSpeed(200)))
+            .onFalse(new InstantCommand(() -> feeder.stop()));
     }
 
     public Command getAutonomousCommand() {
