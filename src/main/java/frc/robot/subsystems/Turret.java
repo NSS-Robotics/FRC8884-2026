@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -13,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,15 +22,16 @@ public class Turret extends SubsystemBase {
     private final TalonFX turretMotor = new TalonFX(Constants.CanIDs.turretMotorID);
     
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
-
     private Slot0Configs slot0Configs;
    
-    // private final CommandSwerveDrivetrain swerve;
+    private final CommandSwerveDrivetrain swerve;
+    private final RobotContainer rob;
 
     private double targetDegrees;
 
     public Turret(RobotContainer rob) {
-        // this.swerve = rob.drivetrain;
+        this.swerve = rob.drivetrain;
+        this.rob = rob;
 
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
         // turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
@@ -64,11 +65,9 @@ public class Turret extends SubsystemBase {
         return turretMotor.getPosition().getValueAsDouble();
     }
 
-
     public void stop() {
         turretMotor.setControl(new VoltageOut(0));
     }
-
 
     public void setDegrees(double degrees) {
         targetDegrees = degrees;
@@ -83,13 +82,27 @@ public class Turret extends SubsystemBase {
 
 
     public void pointAtTarget(Pose2d targetPos) {
-        // Pose2d currentPos = swerve.getPoseMeters();
-         
-        Pose2d currentPos = new Pose2d();
-        double distanceToTarget = Math.hypot(currentPos.getX() - targetPos.getX(), currentPos.getY() - targetPos.getY()); // the distance to target # dr afsari core
-        double degreesToTarget = currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
+        Pose2d currentPos = swerve.getPoseMeters();
+
+        // Pose2d currentPos = rob.simulatedPosition;
+        double xDistance = currentPos.getX() - targetPos.getX();
+        double yDistance = currentPos.getY() - targetPos.getY();
+        double distanceToTarget = Math.hypot(xDistance, yDistance); // the distance to target # dr afsari core
+        double aimAngle = Math.toDegrees(Math.atan(Math.abs(xDistance)/Math.abs(yDistance)));
+        double offset = 180;
+        if(xDistance<=0 && yDistance>=0){
+            offset = 90;
+        }
+        if(xDistance>=0 && yDistance>=0){
+            offset = 0;
+        }
+        if(xDistance>=0 && yDistance<=0){
+            offset = 270;
+        }
+        double degreesToTarget = aimAngle + offset;
+
         setDegrees(degreesToTarget);
-        // TODO: offset target by robot rotations
+        // TODO: offset target by robot rotations: currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
         // TODO: offset turret location based on robot position/rotations
     }
 
@@ -97,10 +110,10 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-        pointAtTarget(new Pose2d());
+        pointAtTarget(new Pose2d(4.630, 4.017, new Rotation2d()));
 
         SmartDashboard.putNumber("Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("Turret Rotation", getRotations());
-        SmartDashboard.putNumber("Turret Error", targetDegrees-getDegrees());
+        SmartDashboard.putNumber("Turret Error Degrees", targetDegrees-getDegrees());
     }
 }

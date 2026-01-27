@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -23,7 +24,10 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     // m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
-    m_robotContainer.fieldMap.setRobotPose(new Pose2d());
+    m_robotContainer.fieldMap.setRobotPose(m_robotContainer.simulatedPosition);
+
+    SmartDashboard.putNumber("Simulated Robot X", m_robotContainer.simulatedPosition.getX());
+    SmartDashboard.putNumber("Simulated Robot Y", m_robotContainer.simulatedPosition.getY());
   }
 
   @Override

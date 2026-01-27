@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.commands.*;
+// import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 
@@ -37,14 +38,15 @@ public class RobotContainer {
     private final CommandXboxController driverController = new CommandXboxController(0);
     /* END CTRE SWERVE GEN */
 
-    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    // public final Limelight limelight = new Limelight("tom", drivetrain);
-    public final Flywheels flywheels = new Flywheels();
-    public final Feeder feeder = new Feeder();
-    // public final Turret turret = new Turret(this);
-    public final Spindexer spindexer = new Spindexer();
+    public Pose2d simulatedPosition = new Pose2d();
 
-    public final ShooterHood shooterHood = new ShooterHood();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    // public final Limelight limelight = new Limelight("tom", drivetrain);
+    // public final Flywheels flywheels = new Flywheels();
+    // public final Feeder feeder = new Feeder();
+    public final Turret turret = new Turret(this);
+    // public final Spindexer spindexer = new Spindexer();
+    // public final ShooterHood shooterHood = new ShooterHood();
 
     public final Field2d fieldMap = new Field2d();
 
@@ -58,7 +60,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        /*drivetrain.setDefaultCommand(
+        drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
@@ -77,7 +79,7 @@ public class RobotContainer {
         // Zero gyro
         driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);*/
+        drivetrain.registerTelemetry(logger::telemeterize);//*/
 
         // driverController.a().whileTrue(new Align(
         //     this,
@@ -86,19 +88,26 @@ public class RobotContainer {
         // );
 
         // driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
-        driverController.leftTrigger()
-            .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(3000);
-                feeder.setSpeed(-4000);
-            }))
-            .onFalse(new InstantCommand(() -> {
-                flywheels.stop();
-                feeder.stop();
-            }));
+        // driverController.leftTrigger()
+        //     .whileTrue(new InstantCommand(() -> {
+        //         flywheels.setVelocity(3000);
+        //         feeder.setSpeed(-4000);
+        //     }))
+        //     .onFalse(new InstantCommand(() -> {
+        //         flywheels.stop();
+        //         feeder.stop();
+        //     }));
 
-        driverController.povLeft()
-            .whileTrue(new InstantCommand(() -> spindexer.setSpeed(500)))
-            .onFalse(new InstantCommand(() -> spindexer.stop()));
+        // driverController.povLeft()
+        //     .whileTrue(new InstantCommand(() -> spindexer.setSpeed(500)))
+        //     .onFalse(new InstantCommand(() -> spindexer.stop()));
+
+        final double simulatedMovementStep = 1;
+
+        driverController.povUp().onTrue(new InstantCommand(() -> simulatedPosition = new Pose2d(simulatedPosition.getX() - simulatedMovementStep, simulatedPosition.getY(), new Rotation2d())));
+        driverController.povRight().onTrue(new InstantCommand(() -> simulatedPosition = new Pose2d(simulatedPosition.getX(), simulatedPosition.getY() + simulatedMovementStep, new Rotation2d())));
+        driverController.povDown().onTrue(new InstantCommand(() -> simulatedPosition = new Pose2d(simulatedPosition.getX() + simulatedMovementStep, simulatedPosition.getY(), new Rotation2d())));
+        driverController.povLeft().onTrue(new InstantCommand(() -> simulatedPosition = new Pose2d(simulatedPosition.getX(), simulatedPosition.getY() - simulatedMovementStep, new Rotation2d())));
     }
 
     public Command getAutonomousCommand() {
