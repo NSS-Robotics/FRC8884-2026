@@ -90,8 +90,8 @@ public class RobotContainer {
         // driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(5350);
-                feeder.setSpeed(-4750);
+                flywheels.setVelocity(5200);
+                feeder.setSpeed(-5350);
             }))
             .onFalse(new InstantCommand(() -> {
                 flywheels.stop();
