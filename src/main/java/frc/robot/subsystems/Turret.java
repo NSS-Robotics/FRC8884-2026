@@ -24,13 +24,13 @@ public class Turret extends SubsystemBase {
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;
    
-    private final CommandSwerveDrivetrain swerve;
+    // private final CommandSwerveDrivetrain swerve;
     private final RobotContainer rob;
 
     private double targetDegrees;
 
     public Turret(RobotContainer rob) {
-        this.swerve = rob.drivetrain;
+        // this.swerve = rob.drivetrain;
         this.rob = rob;
 
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
@@ -82,9 +82,9 @@ public class Turret extends SubsystemBase {
 
 
     public void pointAtTarget(Pose2d targetPos) {
-        Pose2d currentPos = swerve.getPoseMeters();
+        // Pose2d currentPos = swerve.getPoseMeters();
 
-        // Pose2d currentPos = rob.simulatedPosition;
+        Pose2d currentPos = rob.simulatedPosition;
         double xDistance = currentPos.getX() - targetPos.getX();
         double yDistance = currentPos.getY() - targetPos.getY();
         double distanceToTarget = Math.hypot(xDistance, yDistance); // the distance to target # dr afsari core

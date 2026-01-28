@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -17,7 +16,7 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID);
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
-    private VelocityVoltage flywheelVoltage = new VelocityVoltage(0).withSlot(0);
+    private double targetVelocity = 9000;
 
     public Flywheels() {
         TalonFXConfiguration leftConfig = new TalonFXConfiguration();
@@ -54,12 +53,14 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void setVelocity(double targetSpeedRPM) {
+        targetVelocity = targetSpeedRPM;
+
         rightFlywheelMotor.setControl(new VelocityVoltage(targetSpeedRPM/60));
         leftFlywheelMotor.setControl(new VelocityVoltage(-targetSpeedRPM/60));
     }
 
     public double getVelocity() {
-        return rightFlywheelMotor.getVelocity().getValueAsDouble();
+        return leftFlywheelMotor.getVelocity().getValueAsDouble();
     }
 
     public void stop() {
@@ -76,6 +77,7 @@ public class Flywheels extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
+        SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
     }
 
     @Override
