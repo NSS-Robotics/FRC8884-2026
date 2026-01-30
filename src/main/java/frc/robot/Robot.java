@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.hal.DriverStationJNI;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -64,7 +65,27 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // double time = DriverStationJNI.getMatchTime();
+    // double prephaseSwitch = 2; // seconds
+    // //seconds? teleop is 140 seconds
+
+    // if (time == 130 + prephaseSwitch){
+    //   System.out.println("transition switch");
+    // }
+    // else if (time == 105 + prephaseSwitch){
+    //   System.out.println("alliance switch");
+    // }
+    // else if (time == 80 + prephaseSwitch){
+    //   System.out.println("alliance switch");
+    // }
+    // else if (time == 55 + prephaseSwitch){
+    //   System.out.println("alliance switch");
+    // }
+    // else if (time == 30 + prephaseSwitch){
+    //   System.out.println("endgame");
+    // }
+  }
 
   @Override
   public void teleopExit() {}

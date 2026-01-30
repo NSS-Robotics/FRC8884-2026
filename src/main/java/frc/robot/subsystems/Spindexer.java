@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Spindexer extends SubsystemBase {
-    private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID);
+    private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID, new CANBus("Jeff"));
     private VelocityVoltage spindexerVelocity = new VelocityVoltage(0).withSlot(0);
 
     public Spindexer() {
@@ -28,7 +29,7 @@ public class Spindexer extends SubsystemBase {
     }
 
     public void setSpeed(double rotationsPerMinute) {
-        spindexerMotor.setControl(spindexerVelocity.withVelocity(rotationsPerMinute / 60));
+        spindexerMotor.setControl(new VelocityVoltage(rotationsPerMinute/60));
     }
 
     public double getSpeed() {

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -19,7 +20,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class Turret extends SubsystemBase {
-    private final TalonFX turretMotor = new TalonFX(Constants.CanIDs.turretMotorID);
+    private final TalonFX turretMotor = new TalonFX(Constants.CanIDs.turretMotorID, new CANBus("Jeff"));
     
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;
@@ -106,11 +107,21 @@ public class Turret extends SubsystemBase {
         // TODO: offset turret location based on robot position/rotations
     }
 
+    // public boolean canMove(){
+
+    //     if(getDegrees() )
+
+    // }
+
     @Override
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
         pointAtTarget(new Pose2d(4.630, 4.017, new Rotation2d()));
+
+        // if(!canMove()){
+        //     stop(); // TOOD: spin turret to avoid EXPLOSION
+        // }
 
         SmartDashboard.putNumber("Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("Turret Rotation", getRotations());

@@ -45,7 +45,7 @@ public class RobotContainer {
     public final Flywheels flywheels = new Flywheels();
     public final Feeder feeder = new Feeder();
     // public final Turret turret = new Turret(this);
-    // public final Spindexer spindexer = new Spindexer();
+    public final Spindexer spindexer = new Spindexer();
     public final ShooterHood shooterHood = new ShooterHood();
 
     public final Field2d fieldMap = new Field2d();
@@ -90,8 +90,8 @@ public class RobotContainer {
         // driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(5200);
-                feeder.setSpeed(-5350);
+                flywheels.setVelocity(-4600);
+                feeder.setSpeed(5350);
             }))
             .onFalse(new InstantCommand(() -> {
                 flywheels.stop();
@@ -102,10 +102,23 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() - 0.05)));
         driverController.povUp()
             .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
+        
+        driverController.rightTrigger()
+            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000)));
+        driverController.rightBumper()
+            .onFalse(new InstantCommand(() -> spindexer.stop()));
 
-        // driverController.povLeft()
-        //     .whileTrue(new InstantCommand(() -> spindexer.setSpeed(500)))
-        //     .onFalse(new InstantCommand(() -> spindexer.stop()));
+        // driverController.a()
+        //     .whileTrue(new InstantCommand(() -> {
+        //         flywheels.setVelocity(5200);
+        //         feeder.setSpeed(-5350);
+        //         spindexer.setSpeed(100);
+        //     }))
+        //     .onFalse(new InstantCommand(() -> {
+        //         flywheels.stop();
+        //         feeder.stop();
+        //         spindexer.stop();
+        //     }));
     }
 
     public Command getAutonomousCommand() {

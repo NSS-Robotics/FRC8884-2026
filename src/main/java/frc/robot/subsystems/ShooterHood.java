@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -13,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ShooterHood extends SubsystemBase {
-    private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID);
+    private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID, new CANBus("Jeff"));
     
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;

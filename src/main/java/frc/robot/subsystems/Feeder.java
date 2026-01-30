@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -10,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
-    private final TalonFX feederMotor = new TalonFX(Constants.CanIDs.feederMotorID);
+    private final TalonFX feederMotor = new TalonFX(Constants.CanIDs.feederMotorID, new CANBus("Jeff"));
 
     private VelocityVoltage feederVelocity = new VelocityVoltage(0).withSlot(0);
 
