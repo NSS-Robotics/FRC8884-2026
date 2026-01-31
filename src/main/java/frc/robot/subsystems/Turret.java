@@ -28,6 +28,7 @@ public class Turret extends SubsystemBase {
     private final RobotContainer rob;
 
     private double targetDegrees;
+    private double distanceToTarget;
 
     public Turret(RobotContainer rob) {
         this.swerve = rob.drivetrain;
@@ -81,43 +82,54 @@ public class Turret extends SubsystemBase {
     }
 
 
-    public void pointAtTarget(Pose2d targetPos) { // FIXME IDK WHY IT WORKS IN SOME QUADRANTS?? IDK IF IT WORKS IN OTHERS???
+    public void pointAtTarget(Pose2d targetPos) { 
         Pose2d currentPos = swerve.getPoseMeters();
 
         // Pose2d currentPos = rob.simulatedPosition;
         double xDistance = currentPos.getX() - targetPos.getX();
         double yDistance = currentPos.getY() - targetPos.getY();  
-        double distanceToTarget = Math.hypot(xDistance, yDistance); // the distance to target # dr afsari core
-        // double aimAngle = Math.toDegrees(Math.atan(Math.abs(xDistance)/Math.abs(yDistance)));
+        setDistanceToTarget(Math.hypot(xDistance, yDistance)); // the distance to target # dr afsari core
         double aimAngle = Math.toDegrees(Math.atan(xDistance/yDistance));
 
-        double offset = 0;
-
-        if(xDistance <= 0 && yDistance <= 0){
-            offset = -90; // ??
+        double offset = 90; // default idk
+        
+        if(xDistance >=0 && yDistance >= 0) { // q1
+            offset = 90; 
+        }
+        
+        if(xDistance <=0 && yDistance >= 0) { // q2
+            offset = 90; 
         }
 
-        if(xDistance >= 0 && yDistance <=0){
-            offset = -90; // ???
+        if(xDistance <= 0 && yDistance <= 0) { // q3
+            offset = -90; 
+        }   
+
+        if(xDistance >= 0 && yDistance <= 0) { // q4
+            offset = -90;
         }
-        if(xDistance>=0 && yDistance>=0){
-            offset = 90; // ???
-        }
-        if(xDistance<=0 && yDistance>=0){
-            offset = 90; // ??
-        }
-        double degreesToTarget = -aimAngle - offset;
+
+        // double degreesToTarget = -aimAngle - offset;
+        double degreesToTarget = offset - aimAngle;
         
         // double aimAngle = Math.toDegrees(Math.atan2(yDistance, xDistance));
         // double degreesToTarget = aimAngle;
-        System.out.println("degrees aim" + aimAngle);
-        System.out.println("degrees to target" + degreesToTarget);
-        System.out.println("x" + xDistance);
-        System.out.println("y" + yDistance);
+        SmartDashboard.putNumber("degrees aim", aimAngle);
+        SmartDashboard.putNumber("degrees to target", degreesToTarget);
+        SmartDashboard.putNumber("x", xDistance);
+        SmartDashboard.putNumber("y", yDistance);
         
-        setDegrees(degreesToTarget); //FIXME shabby fix
+        setDegrees(degreesToTarget); 
         // TODO: offset target by robot rotations: currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
         // TODO: offset turret location based on robot position/rotations
+    }
+
+    public void setDistanceToTarget(double dist) {
+        distanceToTarget = dist;
+    }
+
+    public double getDistanceToTarget() {
+        return distanceToTarget;
     }
 
     public boolean canMove() {
@@ -128,7 +140,7 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-        pointAtTarget(new Pose2d(11.915, 4.017, null));
+        pointAtTarget(Constants.targetPosition);
 
         if(!canMove()) {
             stop(); // TODO: spin turret to avoid EXPLOSION

@@ -32,7 +32,7 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
-    private final CommandXboxController driverController = new CommandXboxController(0);
+    public final CommandXboxController driverController = new CommandXboxController(1);
     /* END CTRE SWERVE GEN */
 
     public Pose2d simulatedPosition = new Pose2d();

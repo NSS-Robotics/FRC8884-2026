@@ -46,6 +46,12 @@ public class Limelight extends SubsystemBase {
         if (!useMegaTag2) {
             LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
 
+            // FIXME: Only for simulation
+            // if limelight can't read any data, ignore
+            if (mt1 == null) {
+                return;
+            }
+
             if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
                 if (mt1.rawFiducials[0].ambiguity > 0.7 || mt1.rawFiducials[0].distToCamera > 3) {
                     shouldRejectUpdate = true;

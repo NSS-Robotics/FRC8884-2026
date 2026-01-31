@@ -6,9 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -17,9 +19,11 @@ public class Robot extends TimedRobot {
 
   private final Timer timer = new Timer();
   private Shift shift = Shift.TRANSITION;
+  private XboxController xbox;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+    xbox = m_robotContainer.driverController.getHID();
   }
 
   @Override
@@ -69,35 +73,33 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    // double time = DriverStationJNI.getMatchTime();
-    // double prephaseSwitch = 2; // seconds
-    // //seconds? teleop is 140 seconds
+    double switchNotification = 5;
+    int time = (int)timer.get();
 
-    // if (time == 130 + prephaseSwitch){
-    //   System.out.println("transition switch");
-    // }
-    // else if (time == 105 + prephaseSwitch){
-    //   System.out.println("alliance switch");
-    // }
-    // else if (time == 80 + prephaseSwitch){
-    //   System.out.println("alliance switch");
-    // }
-    // else if (time == 55 + prephaseSwitch){
-    //   System.out.println("alliance switch");
-    // }
-    // else if (time == 30 + prephaseSwitch){
-    //   System.out.println("endgame");
-    // }
     SmartDashboard.putNumber("Timer", timer.get());
-    //TODO: add rumble hehe
+    SmartDashboard.putNumber("Time (Seconds)", time);
+
     if (timer.get() < 10)       shift = Shift.TRANSITION;
     else if (timer.get() < 35)  shift = Shift.ALLIANCEA;
     else if (timer.get() < 60)  shift = Shift.ALLIANCEB;
     else if (timer.get() < 85)  shift = Shift.ALLIANCEA;
     else if (timer.get() < 110) shift = Shift.ALLIANCEB;
     else                        shift = Shift.ENDGAME;
+    
+    // NOTE: Rumble does not work in simulation
+    if (
+      ((time >= (10 - switchNotification)) && (time < 10)) ||
+      ((time >= (35 - switchNotification)) && (time < 35)) ||
+      ((time >= (60 - switchNotification)) && (time < 60)) ||
+      ((time >= (85 - switchNotification)) && (time < 85)) ||
+      ((time >= (110 - switchNotification)) && (time < 110))) {
+      xbox.setRumble(RumbleType.kBothRumble, 1);
+    } else {
+      xbox.setRumble(RumbleType.kBothRumble, 0);
+    }
 
     SmartDashboard.putString("Shift", shift.toString());
+    SmartDashboard.putNumber("Distance to Target", m_robotContainer.turret.getDistanceToTarget());
   }
 
   @Override

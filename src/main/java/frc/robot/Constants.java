@@ -1,6 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+
 public class Constants {
+    public static final Pose2d targetPosition = new Pose2d(11.915, 4.017, null);
+
     public static class Flywheel {
         public static final double kP = 0.2;
         public static final double kI = 0.0;
@@ -29,7 +33,7 @@ public class Constants {
     }
 
     public static class Turret {
-        public static final double kP = 17;
+        public static final double kP = 19;
         public static final double kI = 0.01;
         public static final double kD = 0.2;
         public static final double kS = 2.5;
