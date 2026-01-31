@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.hal.DriverStationJNI;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -17,6 +15,9 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private final Timer timer = new Timer();
+  private Shift shift = Shift.TRANSITION;
+
   public Robot() {
     m_robotContainer = new RobotContainer();
   }
@@ -25,12 +26,12 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    // m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
-    m_robotContainer.fieldMap.setRobotPose(new Pose2d(
+    m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
+    // m_robotContainer.fieldMap.setRobotPose(new Pose2d(
       // m_robotContainer.simulatedPosition.getX(),
       // m_robotContainer.simulatedPosition.getY(),
       // Rotation2d.fromDegrees(m_robotContainer.turret.getDegrees())
-    ));
+    // ));
   }
 
   @Override
@@ -62,6 +63,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    timer.start();
   }
 
   @Override
@@ -85,10 +88,22 @@ public class Robot extends TimedRobot {
     // else if (time == 30 + prephaseSwitch){
     //   System.out.println("endgame");
     // }
+    SmartDashboard.putNumber("Timer", timer.get());
+    //TODO: add rumble hehe
+    if (timer.get() < 10)       shift = Shift.TRANSITION;
+    else if (timer.get() < 35)  shift = Shift.ALLIANCEA;
+    else if (timer.get() < 60)  shift = Shift.ALLIANCEB;
+    else if (timer.get() < 85)  shift = Shift.ALLIANCEA;
+    else if (timer.get() < 110) shift = Shift.ALLIANCEB;
+    else                        shift = Shift.ENDGAME;
+
+    SmartDashboard.putString("Shift", shift.toString());
   }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+    timer.stop();
+  }
 
   @Override
   public void testInit() {

@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,13 +24,13 @@ public class Turret extends SubsystemBase {
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;
    
-    // private final CommandSwerveDrivetrain swerve;
+    private final CommandSwerveDrivetrain swerve;
     private final RobotContainer rob;
 
     private double targetDegrees;
 
     public Turret(RobotContainer rob) {
-        // this.swerve = rob.drivetrain;
+        this.swerve = rob.drivetrain;
         this.rob = rob;
 
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
@@ -59,7 +58,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        turretMotor.setControl(pv.withPosition(rotations));
+        turretMotor.setControl(new PositionVoltage(0));
     }
 
     public double getRotations() {
@@ -82,46 +81,58 @@ public class Turret extends SubsystemBase {
     }
 
 
-    public void pointAtTarget(Pose2d targetPos) {
-        // Pose2d currentPos = swerve.getPoseMeters();
+    public void pointAtTarget(Pose2d targetPos) { // FIXME IDK WHY IT WORKS IN SOME QUADRANTS?? IDK IF IT WORKS IN OTHERS???
+        Pose2d currentPos = swerve.getPoseMeters();
 
-        Pose2d currentPos = rob.simulatedPosition;
+        // Pose2d currentPos = rob.simulatedPosition;
         double xDistance = currentPos.getX() - targetPos.getX();
-        double yDistance = currentPos.getY() - targetPos.getY();
+        double yDistance = currentPos.getY() - targetPos.getY();  
         double distanceToTarget = Math.hypot(xDistance, yDistance); // the distance to target # dr afsari core
-        double aimAngle = Math.toDegrees(Math.atan(Math.abs(xDistance)/Math.abs(yDistance)));
-        double offset = 180;
-        if(xDistance<=0 && yDistance>=0){
-            offset = 90;
+        // double aimAngle = Math.toDegrees(Math.atan(Math.abs(xDistance)/Math.abs(yDistance)));
+        double aimAngle = Math.toDegrees(Math.atan(xDistance/yDistance));
+
+        double offset = 0;
+
+        if(xDistance <= 0 && yDistance <= 0){
+            offset = -90; // ??
+        }
+
+        if(xDistance >= 0 && yDistance <=0){
+            offset = -90; // ???
         }
         if(xDistance>=0 && yDistance>=0){
-            offset = 0;
+            offset = 90; // ???
         }
-        if(xDistance>=0 && yDistance<=0){
-            offset = 270;
+        if(xDistance<=0 && yDistance>=0){
+            offset = 90; // ??
         }
-        double degreesToTarget = aimAngle + offset;
-
-        setDegrees(degreesToTarget);
+        double degreesToTarget = -aimAngle - offset;
+        
+        // double aimAngle = Math.toDegrees(Math.atan2(yDistance, xDistance));
+        // double degreesToTarget = aimAngle;
+        System.out.println("degrees aim" + aimAngle);
+        System.out.println("degrees to target" + degreesToTarget);
+        System.out.println("x" + xDistance);
+        System.out.println("y" + yDistance);
+        
+        setDegrees(degreesToTarget); //FIXME shabby fix
         // TODO: offset target by robot rotations: currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
         // TODO: offset turret location based on robot position/rotations
     }
 
-    // public boolean canMove(){
-
-    //     if(getDegrees() )
-
-    // }
+    public boolean canMove() {
+        return Math.abs(getDegrees()) < 90;
+    }
 
     @Override
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-        pointAtTarget(new Pose2d(4.630, 4.017, new Rotation2d()));
+        pointAtTarget(new Pose2d(11.915, 4.017, null));
 
-        // if(!canMove()){
-        //     stop(); // TOOD: spin turret to avoid EXPLOSION
-        // }
+        if(!canMove()) {
+            stop(); // TODO: spin turret to avoid EXPLOSION
+        }
 
         SmartDashboard.putNumber("Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("Turret Rotation", getRotations());

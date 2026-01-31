@@ -11,15 +11,12 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 // import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
@@ -40,11 +37,11 @@ public class RobotContainer {
 
     public Pose2d simulatedPosition = new Pose2d();
 
-    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    // public final Limelight limelight = new Limelight("tom", drivetrain);
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final Limelight limelight = new Limelight("tom", drivetrain);
     public final Flywheels flywheels = new Flywheels();
     public final Feeder feeder = new Feeder();
-    // public final Turret turret = new Turret(this);
+    public final Turret turret = new Turret(this);
     public final Spindexer spindexer = new Spindexer();
     public final ShooterHood shooterHood = new ShooterHood();
 
@@ -103,10 +100,15 @@ public class RobotContainer {
         driverController.povUp()
             .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
         
-        driverController.rightTrigger()
-            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000)));
-        driverController.rightBumper()
-            .onFalse(new InstantCommand(() -> spindexer.stop()));
+        // driverController.rightTrigger()
+        //     .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000)));
+        // driverController.rightBumper()
+        //     .onFalse(new InstantCommand(() -> spindexer.stop()));
+        
+        driverController.povRight()
+            .whileTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() + 30)));
+        driverController.povLeft()
+            .whileTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() - 30)));
 
         // driverController.a()
         //     .whileTrue(new InstantCommand(() -> {
