@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 // import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
@@ -32,7 +33,7 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
-    public final CommandXboxController driverController = new CommandXboxController(1);
+    public final CommandXboxController driverController = new CommandXboxController(0);
     /* END CTRE SWERVE GEN */
 
     public Pose2d simulatedPosition = new Pose2d();
@@ -57,7 +58,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        /*drivetrain.setDefaultCommand(
+        drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
@@ -76,7 +77,7 @@ public class RobotContainer {
         // Zero gyro
         driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);*/
+        drivetrain.registerTelemetry(logger::telemeterize);//*/
 
         // driverController.a().whileTrue(new Align(
         //     this,

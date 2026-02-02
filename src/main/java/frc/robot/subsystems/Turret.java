@@ -12,7 +12,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -92,6 +91,8 @@ public class Turret extends SubsystemBase {
         double aimAngle = Math.toDegrees(Math.atan(xDistance/yDistance));
 
         double offset = 90; // default idk
+
+        //pretty sure q2 and q3 are for shooting, and it works. q1 and q4 for lobbing (i think)
         
         if(xDistance >=0 && yDistance >= 0) { // q1
             offset = 90; 
@@ -109,15 +110,7 @@ public class Turret extends SubsystemBase {
             offset = -90;
         }
 
-        // double degreesToTarget = -aimAngle - offset;
         double degreesToTarget = offset - aimAngle;
-        
-        // double aimAngle = Math.toDegrees(Math.atan2(yDistance, xDistance));
-        // double degreesToTarget = aimAngle;
-        SmartDashboard.putNumber("degrees aim", aimAngle);
-        SmartDashboard.putNumber("degrees to target", degreesToTarget);
-        SmartDashboard.putNumber("x", xDistance);
-        SmartDashboard.putNumber("y", yDistance);
         
         setDegrees(degreesToTarget); 
         // TODO: offset target by robot rotations: currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
