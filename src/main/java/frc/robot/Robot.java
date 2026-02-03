@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
     else                        shift = Shift.ENDGAME;
     
     // NOTE: Rumble does not work in simulation
-    if (
+    /*if (
       ((time >= (10 - switchNotification)) && (time < 10)) ||
       ((time >= (35 - switchNotification)) && (time < 35)) ||
       ((time >= (60 - switchNotification)) && (time < 60)) ||
@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
       xbox.setRumble(RumbleType.kBothRumble, 1);
     } else {
       xbox.setRumble(RumbleType.kBothRumble, 0);
-    }
+    }*/
 
     SmartDashboard.putString("Shift", shift.toString());
     SmartDashboard.putNumber("Distance to Target", m_robotContainer.turret.getDistanceToTarget());

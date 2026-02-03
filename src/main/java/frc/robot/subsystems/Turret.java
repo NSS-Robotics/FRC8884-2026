@@ -110,11 +110,16 @@ public class Turret extends SubsystemBase {
             offset = -90;
         }
 
-        double degreesToTarget = offset - aimAngle;
+        double degreesToTarget = offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees());
+
+        SmartDashboard.putNumber("turret degrees to target", degreesToTarget);
+        SmartDashboard.putNumber("turret aimangle", aimAngle);
+        SmartDashboard.putNumber("turret offset", offset);
         
         setDegrees(degreesToTarget); 
         // TODO: offset target by robot rotations: currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees();
         // TODO: offset turret location based on robot position/rotations
+        // TODO: offset turret position to actual position on robot
     }
 
     public void setDistanceToTarget(double dist) {

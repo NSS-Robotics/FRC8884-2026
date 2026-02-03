@@ -1,9 +1,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Constants {
-    public static final Pose2d targetPosition = new Pose2d(11.915, 4.017, null);
+    public static final Pose2d targetPosition = new Pose2d(11.915, 4.017, Rotation2d.fromDegrees(0));
 
     public static class Flywheel {
         public static final double kP = 0.2;
@@ -41,6 +42,7 @@ public class Constants {
         public static final double kA = 0.0;
 
         public static final double gearRatio = 92/10 * 44/14;
+        public static final double gearRatioWithAbsolute = 1.5139751553;
     }
 
     public static class Hood {
@@ -63,20 +65,20 @@ public class Constants {
 
     public static class CanIDs {
         // TODO: Intake
-        public static final int intakePivotMotorID = 0;
-        public static final int intakePivotEncoderID = 0;
+        public static final int intakePivotMotorID = 67;
+        public static final int intakePivotEncoderID = 67;
 
-        public static final int intakeMotorID = 0;
+        public static final int intakeMotorID = 67;
 
         // Shooter
         public static final int rightFlywheelMotorID = 60; // Kraken x60 that powers the shooter.
         public static final int leftFlywheelMotorID = 61;
 
         public static final int shooterHoodMotorID = 62;
-        public static final int shooterHoodEncoderID = 0;
+        public static final int shooterHoodEncoderID = 67;
 
         public static final int turretMotorID = 50;
-        public static final int turretEncoderID = 0;
+        public static final int turretEncoderID = 67;
 
         // Feeder/Indexer => drumroll, please... => Finndexer!!!
         public static final int feederMotorID = 40;
