@@ -46,7 +46,7 @@ public class RobotContainer {
     public final Limelight limelight = new Limelight("tom", drivetrain);
     public final Flywheels flywheels = new Flywheels();
     public final Feeder feeder = new Feeder();
-    public final Turret turret = new Turret(this);
+    public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
     public final Spindexer spindexer = new Spindexer();
     public final ShooterHood shooterHood = new ShooterHood();
     // public final LEDs leds = new LEDs();
@@ -66,8 +66,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );

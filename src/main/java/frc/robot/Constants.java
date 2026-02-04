@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
     public static final Pose2d targetPosition = new Pose2d(11.915, 4.017, Rotation2d.fromDegrees(0));
@@ -34,15 +35,21 @@ public class Constants {
     }
 
     public static class Turret {
-        public static final double kP = 19;
-        public static final double kI = 0.01;
-        public static final double kD = 0.2;
+        public static final double kP = 50;
+        public static final double kI = 0;
+        public static final double kD = 0;
         public static final double kS = 2.5;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
 
         public static final double gearRatio = 92/10 * 44/14;
-        public static final double gearRatioWithAbsoluteEncoder = 1.5139751553;
+        //public static final double gearRatioWithAbsoluteEncoder = 1.5139751553;
+        public static final double gearRatioWithAbsoluteEncoder = 0.6605128205;
+
+        //public static final double gearRatioWithAbsoluteEncoder = 92/25 * 14/78;
+
+
+        public static final Translation2d offsetFromCenter = new Translation2d(0.22, 0.15);
     }
 
     public static class Hood {

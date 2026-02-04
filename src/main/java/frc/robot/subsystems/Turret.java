@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,9 +31,13 @@ public class Turret extends SubsystemBase {
     private double targetDegrees;
     private double distanceToTarget;
 
-    public Turret(RobotContainer rob) {
+    private final Translation2d offsetFromRobotCenter;
+
+    public Turret(RobotContainer rob, Translation2d translation) {
         this.swerve = rob.drivetrain;
         this.rob = rob;
+
+        this.offsetFromRobotCenter = translation;
 
         // CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
         // canCoderConfiguration.MagnetSensor.MagnetOffset = 0.34619140625 + 0.0302734375;
@@ -43,7 +48,7 @@ public class Turret extends SubsystemBase {
         turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
         CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
-        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 15;
+        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 20;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
 
         slot0Configs = new Slot0Configs();
@@ -65,6 +70,7 @@ public class Turret extends SubsystemBase {
 
     public void setRotations(double rotations) {
         turretMotor.setControl(pv.withPosition(rotations));
+        SmartDashboard.putNumber("Turret target rotation", rotations);
     }
 
     /*
@@ -73,23 +79,22 @@ public class Turret extends SubsystemBase {
     public double getRotations() {
         return turretMotor.getPosition().getValueAsDouble();
     }
-
+    
     public void stop() {
         turretMotor.setControl(new VoltageOut(0));
     }
 
     public void setDegrees(double degrees) {
         targetDegrees = degrees;
-        double rotations = degrees * Constants.Turret.gearRatioWithAbsoluteEncoder / 360;
+        double rotations = degrees * Constants.Turret.gearRatioWithAbsoluteEncoder / 360; 
 
         SmartDashboard.putNumber("Turret Target Degrees", degrees);
-        SmartDashboard.putNumber("Rotations from absolute encoder", rotations);
 
-        turretMotor.setControl(pv.withPosition(rotations));
+        setRotations(rotations);
     }
 
     public double getDegrees() {
-        return 360 * getRotations() * Constants.Turret.gearRatioWithAbsoluteEncoder;
+        return 360 * getRotations() / Constants.Turret.gearRatioWithAbsoluteEncoder;
     }
 
     private double wrapAngleDegrees(double angle){
@@ -131,7 +136,8 @@ public class Turret extends SubsystemBase {
             offset = -90;
         }
 
-        double degreesToTarget = wrapAngleDegrees(offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()));
+        // double degreesToTarget = wrapAngleDegrees(offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()));
+        double degreesToTarget = wrapAngleDegrees(offset - aimAngle);
 
         SmartDashboard.putNumber("turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("turret aimangle", aimAngle);
