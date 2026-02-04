@@ -42,7 +42,7 @@ public class Constants {
         public static final double kA = 0.0;
 
         public static final double gearRatio = 92/10 * 44/14;
-        public static final double gearRatioWithAbsolute = 1.5139751553;
+        public static final double gearRatioWithAbsoluteEncoder = 1.5139751553;
     }
 
     public static class Hood {
@@ -78,7 +78,7 @@ public class Constants {
         public static final int shooterHoodEncoderID = 67;
 
         public static final int turretMotorID = 50;
-        public static final int turretEncoderID = 67;
+        public static final int turretEncoderID = 51;
 
         // Feeder/Indexer => drumroll, please... => Finndexer!!!
         public static final int feederMotorID = 40;
