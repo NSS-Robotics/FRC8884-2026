@@ -136,9 +136,9 @@ public class Turret extends SubsystemBase {
             offset = -90;
         }
 
-        // double degreesToTarget = wrapAngleDegrees(offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()));
-        double degreesToTarget = wrapAngleDegrees(offset - aimAngle);
-
+        double degreesToTarget = wrapAngleDegrees(offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()));
+        // double degreesToTarget = wrapAngleDegrees(offset - aimAngle);
+        SmartDashboard.putNumber("Current degrees", currentPos.getRotation().getDegrees());
         SmartDashboard.putNumber("turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("turret aimangle", aimAngle);
         SmartDashboard.putNumber("turret offset", offset);

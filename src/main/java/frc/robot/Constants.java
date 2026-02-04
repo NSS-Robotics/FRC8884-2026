@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
-    public static final Pose2d targetPosition = new Pose2d(11.915, 4.017, Rotation2d.fromDegrees(0));
+    public static final Pose2d targetPosition = new Pose2d(11.915, 4.017, Rotation2d.fromDegrees(180)); // 180 for red, 0 for blue
 
     public static class Flywheel {
         public static final double kP = 0.2;
