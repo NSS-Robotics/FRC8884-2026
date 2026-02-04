@@ -39,8 +39,8 @@ public class Turret extends SubsystemBase {
         // turretEncoder.getConfigurator().apply(canCoderConfiguration);
 
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
+        turretMotorConfig.Feedback.FeedbackRemoteSensorID = turretEncoder.getDeviceID();
         turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        turretMotorConfig.Feedback.FeedbackRemoteSensorID = Constants.CanIDs.turretEncoderID;
 
         CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
         turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 15;
@@ -55,16 +55,15 @@ public class Turret extends SubsystemBase {
         slot0Configs.kA = Constants.Turret.kA;
 
         turretMotor.clearStickyFaults();
-        turretMotor.getConfigurator().apply(slot0Configs);
         turretMotor.getConfigurator().apply(turretMotorConfig);
         turretMotor.getConfigurator().apply(turretMotorCurrentLimitsConfigs);
+        turretMotor.getConfigurator().apply(slot0Configs);
 
-        turretMotor.setNeutralMode(NeutralModeValue.Coast);
+        turretMotor.setNeutralMode(NeutralModeValue.Brake);
         // turretMotor.setPosition(0); // only for relative encoder
     }
 
     public void setRotations(double rotations) {
-        // does it work noooooooo but im too lazt ot change it to rotations
         turretMotor.setControl(pv.withPosition(rotations));
     }
 
@@ -72,7 +71,7 @@ public class Turret extends SubsystemBase {
      * Get the rotations of the encoder
      */
     public double getRotations() {
-        return turretEncoder.getPosition().getValueAsDouble();
+        return turretMotor.getPosition().getValueAsDouble();
     }
 
     public void stop() {
@@ -82,10 +81,10 @@ public class Turret extends SubsystemBase {
     public void setDegrees(double degrees) {
         targetDegrees = degrees;
         double rotations = degrees * Constants.Turret.gearRatioWithAbsoluteEncoder / 360;
+
         SmartDashboard.putNumber("Turret Target Degrees", degrees);
-        double oldRotations = degrees * Constants.Turret.gearRatio / 360;
         SmartDashboard.putNumber("Rotations from absolute encoder", rotations);
-        SmartDashboard.putNumber("old rotations", oldRotations);
+
         turretMotor.setControl(pv.withPosition(rotations));
     }
 
@@ -160,7 +159,7 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-       // pointAtTarget(Constants.targetPosition);
+        pointAtTarget(Constants.targetPosition);
 
         if(!canMove()) {
             stop(); // TODO: spin turret to avoid EXPLOSION
@@ -170,6 +169,6 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("Turret Rotation", getRotations());
         SmartDashboard.putNumber("Turret Error Degrees", targetDegrees-getDegrees());
 
-        SmartDashboard.putNumber("Turret Encoder something", turretEncoder.getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("Turret Encoder something", turretEncoder.getAbsolutePosition().getValueAsDouble());
     }
 }

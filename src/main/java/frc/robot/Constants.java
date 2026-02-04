@@ -80,7 +80,6 @@ public class Constants {
         public static final int turretMotorID = 50;
         public static final int turretEncoderID = 51;
 
-        // Feeder/Indexer => drumroll, please... => Finndexer!!!
         public static final int feederMotorID = 40;
 
         public static final int spindexerMotorID = 30;
