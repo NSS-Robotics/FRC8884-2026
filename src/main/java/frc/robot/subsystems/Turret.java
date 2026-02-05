@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +33,8 @@ public class Turret extends SubsystemBase {
     private double distanceToTarget;
 
     private final Translation2d offsetFromRobotCenter;
+
+    public Pose2d turretLocation = new Pose2d();
 
     public Turret(RobotContainer rob, Translation2d translation) {
         this.swerve = rob.drivetrain;
@@ -107,12 +110,30 @@ public class Turret extends SubsystemBase {
         return angle;
     }
 
+    private Pose2d calculateTurretOffset(double xOffset, double yOffset, double robotRadians){
+        // x and y axis inverted
+        
+        double d = Math.hypot(xOffset, yOffset);    
+        double theta = Math.atan2(xOffset, yOffset); // 
+        double alpha = theta + robotRadians - Math.PI/2; 
+        double x = d * Math.cos(alpha); // 
+        double y = d * Math.sin(alpha); //  
+
+        return new Pose2d(x, y, null);
+    }
+
     public void pointAtTarget(Pose2d targetPos) { 
         Pose2d currentPos = swerve.getPoseMeters();
+        
+        double robotDegrees = currentPos.getRotation().getRadians(); // TODO: check if its from 0 to 360 or -180 to 180
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotDegrees); // TODO: make sure the x and y are right
+
+        turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
 
         // Pose2d currentPos = rob.simulatedPosition;
-        double xDistance = currentPos.getX() - targetPos.getX();
-        double yDistance = currentPos.getY() - targetPos.getY();  
+        double xDistance = currentPos.getX() + turretOffset.getX() - targetPos.getX();
+        double yDistance = currentPos.getY() + turretOffset.getY() - targetPos.getY();  
+
         setDistanceToTarget(Math.hypot(xDistance, yDistance)); // the distance to target #DrAfsariCore
         double aimAngle = Math.toDegrees(Math.atan(xDistance/yDistance));
 
@@ -135,6 +156,10 @@ public class Turret extends SubsystemBase {
         if(xDistance >= 0 && yDistance <= 0) { // q4
             offset = -90;
         }
+        double x = robotDegrees;
+        if (x < 0){
+            x +=360;
+        }
 
         double degreesToTarget = wrapAngleDegrees(offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()));
         // double degreesToTarget = wrapAngleDegrees(offset - aimAngle);
@@ -142,6 +167,9 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("turret aimangle", aimAngle);
         SmartDashboard.putNumber("turret offset", offset);
+        SmartDashboard.putNumber("Robot Degrees", x);
+        SmartDashboard.putNumber("Turret Offset x", turretOffset.getX());
+        SmartDashboard.putNumber("Turret Offset y", turretOffset.getY());
         
         setDegrees(degreesToTarget);
         // TODO: offset turret location based on robot position/rotations

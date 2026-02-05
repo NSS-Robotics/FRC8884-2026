@@ -30,7 +30,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
+    // m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
+    m_robotContainer.fieldMap.setRobotPose(m_robotContainer.turret.turretLocation);
     // m_robotContainer.fieldMap.setRobotPose(new Pose2d(
       // m_robotContainer.simulatedPosition.getX(),
       // m_robotContainer.simulatedPosition.getY(),
