@@ -98,10 +98,10 @@ public class Turret extends SubsystemBase {
     }
 
     private double wrapAngleDegrees(double angle){
-        angle %= 360.0;
-        if (angle < -180.0) {
+        //angle %= 360.0;
+        if (angle < -380.0) {
             angle += 360.0;
-        } else if (angle >= 180.0) {
+        } else if (angle >= 30.0) {
             angle -= 360.0;
         }
         return angle;

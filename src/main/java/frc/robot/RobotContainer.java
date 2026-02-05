@@ -111,27 +111,27 @@ public class RobotContainer {
         driverController.povUp()
             .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
         
-        // driverController.rightTrigger()
-        //     .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000)));
-        // driverController.rightBumper()
-        //     .onFalse(new InstantCommand(() -> spindexer.stop()));
+        driverController.rightTrigger()
+            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000)));
+        driverController.rightBumper()
+            .onFalse(new InstantCommand(() -> spindexer.stop()));
         
         driverController.povRight()
             .whileTrue(new InstantCommand(() -> turret.setRotations(turret.getRotations() + 0.05)));
         driverController.povLeft()
             .whileTrue(new InstantCommand(() -> turret.setRotations(turret.getRotations() - 0.05)));
 
-        // driverController.a()
-        //     .whileTrue(new InstantCommand(() -> {
-        //         flywheels.setVelocity(5200);
-        //         feeder.setSpeed(-5350);
-        //         spindexer.setSpeed(100);
-        //     }))
-        //     .onFalse(new InstantCommand(() -> {
-        //         flywheels.stop();
-        //         feeder.stop();
-        //         spindexer.stop();
-        //     }));
+        driverController.a()
+            .whileTrue(new InstantCommand(() -> {
+                flywheels.setVelocity(-5250);
+                feeder.setSpeed(5700);
+                spindexer.setSpeed(2000);
+            }))
+            .onFalse(new InstantCommand(() -> {
+                flywheels.stop();
+                feeder.stop();
+                spindexer.stop();
+            }));
     }
 
     public Command getAutonomousCommand() {
