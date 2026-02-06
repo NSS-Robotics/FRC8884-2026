@@ -89,17 +89,10 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        // driverController.a().whileTrue(new Align(
-        //     this,
-        //     new Pose2d(6.097173043336289, 4.081071090110617, Rotation2d.fromDegrees(0)),
-        //     0.05)
-        // );
-
-        // driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(-4600);
-                feeder.setSpeed(5350);
+                flywheels.setVelocity(-4000);
+                feeder.setSpeed(2700);
             }))
             .onFalse(new InstantCommand(() -> {
                 flywheels.stop();
@@ -112,7 +105,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
         
         driverController.rightTrigger()
-            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000)));
+            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000))); // increase when get new spindexer
         driverController.rightBumper()
             .onFalse(new InstantCommand(() -> spindexer.stop()));
         
@@ -123,7 +116,7 @@ public class RobotContainer {
 
         driverController.a()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(-5250);
+                flywheels.setVelocity(-2500);
                 feeder.setSpeed(5700);
                 spindexer.setSpeed(2000);
             }))
