@@ -5,8 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
-    public static final Pose2d targetPosition = new Pose2d(12, 4, Rotation2d.fromDegrees(180)); // 180 for red, 0 for blue
-
+   public static final Pose2d targetPosition = new Pose2d(12., 4, Rotation2d.fromDegrees(180)); // 180 for red, 0 for blue
+//  public static final Pose2d targetPosition = new Pose2d(12., 5, Rotation2d.fromDegrees(180));
     public static class Flywheel {
         public static final double kP = 0.2;
         public static final double kI = 0.0;
@@ -35,9 +35,9 @@ public class Constants {
     }
 
     public static class Turret {
-        public static final double kP = 50;
+        public static final double kP = 7.8;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0; // 0.01?
         public static final double kS = 2.5;
         public static final double kV = 0.0;
         public static final double kA = 0.0;

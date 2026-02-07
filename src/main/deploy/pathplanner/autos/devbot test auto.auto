@@ -9,12 +9,6 @@
           "data": {
             "pathName": "devbot test path"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
-          }
         }
       ]
     }

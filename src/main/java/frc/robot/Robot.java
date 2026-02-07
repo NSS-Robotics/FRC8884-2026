@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     // m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
-    m_robotContainer.fieldMap.setRobotPose(m_robotContainer.turret.turretLocation);
+    // m_robotContainer.fieldMap.setRobotPose(m_robotContainer.turret.turretLocation);
     // m_robotContainer.fieldMap.setRobotPose(new Pose2d(
       // m_robotContainer.simulatedPosition.getX(),
       // m_robotContainer.simulatedPosition.getY(),
@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
     }*/
 
     SmartDashboard.putString("Shift", shift.toString());
-    SmartDashboard.putNumber("Distance to Target", m_robotContainer.turret.getDistanceToTarget());
+    SmartDashboard.putNumber("Distance to Target", m_robotContainer.mmturret.getDistanceToTarget());
   }
 
   @Override

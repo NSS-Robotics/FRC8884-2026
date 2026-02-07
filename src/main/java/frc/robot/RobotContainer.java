@@ -46,7 +46,8 @@ public class RobotContainer {
     public final Limelight limelight = new Limelight("tom", drivetrain);
     public final Flywheels flywheels = new Flywheels();
     public final Feeder feeder = new Feeder();
-    public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
+    // public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
+    public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
     public final Spindexer spindexer = new Spindexer();
     public final ShooterHood shooterHood = new ShooterHood();
     // public final LEDs leds = new LEDs();
@@ -91,8 +92,8 @@ public class RobotContainer {
 
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(-4000);
-                feeder.setSpeed(2700);
+                flywheels.setVelocity(-3700);
+                feeder.setSpeed(5700);
             }))
             .onFalse(new InstantCommand(() -> {
                 flywheels.stop();
@@ -105,14 +106,14 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
         
         driverController.rightTrigger()
-            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2000))); // increase when get new spindexer
+            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2300))); // increase when get new spindexer
         driverController.rightBumper()
             .onFalse(new InstantCommand(() -> spindexer.stop()));
-        
+               
         driverController.povRight()
-            .whileTrue(new InstantCommand(() -> turret.setRotations(turret.getRotations() + 0.05)));
+            .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() + 0.05)));
         driverController.povLeft()
-            .whileTrue(new InstantCommand(() -> turret.setRotations(turret.getRotations() - 0.05)));
+            .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() - 0.05)));
 
         driverController.a()
             .whileTrue(new InstantCommand(() -> {

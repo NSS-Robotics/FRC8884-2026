@@ -56,5 +56,6 @@ public class ShooterHood extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Hood Rotations", getRotations());
+        // SmartDashboard.getNumber("Set Hood Rotations", getRotations()); // TODO: how to make it a slider?
     }
 }
