@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.io.ObjectInputStream.GetField;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -92,40 +94,61 @@ public class RobotContainer {
 
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(-3700);
+                flywheels.setVelocity(-2500);
                 feeder.setSpeed(5700);
+                shooterHood.setDegrees();
             }))
             .onFalse(new InstantCommand(() -> {
                 flywheels.stop();
                 feeder.stop();
-            }));
+                shooterHood.stop();
+            }));     
+        driverController.x()
+            .whileTrue(new InstantCommand(() -> {
+                flywheels.setVelocity(1000);
+                feeder.setSpeed(-2000);
+                shooterHood.setDegrees();
+            }))
+            .onFalse(new InstantCommand(() -> {
+                flywheels.stop();
+                feeder.stop();
+                shooterHood.stop();
+            }));     
 
-        driverController.povDown()
-            .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() - 0.05)));
-        driverController.povUp()
-            .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
+        // driverController.povDown()
+        //     .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() - 0.05)));
+        // driverController.povUp()
+        //     .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
         
         driverController.rightTrigger()
-            .onTrue(new InstantCommand(() -> spindexer.setSpeed(2300))); // increase when get new spindexer
+            .onTrue(new InstantCommand(() -> spindexer.setSpeed(1600))); // increase when get new spindexer
         driverController.rightBumper()
             .onFalse(new InstantCommand(() -> spindexer.stop()));
                
-        driverController.povRight()
-            .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() + 0.05)));
-        driverController.povLeft()
-            .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() - 0.05)));
+        // driverController.povRight()
+        //     .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() + 0.05)));
+        // driverController.povLeft()
+        //     .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() - 0.05)));
 
-        driverController.a()
-            .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(-2500);
-                feeder.setSpeed(5700);
-                spindexer.setSpeed(2000);
-            }))
-            .onFalse(new InstantCommand(() -> {
-                flywheels.stop();
-                feeder.stop();
-                spindexer.stop();
-            }));
+        driverController.povRight()
+            .whileTrue(new InstantCommand(() -> shooterHood.setDegrees()));
+        // driverController.povLeft()
+        //     .whileTrue(new InstantCommand(() -> shooterHood.setRotations()));
+
+
+        // driverController.a()
+        //     .whileTrue(new InstantCommand(() -> {
+        //         flywheels.setVelocity(-2500);
+        //         feeder.setSpeed(5700);
+        //         spindexer.setSpeed(2000);
+        //     }))
+        //     .onFalse(new InstantCommand(() -> {
+        //         flywheels.stop();
+        //         feeder.stop();
+        //         spindexer.stop();
+        //     }));
+            
+        
     }
 
     public Command getAutonomousCommand() {

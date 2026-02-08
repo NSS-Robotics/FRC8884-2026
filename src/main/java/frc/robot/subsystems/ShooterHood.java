@@ -6,7 +6,9 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,7 +21,11 @@ public class ShooterHood extends SubsystemBase {
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;
 
+    private double degrees = 0;
+    
+
     public ShooterHood() {
+
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
@@ -37,6 +43,7 @@ public class ShooterHood extends SubsystemBase {
         hoodMotor.getConfigurator().apply(hoodCurrentLimits);
 
         hoodMotor.setNeutralMode(NeutralModeValue.Brake);
+        SmartDashboard.putNumber("Set Angles", 0);
         hoodMotor.setPosition(0);
     }
 
@@ -47,7 +54,21 @@ public class ShooterHood extends SubsystemBase {
     public double getRotations() {
         return hoodMotor.getPosition().getValueAsDouble();
     }
+    
+    //TODO: add a soft stop
 
+    public void setDegrees() {
+        
+        degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0);
+
+        double rotations = degrees * Constants.Hood.gearRatio / 360;
+        setRotations(rotations);
+    }
+
+    public double getDegrees(){
+        return 360 * getRotations() / Constants.Hood.gearRatio;
+    }
+    
 
     public void stop() {
         hoodMotor.setControl(new VoltageOut(0));
@@ -56,6 +77,9 @@ public class ShooterHood extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Hood Rotations", getRotations());
-        // SmartDashboard.getNumber("Set Hood Rotations", getRotations()); // TODO: how to make it a slider?
+        SmartDashboard.putNumber("Hood Degrees", getDegrees());
+        SmartDashboard.putNumber("Hood", hoodMotor.getPosition().getValueAsDouble());
+        degrees = SmartDashboard.getNumber("Set Angles", 0);
+        // setDegrees(SmartDashboard.getNumber("Set Hood Rotations", getRotations()));
     }
 }

@@ -57,8 +57,8 @@ public class MotionMagicTurret extends SubsystemBase {
         slot0Configs.kA = Constants.Turret.kA;
 
         MotionMagicConfigs motionMagicConfigs = turretMotorConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 35; // maximum for an x60 is 100rps
-        motionMagicConfigs.MotionMagicAcceleration = 35*3; // 0.5s to reach, *5 to take 0.2 sec, allegedy
+        motionMagicConfigs.MotionMagicCruiseVelocity = 20; // maximum for an x60 is 100rps
+        motionMagicConfigs.MotionMagicAcceleration = 20*3; // 0.5s to reach, *5 to take 0.2 sec, allegedy
         // motionMagicConfigs.MotionMagicJerk = 25*2*10; // *10 than acceleration, optional, according to some guy on chief delphi
 
         turretMotor.clearStickyFaults();
@@ -175,7 +175,7 @@ public class MotionMagicTurret extends SubsystemBase {
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-    //    pointAtTarget(Constants.targetPosition);
+        pointAtTarget(Constants.targetPosition);
 
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());

@@ -125,8 +125,8 @@ public class Turret extends SubsystemBase {
     public void pointAtTarget(Pose2d targetPos) { 
         Pose2d currentPos = swerve.getPoseMeters();
         
-        double robotDegrees = currentPos.getRotation().getRadians(); // TODO: check if its from 0 to 360 or -180 to 180
-        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotDegrees); // TODO: make sure the x and y are right
+        double robotAngle = currentPos.getRotation().getRadians();
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotAngle); // TODO: make sure the x and y are right
 
         turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
 
@@ -156,10 +156,6 @@ public class Turret extends SubsystemBase {
         if(xDistance >= 0 && yDistance <= 0) { // q4
             offset = -90;
         }
-        double x = robotDegrees;
-        if (x < 0){
-            x +=360;
-        }
 
         double degreesToTarget = wrapAngleDegrees(offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()));
         // double degreesToTarget = wrapAngleDegrees(offset - aimAngle);
@@ -167,7 +163,6 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("turret aimangle", aimAngle);
         SmartDashboard.putNumber("turret offset", offset);
-        SmartDashboard.putNumber("Robot Degrees", x);
         SmartDashboard.putNumber("Turret Offset x", turretOffset.getX());
         SmartDashboard.putNumber("Turret Offset y", turretOffset.getY());
         
