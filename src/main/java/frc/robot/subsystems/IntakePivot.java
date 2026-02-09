@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -16,38 +17,47 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivot extends SubsystemBase {
   private final TalonFX motor = new TalonFX(Constants.CanIDs.intakePivotMotorID);
-  private final CANcoder encoder = new CANcoder(Constants.CanIDs.intakePivotEncoderID);
+  //private final CANcoder encoder = new CANcoder(Constants.CanIDs.intakePivotEncoderID);
 
   private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
 
   // Motor configuration
   private TalonFXConfiguration motorConfig;
   private Slot0Configs slot0Configs;
+
   
   public IntakePivot(RobotContainer rob) {
+    
+    CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
+        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 15;
+        turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
+
     slot0Configs = new Slot0Configs();
-    slot0Configs.kP = Constants.Intake.kP;
-    slot0Configs.kI = Constants.Intake.kI;
-    slot0Configs.kD = Constants.Intake.kD;
-    slot0Configs.kS = Constants.Intake.kS;
-    slot0Configs.kV = Constants.Intake.kV;
-    slot0Configs.kA = Constants.Intake.kA;
+    slot0Configs.kP = Constants.IntakePivot.kP;
+    slot0Configs.kI = Constants.IntakePivot.kI;
+    slot0Configs.kD = Constants.IntakePivot.kD;
+    slot0Configs.kS = Constants.IntakePivot.kS;
+    slot0Configs.kV = Constants.IntakePivot.kV;
+    slot0Configs.kA = Constants.IntakePivot.kA;
 
-    motorConfig = new TalonFXConfiguration();
-    motorConfig.Feedback.FeedbackRemoteSensorID = encoder.getDeviceID();
-    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    // motorConfig = new TalonFXConfiguration();
+    // motorConfig.Feedback.FeedbackRemoteSensorID = encoder.getDeviceID();
+    // motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
-    motor.getConfigurator().apply(motorConfig);
+    // motor.getConfigurator().apply(motorConfig);
     motor.getConfigurator().apply(slot0Configs);
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    motor.setNeutralMode(NeutralModeValue.Coast);
+    motor.setPosition(0);
+    
   }
 
   public void setPosition(double position) {
-    motor.setControl(pv.withVelocity(position));
+    SmartDashboard.putNumber("target", position);
+    motor.setControl(pv.withPosition(position));
   }
 
   public double getPosition() {
-    return encoder.getPosition().getValueAsDouble();
+    return motor.getPosition().getValueAsDouble();
   }
 
   public void stop() {
