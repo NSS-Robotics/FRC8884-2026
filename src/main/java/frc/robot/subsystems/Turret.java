@@ -142,7 +142,7 @@ public class Turret extends SubsystemBase {
         //pretty sure q2 and q3 are for shooting, and it works. q1 and q4 for lobbing (i think)
         
         if(xDistance >=0 && yDistance >= 0) { // q1
-            offset = 90; 
+            offset = 90;
         }
         
         if(xDistance <=0 && yDistance >= 0) { // q2

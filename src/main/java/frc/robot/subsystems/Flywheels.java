@@ -18,6 +18,7 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID, new CANBus("Jeff"));
 
     private double targetVelocity = 9000;
+    private double rpm = 0;
 
     public Flywheels() {
         TalonFXConfiguration leftConfig = new TalonFXConfiguration();
@@ -42,6 +43,8 @@ public class Flywheels extends SubsystemBase {
         rightPIDConfigs.kV = Constants.Flywheel.kV;
         rightPIDConfigs.kA = Constants.Flywheel.kA;
 
+        SmartDashboard.putNumber("Set RPM", 0);
+
         rightFlywheelMotor.getConfigurator().apply(rightConfig);
         leftFlywheelMotor.getConfigurator().apply(leftConfig);
 
@@ -53,11 +56,11 @@ public class Flywheels extends SubsystemBase {
 
     }
 
-    public void setVelocity(double targetSpeedRPM) {
-        targetVelocity = targetSpeedRPM;
+    public void setVelocity() {
+        targetVelocity = rpm;
 
-        rightFlywheelMotor.setControl(new VelocityVoltage(targetSpeedRPM/60));
-        leftFlywheelMotor.setControl(new VelocityVoltage(-targetSpeedRPM/60));
+        rightFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
+        leftFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
     }
 
     public double getVelocity() {
@@ -79,6 +82,8 @@ public class Flywheels extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
         SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
+        rpm = SmartDashboard.getNumber("Set RPM", 0);
+
     }
 
     @Override

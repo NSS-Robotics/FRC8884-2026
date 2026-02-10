@@ -41,6 +41,7 @@ public class RobotContainer {
     /* END CTRE SWERVE GEN */
 
     public final CommandXboxController driverController = new CommandXboxController(0);
+    //public final CommandXboxController operatorController = new CommandXboxController(1);
 
     public Pose2d simulatedPosition = new Pose2d();
 
@@ -92,9 +93,10 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
+        // shoot
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(-2500);
+                flywheels.setVelocity();
                 feeder.setSpeed(5700);
                 shooterHood.setDegrees();
             }))
@@ -102,53 +104,28 @@ public class RobotContainer {
                 flywheels.stop();
                 feeder.stop();
                 shooterHood.stop();
-            }));     
-        driverController.x()
-            .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(1000);
-                feeder.setSpeed(-2000);
-                shooterHood.setDegrees();
-            }))
-            .onFalse(new InstantCommand(() -> {
-                flywheels.stop();
-                feeder.stop();
-                shooterHood.stop();
-            }));     
-
-        // driverController.povDown()
-        //     .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() - 0.05)));
-        // driverController.povUp()
-        //     .onTrue(new InstantCommand(() -> shooterHood.setRotations(shooterHood.getRotations() + 0.05)));
+            }));
         
-        driverController.rightTrigger()
-            .onTrue(new InstantCommand(() -> spindexer.setSpeed(1600))); // increase when get new spindexer
-        driverController.rightBumper()
-            .onFalse(new InstantCommand(() -> spindexer.stop()));
-               
-        // driverController.povRight()
-        //     .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() + 0.05)));
-        // driverController.povLeft()
-        //     .whileTrue(new InstantCommand(() -> mmturret.setRotations(mmturret.getRotations() - 0.05)));
-
-        driverController.povRight()
-            .whileTrue(new InstantCommand(() -> shooterHood.setDegrees()));
-        // driverController.povLeft()
-        //     .whileTrue(new InstantCommand(() -> shooterHood.setRotations()));
-
-
-        // driverController.a()
+        // unjam
+        // driverController.x()
         //     .whileTrue(new InstantCommand(() -> {
-        //         flywheels.setVelocity(-2500);
-        //         feeder.setSpeed(5700);
-        //         spindexer.setSpeed(2000);
+        //         flywheels.setVelocity(1000);
+        //         feeder.setSpeed(-2000);
+        //         shooterHood.setDegrees();
         //     }))
         //     .onFalse(new InstantCommand(() -> {
         //         flywheels.stop();
         //         feeder.stop();
-        //         spindexer.stop();
-        //     }));
-            
+        //         shooterHood.stop();
+        //     }));     
         
+        driverController.rightTrigger()
+            .whileTrue(new InstantCommand(() -> spindexer.setSpeed(2500))) // increase when get new spindexer
+            .onFalse(new InstantCommand(() -> spindexer.stop()));
+
+        //operator controller, zia can i have my spinning gear thing back plz
+        // operatorController.povDown()
+        //     .onTrue(new InstantCommand(() -> shooterHood.zeroHood()));
     }
 
     public Command getAutonomousCommand() {

@@ -3,12 +3,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,10 +19,8 @@ public class ShooterHood extends SubsystemBase {
     private Slot0Configs slot0Configs;
 
     private double degrees = 0;
-    
 
     public ShooterHood() {
-
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
@@ -43,8 +38,9 @@ public class ShooterHood extends SubsystemBase {
         hoodMotor.getConfigurator().apply(hoodCurrentLimits);
 
         hoodMotor.setNeutralMode(NeutralModeValue.Brake);
-        SmartDashboard.putNumber("Set Angles", 0);
+        SmartDashboard.putNumber("Set Angles", 0); // need for getNumber
         hoodMotor.setPosition(0);
+        this.zeroHood();
     }
 
     public void setRotations(double rotations) {
@@ -54,14 +50,16 @@ public class ShooterHood extends SubsystemBase {
     public double getRotations() {
         return hoodMotor.getPosition().getValueAsDouble();
     }
-    
-    //TODO: add a soft stop
 
     public void setDegrees() {
-        
         degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0);
 
         double rotations = degrees * Constants.Hood.gearRatio / 360;
+        setRotations(rotations);
+    }
+
+    private void changeDegrees(double deg) {
+        double rotations = (getDegrees() + deg) * Constants.Hood.gearRatio / 360;
         setRotations(rotations);
     }
 
@@ -69,9 +67,21 @@ public class ShooterHood extends SubsystemBase {
         return 360 * getRotations() / Constants.Hood.gearRatio;
     }
     
+    public double getCurrent() {
+        return hoodMotor.getStatorCurrent().getValueAsDouble();
+    }
 
     public void stop() {
         hoodMotor.setControl(new VoltageOut(0));
+    }
+
+    public void zeroHood() {
+        while (getCurrent() < Constants.Hood.currentWhenStalling) {
+            changeDegrees(-1);
+        }
+        this.stop();
+        hoodMotor.setPosition(0);
+        degrees = 0;
     }
 
     @Override
@@ -79,7 +89,8 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Rotations", getRotations());
         SmartDashboard.putNumber("Hood Degrees", getDegrees());
         SmartDashboard.putNumber("Hood", hoodMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Hood Current", getCurrent());
+
         degrees = SmartDashboard.getNumber("Set Angles", 0);
-        // setDegrees(SmartDashboard.getNumber("Set Hood Rotations", getRotations()));
     }
 }

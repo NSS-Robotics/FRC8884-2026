@@ -35,10 +35,10 @@ public class Constants {
     }
 
     public static class Turret {
-        public static final double kP = 6; //7.8
+        public static final double kP = 4; // 6
         public static final double kI = 0;
-        public static final double kD = 0.01; // 0.01?
-        public static final double kS = 2.5;
+        public static final double kD = 0; // 0.01
+        public static final double kS = 0.256;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
 
@@ -46,7 +46,7 @@ public class Constants {
         //public static final double gearRatioWithAbsoluteEncoder = 1.5139751553;
         public static final double gearRatioWithAbsoluteEncoder = 0.6605128205;
 
-        //public static final double gearRatioWithAbsoluteEncoder = 92/25 * 14/78;
+        // public static final double gearRatioWithAbsoluteEncoder = 92/25 * 14/78;
 
 
         public static final Translation2d offsetFromCenter = new Translation2d(0.22, 0.15);
@@ -61,6 +61,7 @@ public class Constants {
         public static final double kA = 0.0;
         public static final double gearRatio = 64.0/14.0 * 172.0/10.0;
         public static final double maxHoodAngle = 25;
+        public static final double currentWhenStalling = 14.7;
     }
 
     public static class Intake {
@@ -73,7 +74,7 @@ public class Constants {
     }
 
     public static class CanIDs {
-        // TODO: Intake
+        // Intake
         public static final int intakePivotMotorID = 67;
         public static final int intakePivotEncoderID = 67;
 
