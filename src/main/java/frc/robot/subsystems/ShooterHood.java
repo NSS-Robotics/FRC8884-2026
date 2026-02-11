@@ -40,7 +40,7 @@ public class ShooterHood extends SubsystemBase {
         hoodMotor.setNeutralMode(NeutralModeValue.Brake);
         SmartDashboard.putNumber("Set Angles", 0); // need for getNumber
         hoodMotor.setPosition(0);
-        this.zeroHood();
+        //this.zeroHood();
     }
 
     public void setRotations(double rotations) {

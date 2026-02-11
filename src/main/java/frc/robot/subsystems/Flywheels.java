@@ -59,8 +59,8 @@ public class Flywheels extends SubsystemBase {
     public void setVelocity() {
         targetVelocity = rpm;
 
-        rightFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
-        leftFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
+        rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
+        leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
     }
 
     public double getVelocity() {

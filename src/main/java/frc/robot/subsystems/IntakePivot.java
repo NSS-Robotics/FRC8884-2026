@@ -1,5 +1,5 @@
 package frc.robot.subsystems;
-
+/* 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -70,3 +70,4 @@ public class IntakePivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake Pivot Current", motor.getStatorCurrent().getValueAsDouble());
   }
 }
+*/
