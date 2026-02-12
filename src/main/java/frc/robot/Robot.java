@@ -102,7 +102,6 @@ public class Robot extends TimedRobot {
     }*/
 
     SmartDashboard.putString("Shift", shift.toString());
-    SmartDashboard.putNumber("Distance to Target", m_robotContainer.mmturret.getDistanceToTarget());
   }
 
   @Override

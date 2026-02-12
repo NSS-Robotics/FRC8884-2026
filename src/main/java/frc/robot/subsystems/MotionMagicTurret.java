@@ -117,8 +117,8 @@ public class MotionMagicTurret extends SubsystemBase {
     public void pointAtTarget(Pose2d targetPos) { 
         Pose2d currentPos = swerve.getPoseMeters();
         
-        double robotDegrees = currentPos.getRotation().getRadians();
-        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotDegrees);
+        double robotRadians = currentPos.getRotation().getRadians(); 
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
 
         turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
 
@@ -129,8 +129,6 @@ public class MotionMagicTurret extends SubsystemBase {
         double aimAngle = Math.toDegrees(Math.atan(xDistance/yDistance));
 
         double offset = 90;
-
-        //pretty sure q2 and q3 are for shooting, and it works. q1 and q4 for lobbing (i think)
         
         if(xDistance >=0 && yDistance >= 0) { // q1
             offset = 90; 
@@ -146,10 +144,6 @@ public class MotionMagicTurret extends SubsystemBase {
 
         if(xDistance >= 0 && yDistance <= 0) { // q4
             offset = -90;
-        }
-        double x = robotDegrees;
-        if (x < 0){
-            x +=360;
         }
 
         double degreesToTarget = wrapAngleDegrees(offset - aimAngle - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()));
@@ -180,5 +174,6 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());
         SmartDashboard.putNumber("MM Turret Error Degrees", targetDegrees-getDegrees());
+        SmartDashboard.putNumber("Distance to Target", getDistanceToTarget());
     }
 }
