@@ -62,6 +62,8 @@ public class Constants {
         public static final double gearRatio = 64.0/14.0 * 172.0/10.0;
         public static final double maxHoodAngle = 25;
         public static final double currentWhenStalling = 14.7;
+        public static final double maxHubHoodAlign = 10;
+        // public static final double minHubHoodAlign = 1;
     }
 
     public static class Intake {

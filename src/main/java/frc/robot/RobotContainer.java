@@ -47,12 +47,12 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Limelight limelight = new Limelight("tom", drivetrain);
-    public final Flywheels flywheels = new Flywheels();
+    public final Flywheels flywheels = new Flywheels(this);
     public final Feeder feeder = new Feeder();
     // public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
     public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
     public final Spindexer spindexer = new Spindexer();
-    public final ShooterHood shooterHood = new ShooterHood();
+    public final ShooterHood shooterHood = new ShooterHood(this);
     // public final LEDs leds = new LEDs();
 
     public final Field2d fieldMap = new Field2d();

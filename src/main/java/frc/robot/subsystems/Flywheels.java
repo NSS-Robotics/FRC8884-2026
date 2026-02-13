@@ -12,15 +12,19 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Flywheels extends SubsystemBase {
     private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID, new CANBus("Jeff"));
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID, new CANBus("Jeff"));
 
+    private final MotionMagicTurret mmturret;
+
     private double targetVelocity = 9000;
     private double rpm = 0;
 
-    public Flywheels() {
+    public Flywheels(RobotContainer rob) {
+        this.mmturret = rob.mmturret;
         TalonFXConfiguration leftConfig = new TalonFXConfiguration();
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
@@ -73,6 +77,13 @@ public class Flywheels extends SubsystemBase {
         leftFlywheelMotor.setControl(voltageOut);
     }
 
+    public void rpmToHub(double distance){
+        // double hubRPM = ; // TODO: GET CURVE
+        // //clamp?
+        // rpm = hubRPM;
+        // setVelocity();
+    }
+
     // public void makeThemSpin(double power) {
     //     flywheelMotor.set(power);
     //     followerFlywheelMotor.set(power);
@@ -83,6 +94,7 @@ public class Flywheels extends SubsystemBase {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
         SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
         rpm = SmartDashboard.getNumber("Set RPM", 0);
+        // rpmToHub(mmturret.getDistanceToTarget());
 
     }
 
