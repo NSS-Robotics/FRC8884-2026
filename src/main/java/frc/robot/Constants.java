@@ -17,7 +17,7 @@ public class Constants {
     }
 
     public static class Feeder {
-        public static final double kP = 10;
+        public static final double kP = 25;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kS = 0.0;

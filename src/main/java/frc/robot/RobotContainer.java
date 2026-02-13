@@ -97,7 +97,7 @@ public class RobotContainer {
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
                 flywheels.setVelocity();
-                feeder.setSpeed(2000);
+                feeder.setSpeed(3000);
                 shooterHood.setDegrees();
             }))
             .onFalse(new InstantCommand(() -> {
