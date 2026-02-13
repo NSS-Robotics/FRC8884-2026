@@ -11,16 +11,20 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class ShooterHood extends SubsystemBase {
     private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID, new CANBus("Jeff"));
     
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;
+    
+    private final MotionMagicTurret mmturret;
 
     private double degrees = 0;
 
-    public ShooterHood() {
+    public ShooterHood(RobotContainer rob) {
+        this.mmturret = rob.mmturret;
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
@@ -58,6 +62,16 @@ public class ShooterHood extends SubsystemBase {
         setRotations(rotations);
     }
 
+    public void alignHoodtoHub(double distance){
+        // 0.45x^3 - 5.53x^2 + 22.04x - 19.18; subject to change, this one is just a test 
+        //TODO: get actual curve
+        double angle = 0.45 * Math.pow(distance, 3) - 5.53 * Math.pow(distance, 2) + 22.04 * distance - 19.18;
+        angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
+        SmartDashboard.putNumber("HOOD ANGLE", angle);
+        degrees = angle;
+        setDegrees();
+    }
+
     private void changeDegrees(double deg) {
         double rotations = (getDegrees() + deg) * Constants.Hood.gearRatio / 360;
         setRotations(rotations);
@@ -92,5 +106,6 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Current", getCurrent());
 
         degrees = SmartDashboard.getNumber("Set Angles", 0);
+        alignHoodtoHub(mmturret.getDistanceToTarget());
     }
 }
