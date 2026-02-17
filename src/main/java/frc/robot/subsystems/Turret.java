@@ -188,7 +188,7 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-      pointAtTarget(Constants.targetPosition);
+      pointAtTarget(Constants.targetPositionRed);
 
         if(!canMove()) {
             stop(); // TODO: spin turret to avoid EXPLOSION

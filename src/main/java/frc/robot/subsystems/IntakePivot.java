@@ -1,5 +1,5 @@
 package frc.robot.subsystems;
-/* 
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -27,7 +27,6 @@ public class IntakePivot extends SubsystemBase {
 
   
   public IntakePivot(RobotContainer rob) {
-    
     CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
         turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 15;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
@@ -60,6 +59,10 @@ public class IntakePivot extends SubsystemBase {
     return motor.getPosition().getValueAsDouble();
   }
 
+  public boolean isIntakeUp(){
+    return getPosition() < 1;
+  }
+
   public void stop() {
     motor.setControl(new VoltageOut(0));
   }
@@ -70,4 +73,3 @@ public class IntakePivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake Pivot Current", motor.getStatorCurrent().getValueAsDouble());
   }
 }
-*/

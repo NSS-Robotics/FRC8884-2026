@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.io.ObjectInputStream.GetField;
+import java.util.Optional;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -14,6 +15,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,14 +44,16 @@ public class RobotContainer {
     /* END CTRE SWERVE GEN */
 
     public final CommandXboxController driverController = new CommandXboxController(0);
-    //public final CommandXboxController operatorController = new CommandXboxController(1);
+    public final CommandXboxController operatorController = new CommandXboxController(1);
 
     public Pose2d simulatedPosition = new Pose2d();
+    public Pose2d lobTarget = new Pose2d();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Limelight limelight = new Limelight("tom", drivetrain);
     public final Flywheels flywheels = new Flywheels(this);
     public final Feeder feeder = new Feeder();
+    public final IntakePivot intakePivot = new IntakePivot(this);
     // public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
     public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
     public final Spindexer spindexer = new Spindexer();
@@ -129,6 +134,17 @@ public class RobotContainer {
         //operator controller, zia can i have my spinning gear thing back plz
         // operatorController.povDown()
         //     .onTrue(new InstantCommand(() -> shooterHood.zeroHood()));
+        operatorController.leftTrigger().onTrue(new InstantCommand(() ->
+            lobTarget = isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue
+        ));
+        operatorController.rightTrigger().onTrue(new InstantCommand(() ->
+            lobTarget = isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue
+        ));
+    }
+
+    public boolean isRed() {
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        return alliance.isPresent() && alliance.get() == Alliance.Red;
     }
 
     public Command getAutonomousCommand() {
