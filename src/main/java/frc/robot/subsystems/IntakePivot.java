@@ -2,12 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.Constants;
@@ -22,7 +19,6 @@ public class IntakePivot extends SubsystemBase {
   private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
 
   // Motor configuration
-  private TalonFXConfiguration motorConfig;
   private Slot0Configs slot0Configs;
 
   

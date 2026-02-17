@@ -35,6 +35,8 @@ public class MotionMagicTurret extends SubsystemBase {
 
     private final Translation2d offsetFromRobotCenter;
 
+    private double manualOffset = 0;
+
     public Pose2d turretLocation = new Pose2d();
 
     public MotionMagicTurret(RobotContainer rob, Translation2d translation) {
@@ -156,7 +158,7 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MM Turret Offset x", turretOffset.getX());
         SmartDashboard.putNumber("MM Turret Offset y", turretOffset.getY());
         
-        setDegrees(degreesToTarget);
+        setDegrees(degreesToTarget+manualOffset);
     }
 
     public void setDistanceToTarget(double dist) {
@@ -165,6 +167,14 @@ public class MotionMagicTurret extends SubsystemBase {
 
     public double getDistanceToTarget() {
         return distanceToTarget;
+    }
+
+    public void setManualOffset(double newManualOffset) {
+        manualOffset = newManualOffset;
+    }
+
+    public double getManualOffset() {
+        return manualOffset;
     }
 
     public boolean canMove(){

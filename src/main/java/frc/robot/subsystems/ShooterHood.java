@@ -22,6 +22,7 @@ public class ShooterHood extends SubsystemBase {
     private final MotionMagicTurret mmturret;
 
     private double degrees = 0;
+    private double manualOffset = 0;
 
     public ShooterHood(RobotContainer rob) {
         this.mmturret = rob.mmturret;
@@ -56,7 +57,7 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void setDegrees() {
-        degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0);
+        degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0)+manualOffset;
 
         double rotations = degrees * Constants.Hood.gearRatio / 360;
         setRotations(rotations);
@@ -77,12 +78,20 @@ public class ShooterHood extends SubsystemBase {
         setRotations(rotations);
     }
 
-    public double getDegrees(){
+    public double getDegrees() {
         return 360 * getRotations() / Constants.Hood.gearRatio;
     }
     
     public double getCurrent() {
         return hoodMotor.getStatorCurrent().getValueAsDouble();
+    }
+
+    public void setManualOffset(double newManualOffset) {
+        manualOffset = newManualOffset;
+    }
+
+    public double getManualOffset() {
+        return manualOffset;
     }
 
     public void stop() {
