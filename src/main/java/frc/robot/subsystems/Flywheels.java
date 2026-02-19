@@ -15,8 +15,8 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class Flywheels extends SubsystemBase {
-    private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID, new CANBus("Jeff"));
-    private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID, new CANBus("Jeff"));
+    private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID);
+    private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
     private final MotionMagicTurret mmturret;
 
@@ -84,17 +84,33 @@ public class Flywheels extends SubsystemBase {
         // setVelocity();
     }
 
+    public void rpmToLob(double distance){
+
+    }
+
+    public void rpmToRest(){
+        rpm = 500; // TODO: resting set resting rpm
+        setVelocity();
+    }
+
     // public void makeThemSpin(double power) {
     //     flywheelMotor.set(power);
     //     followerFlywheelMotor.set(power);
     // }
+
+
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
         SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
         rpm = SmartDashboard.getNumber("Set RPM", 0);
-        // rpmToHub(mmturret.getDistanceToTarget());
+        // if (mmturret.isInAllianceZone()){
+        //     rpmToHub(mmturret.getDistanceToTarget());
+        // } // check if its gonna lob
+        // else{
+        //     rpmToRest();
+        // }
 
     }
 

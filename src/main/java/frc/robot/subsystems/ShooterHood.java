@@ -14,7 +14,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class ShooterHood extends SubsystemBase {
-    private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID, new CANBus("Jeff"));
+    private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID);
     
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;
@@ -64,11 +64,18 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoHub(double distance){
-        // 0.45x^3 - 5.53x^2 + 22.04x - 19.18; subject to change, this one is just a test 
+        // 0.45x^3 - 5.53x^2 + 22.04x - 19.18; subject to change, this one is just a test also passed certain meters it goes down
         //TODO: get actual curve
         double angle = 0.45 * Math.pow(distance, 3) - 5.53 * Math.pow(distance, 2) + 22.04 * distance - 19.18;
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
+        degrees = angle;
+        setDegrees();
+    }
+    public void alignHoodtoLob(double distance){
+
+        double angle = 0;
+        angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         degrees = angle;
         setDegrees();
     }
@@ -115,6 +122,13 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Current", getCurrent());
 
         degrees = SmartDashboard.getNumber("Set Angles", 0);
-        alignHoodtoHub(mmturret.getDistanceToTarget());
+        // if (mmturret.isInAllianceZone()){
+        //     alignHoodtoHub(mmturret.getDistanceToTarget());
+        // }else{
+        //     alignHoodtoLob(mmturret.getDistanceToTarget());
+        // }
+        // alignHoodtoHub(mmturret.getDistanceToTarget());
+
+        
     }
 }

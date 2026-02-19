@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "devbot test path"
+            "pathName": "RRneutral1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RRneutral2"
           }
         }
       ]

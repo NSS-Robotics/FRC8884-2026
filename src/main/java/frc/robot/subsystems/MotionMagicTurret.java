@@ -161,6 +161,8 @@ public class MotionMagicTurret extends SubsystemBase {
         setDegrees(degreesToTarget+manualOffset);
     }
 
+    
+
     public void setDistanceToTarget(double dist) {
         distanceToTarget = dist;
     }

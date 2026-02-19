@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -12,7 +13,7 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase{
     private static TalonFX intakeMotor = new TalonFX(
-        Constants.CanIDs.intakeMotorID
+        Constants.CanIDs.intakeMotorID, new CANBus("Jeff")
     );
 
     private static Slot0Configs intakeSlot0Configs = new Slot0Configs();

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -13,8 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivot extends SubsystemBase {
-  private final TalonFX motor = new TalonFX(Constants.CanIDs.intakePivotMotorID);
-  //private final CANcoder encoder = new CANcoder(Constants.CanIDs.intakePivotEncoderID);
+  private final TalonFX motor = new TalonFX(Constants.CanIDs.intakePivotMotorID, new CANBus("Jeff"));
 
   private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
 
@@ -41,7 +41,7 @@ public class IntakePivot extends SubsystemBase {
 
     // motor.getConfigurator().apply(motorConfig);
     motor.getConfigurator().apply(slot0Configs);
-    motor.setNeutralMode(NeutralModeValue.Coast);
+    motor.setNeutralMode(NeutralModeValue.Brake);
     motor.setPosition(0);
     
   }
