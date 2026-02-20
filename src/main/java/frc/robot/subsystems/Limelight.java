@@ -44,7 +44,7 @@ public class Limelight extends SubsystemBase {
 
         boolean shouldRejectUpdate = false;
         if (!useMegaTag2) {
-            LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+            LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.name);
 
             // FIXME: Only for simulation
             // if limelight can't read any data, ignore
@@ -87,22 +87,22 @@ public class Limelight extends SubsystemBase {
             Rotation2d.fromDegrees(pos[5]) // R
         );
 
-        if (pos.length < 6) {
-            return;
-        }
+        // if (pos.length < 6) {
+        //     return;
+        // }
 
-        String[] names = {
-            "llpos x",
-            "llpos y",
-            "llpos z",
-            "llrot x",
-            "llrot y",
-            "llrot z",
-        };
+        // String[] names = {
+        //     "llpos x",
+        //     "llpos y",
+        //     "llpos z",
+        //     "llrot x",
+        //     "llrot y",
+        //     "llrot z",
+        // };
 
-        for (int i = 0; i < names.length; i++) {
-            SmartDashboard.putNumber(name + ' ' + names[i], pos[i]);
-        }
+        // for (int i = 0; i < names.length; i++) {
+        //     SmartDashboard.putNumber(name + ' ' + names[i], pos[i]);
+        // }
     }
 
     @Override
@@ -110,8 +110,8 @@ public class Limelight extends SubsystemBase {
         updateLimelightTracking();
         updateOdometry();
 
-        SmartDashboard.putNumber("LL X", botPose.getX());
-        SmartDashboard.putNumber("LL Y", botPose.getY());
-        SmartDashboard.putNumber("LL R", botPose.getRotation().getDegrees());
+        SmartDashboard.putNumber(name + " X", botPose.getX());
+        SmartDashboard.putNumber(name + " Y", botPose.getY());
+        SmartDashboard.putNumber(name + " R", botPose.getRotation().getDegrees());
     }
 }

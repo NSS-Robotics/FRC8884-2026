@@ -56,7 +56,7 @@ public class Constants {
         public static final double gearRatioWithAbsoluteEncoder = 0.6605128205;
 
         // public static final double gearRatioWithAbsoluteEncoder = 92/25 * 14/78;
-
+        public static final double tolerance = 1.2;
 
         public static final Translation2d offsetFromCenter = new Translation2d(0.22, 0.15);
     }
@@ -76,7 +76,7 @@ public class Constants {
     }
 
     public static class Intake {
-        public static final double kP = 1.0;
+        public static final double kP = 0.8;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kS = 0.0;

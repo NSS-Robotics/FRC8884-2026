@@ -30,7 +30,7 @@ public class MotionMagicTurret extends SubsystemBase {
     private final CommandSwerveDrivetrain swerve;
     private final IntakePivot intakePivot;
 
-    private double targetDegrees;
+    public double targetDegrees;
     private double distanceToTarget;
 
     private final Translation2d offsetFromRobotCenter;

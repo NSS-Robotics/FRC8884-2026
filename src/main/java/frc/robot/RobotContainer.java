@@ -49,13 +49,14 @@ public class RobotContainer {
     public Pose2d lobTarget = new Pose2d();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final Limelight limelight = new Limelight("tom", drivetrain);
+    public final Limelight limelightFront = new Limelight("front", drivetrain);
+    public final Limelight limelightSide = new Limelight("side", drivetrain);
     public final Flywheels flywheels = new Flywheels(this);
-    public final Feeder feeder = new Feeder();
     public final IntakePivot intakePivot = new IntakePivot(this);
-    // public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
+    public final Intake intake = new Intake();
     public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
     public final Spindexer spindexer = new Spindexer();
+    public final Feeder feeder = new Feeder(this);
     public final ShooterHood shooterHood = new ShooterHood(this);
     // public final LEDs leds = new LEDs();
 
@@ -87,13 +88,8 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driverController.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
-        ));
-
         // Reset the field-centric heading on left bumper press.
-        driverController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -101,7 +97,7 @@ public class RobotContainer {
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
                 flywheels.setVelocity();
-                feeder.setSpeed(3000);
+                feeder.setSpeed(-3000);
                 shooterHood.setDegrees();
             }))
             .onFalse(new InstantCommand(() -> {
@@ -127,8 +123,17 @@ public class RobotContainer {
         //     }));     
         
         driverController.rightTrigger()
-            .whileTrue(new InstantCommand(() -> spindexer.setSpeed(2500))) // increase when get new spindexer
+            .whileTrue(new InstantCommand(() -> spindexer.setSpeed(-2500))) // increase when get new spindexer
             .onFalse(new InstantCommand(() -> spindexer.stop()));
+
+        driverController.x()
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
+        driverController.a()
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.5)));
+
+        driverController.b()
+            .whileTrue(new InstantCommand(() -> intake.setVelocity(4500)))
+            .onFalse(new InstantCommand(intake::stopIntake));
 
         //operator controller, zia can i have my spinning gear thing back plz
         // operatorController.povDown()

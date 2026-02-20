@@ -10,13 +10,18 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Feeder extends SubsystemBase {
     private final TalonFX feederMotor = new TalonFX(Constants.CanIDs.feederMotorID, new CANBus("Jeff"));
 
+    private Boolean canMove = true;
+    private final MotionMagicTurret mmturret;
+
     private VelocityVoltage feederVelocity = new VelocityVoltage(0).withSlot(0);
 
-    public Feeder() {
+    public Feeder(RobotContainer rob) {
+        this.mmturret = rob.mmturret;
         Slot0Configs slot0Configs = new Slot0Configs();
         slot0Configs.kP = Constants.Feeder.kP;
         slot0Configs.kI = Constants.Feeder.kI;
@@ -39,6 +44,14 @@ public class Feeder extends SubsystemBase {
     public void stop() {
         feederMotor.setControl(new VoltageOut(0));
     }
+    
+    public void canMove(){
+        if (Math.abs(mmturret.targetDegrees-mmturret.getDegrees()) > Constants.Turret.tolerance){
+            canMove = false;
+        } else{
+            canMove = true;
+        }
+    }
 
     public void makeSpin(double power) {
         feederMotor.set(power);
@@ -47,5 +60,6 @@ public class Feeder extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Feeder Speed", getSpeed());
+        canMove();
     }
 }
