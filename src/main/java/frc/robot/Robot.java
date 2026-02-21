@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -93,7 +99,7 @@ public class Robot extends TimedRobot {
       ((time >= (60 - switchNotification)) && (time < 60)) ||
       ((time >= (85 - switchNotification)) && (time < 85)) ||
       ((time >= (110 - switchNotification)) && (time < 110))) {
-      xbox.setRumble(RumbleType.kBothRumble, 1);
+      xbox.setRumble(RumbleType.kBothRumble, 0.5);
     } else {
       xbox.setRumble(RumbleType.kBothRumble, 0);
     }*/
@@ -118,5 +124,7 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    m_robotContainer.fuelSim.updateSim();
+  }
 }

@@ -34,6 +34,7 @@ public class Feeder extends SubsystemBase {
     }
 
     public void setSpeed(double speedRPM) {
+
         feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
     }
 
@@ -60,6 +61,7 @@ public class Feeder extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Feeder Speed", getSpeed());
+        SmartDashboard.putBoolean("canMove", canMove);
         canMove();
     }
 }

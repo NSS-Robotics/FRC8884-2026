@@ -11,39 +11,50 @@ import java.util.Optional;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+    
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.ImmutableLinearVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.lib.FuelSim;
 // import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
-    /* START CTRE SWERVE GEN */
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
+    // private final SendableChooser<Command> autoChooser;
+
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
     private final Telemetry logger = new Telemetry(MaxSpeed);
-    /* END CTRE SWERVE GEN */
 
     public final CommandXboxController driverController = new CommandXboxController(0);
-    public final CommandXboxController operatorController = new CommandXboxController(1);
+    //public final CommandXboxController operatorController = new CommandXboxController(1);
+
+    public final FuelSim fuelSim = new FuelSim();
 
     public Pose2d simulatedPosition = new Pose2d();
     public Pose2d lobTarget = new Pose2d();
@@ -63,17 +74,17 @@ public class RobotContainer {
     public final Field2d fieldMap = new Field2d();
 
     public RobotContainer() {
+        // addCommandsToPathplanner();
+        // autoChooser = AutoBuilder.buildAutoChooser();
         CameraServer.startAutomaticCapture();
         configureBindings();
+        configureFuelSim();
 
         SmartDashboard.putData(fieldMap);
     }
 
     private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
@@ -81,14 +92,7 @@ public class RobotContainer {
             )
         );
 
-        // Idle while the robot is disabled. This ensures the configured
-        // neutral mode is applied to the drive motors while disabled.
-        final var idle = new SwerveRequest.Idle();
-        RobotModeTriggers.disabled().whileTrue(
-            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
-        );
-
-        // Reset the field-centric heading on left bumper press.
+        // zero gyro
         driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -96,13 +100,12 @@ public class RobotContainer {
         // shoot
         driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity();
-                feeder.setSpeed(-3000);
+                flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
+                // flywheels.setVelocity(flywheels.rpmToHub(mmturret.getDistanceToTarget()));
                 shooterHood.setDegrees();
             }))
             .onFalse(new InstantCommand(() -> {
                 flywheels.stop();
-                feeder.stop();
                 shooterHood.stop();
             }));
 
@@ -110,35 +113,54 @@ public class RobotContainer {
             .onTrue(new InstantCommand(shooterHood::zeroHood));
         
         // unjam
-        // driverController.x()
-        //     .whileTrue(new InstantCommand(() -> {
-        //         flywheels.setVelocity(1000);
-        //         feeder.setSpeed(-2000);
-        //         shooterHood.setDegrees();
-        //     }))
-        //     .onFalse(new InstantCommand(() -> {
-        //         flywheels.stop();
-        //         feeder.stop();
-        //         shooterHood.stop();
-        //     }));     
+        driverController.rightBumper()
+            .whileTrue(new InstantCommand(() -> {
+                flywheels.setVelocity(-1000);
+                feeder.setSpeed(1500);
+                shooterHood.setDegrees();
+            }))
+            .onFalse(new InstantCommand(() -> {
+                flywheels.stop();
+                feeder.stop();
+                shooterHood.stop();
+            }));     
         
+        // spindexer
         driverController.rightTrigger()
-            .whileTrue(new InstantCommand(() -> spindexer.setSpeed(-2500))) // increase when get new spindexer
-            .onFalse(new InstantCommand(() -> spindexer.stop()));
-
+            .whileTrue(new InstantCommand(() -> {
+                spindexer.setSpeed(-2500);
+                feeder.setSpeed(-1500);
+            }))
+            .onFalse(new InstantCommand(() -> {
+                spindexer.stop();
+                feeder.stop();
+            }));
+     
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.5)));
+        driverController.povUp()
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(12)));
 
         driverController.b()
-            .whileTrue(new InstantCommand(() -> intake.setVelocity(4500)))
+            .whileTrue(new InstantCommand(() -> intake.setVelocity(2500)))
             .onFalse(new InstantCommand(intake::stopIntake));
+
+        // driverController.leftBumper()
+        //     .whileTrue(new InstantCommand(() -> {
+        //         fuelSim.launchFuel(
+        //             LinearVelocity.ofBaseUnits(7, MetersPerSecond),
+        //             Angle.ofBaseUnits(90 - shooterHood.getDegrees(), Degree),
+        //             Angle.ofBaseUnits(mmturret.getDegrees(), Degree),
+        //             Distance.ofBaseUnits(0.75, Meters)
+        //         );
+        //     }));
 
         //operator controller, zia can i have my spinning gear thing back plz
         // operatorController.povDown()
         //     .onTrue(new InstantCommand(() -> shooterHood.zeroHood()));
-        operatorController.leftTrigger().onTrue(new InstantCommand(() ->
+        /*        operatorController.leftTrigger().onTrue(new InstantCommand(() ->
             lobTarget = isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue
         ));
         operatorController.rightTrigger().onTrue(new InstantCommand(() ->
@@ -150,12 +172,54 @@ public class RobotContainer {
 
         operatorController.povUp().onTrue(new InstantCommand(() -> shooterHood.setManualOffset(shooterHood.getManualOffset()+2)));
         operatorController.povDown().onTrue(new InstantCommand(() -> shooterHood.setManualOffset(shooterHood.getManualOffset()-2)));
+        */
+    }
+
+    private void configureFuelSim() {
+        SmartDashboard.putData(Commands.runOnce(() -> {
+                fuelSim.clearFuel();
+                fuelSim.spawnStartingFuel();
+            })
+            .withName("Reset Fuel")
+            .ignoringDisable(true));
+
+        fuelSim.spawnStartingFuel();
+        fuelSim.start();
+
+        fuelSim.registerRobot(
+            Constants.Dimensions.robotWidth,
+            Constants.Dimensions.robotLength,
+            0,
+            drivetrain::getPoseMeters,
+            () -> drivetrain.getState().Speeds
+        );
+
+        fuelSim.registerIntake(
+            // TODO: is 0 middle of bot or side?
+            0, 0.762,
+            0, Units.inchesToMeters(4),
+            () -> true
+        );
+
+        fuelSim.setSubticks(1);
+        fuelSim.enableAirResistance();
     }
 
     public boolean isRed() {
         Optional<Alliance> alliance = DriverStation.getAlliance();
         return alliance.isPresent() && alliance.get() == Alliance.Red;
     }
+
+    // private void addCommandsToPathplanner() {
+    //     NamedCommands.registerCommand("Shoot", 
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(() -> )
+    //         )
+        
+        
+    //     )
+    // }
+    
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");

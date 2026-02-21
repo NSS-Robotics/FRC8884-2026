@@ -196,19 +196,21 @@ public class MotionMagicTurret extends SubsystemBase {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
 
-        if (isInAllianceZone()) { 
-            pointAtTarget(rob.lobTarget);
-        } else {      
-            if (SmartDashboard.getBoolean("Target Red Hub", true)) {
-                pointAtTarget(Constants.targetPositionRed);
-            } else {
-                pointAtTarget(Constants.targetPositionBlue);
-            }
-        }
+        // if (!isInAllianceZone()) { 
+        //     pointAtTarget(rob.lobTarget);
+        // } else {      
+        //     if (SmartDashboard.getBoolean("Target Red Hub", true)) {
+        //         pointAtTarget(Constants.targetPositionRed);
+        //     } else {
+        //         pointAtTarget(Constants.targetPositionBlue);
+        //     }     
+        // }
+        // pointAtTarget(Constants.targetPositionBlue);
+         pointAtTarget(Constants.targetPositionRed);
 
-        if(!canMove()){
-            stop();
-        }
+        // if(!canMove()){
+        //     stop();
+        // }
 
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());

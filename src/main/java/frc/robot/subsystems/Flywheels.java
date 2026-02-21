@@ -21,7 +21,6 @@ public class Flywheels extends SubsystemBase {
     private final MotionMagicTurret mmturret;
 
     private double targetVelocity = 9000;
-    private double rpm = 0;
 
     public Flywheels(RobotContainer rob) {
         this.mmturret = rob.mmturret;
@@ -60,7 +59,7 @@ public class Flywheels extends SubsystemBase {
 
     }
 
-    public void setVelocity() {
+    public void setVelocity(double rpm) {
         targetVelocity = rpm;
 
         rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
@@ -77,11 +76,8 @@ public class Flywheels extends SubsystemBase {
         leftFlywheelMotor.setControl(voltageOut);
     }
 
-    public void rpmToHub(double distance){
-        // double hubRPM = ; // TODO: GET CURVE
-        // //clamp?
-        // rpm = hubRPM;
-        // setVelocity();
+    public double rpmToHub(double distance) {
+        return 51.61 * Math.pow(distance, 3) - 375.59 * Math.pow(distance, 2) + 1147.77 * distance + 533.44; // TODO: GET CURVE
     }
 
     public void rpmToLob(double distance){
@@ -89,8 +85,8 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void rpmToRest(){
-        rpm = 500; // TODO: resting set resting rpm
-        setVelocity();
+        // TODO: resting set resting rpm
+        setVelocity(500);
     }
 
     // public void makeThemSpin(double power) {
@@ -104,7 +100,6 @@ public class Flywheels extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
         SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
-        rpm = SmartDashboard.getNumber("Set RPM", 0);
         // if (mmturret.isInAllianceZone()){
         //     rpmToHub(mmturret.getDistanceToTarget());
         // } // check if its gonna lob
