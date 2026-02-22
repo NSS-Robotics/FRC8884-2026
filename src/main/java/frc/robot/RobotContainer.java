@@ -11,8 +11,8 @@ import java.util.Optional;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.auto.NamedCommands;
     
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.FuelSim;
 // import frc.robot.commands.*;
@@ -98,7 +99,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // shoot
-        driverController.leftTrigger()
+        driverController.rightTrigger()
             .whileTrue(new InstantCommand(() -> {
                 flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
                 // flywheels.setVelocity(flywheels.rpmToHub(mmturret.getDistanceToTarget()));
@@ -113,7 +114,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(shooterHood::zeroHood));
         
         // unjam
-        driverController.rightBumper()
+        driverController.b()
             .whileTrue(new InstantCommand(() -> {
                 flywheels.setVelocity(-1000);
                 feeder.setSpeed(1500);
@@ -126,7 +127,7 @@ public class RobotContainer {
             }));     
         
         // spindexer
-        driverController.rightTrigger()
+        driverController.rightBumper()
             .whileTrue(new InstantCommand(() -> {
                 spindexer.setSpeed(-2500);
                 feeder.setSpeed(-1500);
@@ -140,10 +141,19 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.5)));
-        driverController.povUp()
-            .onTrue(new InstantCommand(() -> intakePivot.setPosition(12)));
 
-        driverController.b()
+        driverController.leftBumper()
+            .onTrue(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> intake.setVelocity(2500)),
+                    new InstantCommand(() -> intakePivot.setPosition(12)),
+                    new WaitCommand(0.3),
+                    new InstantCommand(() -> intakePivot.setPosition(15.5)),
+                    new InstantCommand(intake::stopIntake)
+                )
+            );
+
+        driverController.leftTrigger()
             .whileTrue(new InstantCommand(() -> intake.setVelocity(2500)))
             .onFalse(new InstantCommand(intake::stopIntake));
 

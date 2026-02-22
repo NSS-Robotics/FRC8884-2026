@@ -104,7 +104,7 @@ public class ShooterHood extends SubsystemBase {
 
     public void stop() {
         hoodMotor.setControl(new VoltageOut(0));
-    }
+    }   
 
     public void zeroHood() {
         while (getCurrent() < Constants.Hood.currentWhenStalling) {

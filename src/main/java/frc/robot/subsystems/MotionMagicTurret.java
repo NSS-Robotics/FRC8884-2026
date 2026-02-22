@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.opencv.core.Mat;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -101,23 +103,36 @@ public class MotionMagicTurret extends SubsystemBase {
     }
 
     private double wrapAngleDegrees(double angle){
-        if (angle < -380.0) {
+        if (angle < -180.0) {
             angle += 360.0;
-        } else if (angle >= 30.0) {
+        } else if (angle >= 210.0) {
             angle -= 360.0;
         }
         return angle;
     }
 
     private Pose2d calculateTurretOffset(double xOffset, double yOffset, double robotRadians){
+        Translation2d turretoffset = new Translation2d(xOffset, -yOffset).rotateBy(new Rotation2d(robotRadians));
+
         // x and y axis inverted
-        
+        /* 
         double d = Math.hypot(xOffset, yOffset);    
-        double theta = Math.atan2(xOffset, yOffset);
-        double alpha = theta + robotRadians - Math.PI/2; 
+        double theta = Math.atan2(yOffset,xOffset);
+        //double alpha = theta + robotRadians - Math.PI/2; 
+        // double alpha = theta + robotRadians; 
+        double alpha = robotRadians + theta + Math.PI;
+
         double x = d * Math.cos(alpha);
         double y = d * Math.sin(alpha);
+        */
+        //double x = xOffset  * Math.cos(robotRadians) - yOffset*Math.sin(robotRadians);
+        //double y = xOffset  * Math.sin(robotRadians) + yOffset*Math.cos(robotRadians);
+        double x = turretoffset.getX();
+        double y = turretoffset.getY();
 
+        //SmartDashboard.putNumber("MMT robotdeg", alpha*180/Math.PI);
+        SmartDashboard.putNumber("MMT X", x);
+        SmartDashboard.putNumber("MMT Y", y);
         return new Pose2d(x, y, null);
     }
 
@@ -216,5 +231,6 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());
         SmartDashboard.putNumber("MM Turret Error Degrees", targetDegrees-getDegrees());
         SmartDashboard.putNumber("Distance to Target", getDistanceToTarget());
+        SmartDashboard.putNumber("MMT manual offset", manualOffset);
     }
 }
