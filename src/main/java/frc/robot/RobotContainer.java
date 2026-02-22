@@ -37,7 +37,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.FuelSim;
-// import frc.robot.commands.*;
+import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 
@@ -80,6 +80,7 @@ public class RobotContainer {
         CameraServer.startAutomaticCapture();
         configureBindings();
         configureFuelSim();
+        configurePathPlanner();
 
         SmartDashboard.putData(fieldMap);
     }
@@ -93,69 +94,23 @@ public class RobotContainer {
             )
         );
 
-        // zero gyro
-        driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        // shoot
-        driverController.rightTrigger()
-            .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
-                // flywheels.setVelocity(flywheels.rpmToHub(mmturret.getDistanceToTarget()));
-                shooterHood.setDegrees();
-            }))
-            .onFalse(new InstantCommand(() -> {
-                flywheels.stop();
-                shooterHood.stop();
-            }));
+        /* instant commands */
+        driverController.povDown().onTrue(new InstantCommand(shooterHood::zeroHood)); // zero hood
+        driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
 
-        driverController.povDown()
-            .onTrue(new InstantCommand(shooterHood::zeroHood));
+        /* longer commands */
+        driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
+        driverController.rightBumper().whileTrue(new RunSpindexer(this));
+        driverController.b().whileTrue(new Unjam(this));
+        driverController.leftTrigger().whileTrue(new RunIntake(this));
+        driverController.leftBumper().whileTrue(new IntakeUnjam(this));
         
-        // unjam
-        driverController.b()
-            .whileTrue(new InstantCommand(() -> {
-                flywheels.setVelocity(-1000);
-                feeder.setSpeed(1500);
-                shooterHood.setDegrees();
-            }))
-            .onFalse(new InstantCommand(() -> {
-                flywheels.stop();
-                feeder.stop();
-                shooterHood.stop();
-            }));     
-        
-        // spindexer
-        driverController.rightBumper()
-            .whileTrue(new InstantCommand(() -> {
-                spindexer.setSpeed(-2500);
-                feeder.setSpeed(-1500);
-            }))
-            .onFalse(new InstantCommand(() -> {
-                spindexer.stop();
-                feeder.stop();
-            }));
-     
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.5)));
-
-        driverController.leftBumper()
-            .onTrue(
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> intake.setVelocity(2500)),
-                    new InstantCommand(() -> intakePivot.setPosition(12)),
-                    new WaitCommand(0.3),
-                    new InstantCommand(() -> intakePivot.setPosition(15.5)),
-                    new InstantCommand(intake::stopIntake)
-                )
-            );
-
-        driverController.leftTrigger()
-            .whileTrue(new InstantCommand(() -> intake.setVelocity(2500)))
-            .onFalse(new InstantCommand(intake::stopIntake));
 
         // driverController.leftBumper()
         //     .whileTrue(new InstantCommand(() -> {
@@ -213,6 +168,10 @@ public class RobotContainer {
 
         fuelSim.setSubticks(1);
         fuelSim.enableAirResistance();
+    }
+
+    private void configurePathPlanner() {
+        
     }
 
     public boolean isRed() {

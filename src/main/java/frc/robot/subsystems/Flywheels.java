@@ -77,7 +77,8 @@ public class Flywheels extends SubsystemBase {
     }
 
     public double rpmToHub(double distance) {
-        return 51.61 * Math.pow(distance, 3) - 375.59 * Math.pow(distance, 2) + 1147.77 * distance + 533.44; // TODO: GET CURVE
+        // return 51.61 * Math.pow(distance, 3) - 375.59 * Math.pow(distance, 2) + 1147.77 * distance + 533.44; // TODO: GET CURVE
+        return Math.max(Math.min(29.54 * Math.pow(distance, 3) - 299.81 * Math.pow(distance, 2) + 1088.56 * distance + 527.65, 3000), 0);
     }
 
     public void rpmToLob(double distance){

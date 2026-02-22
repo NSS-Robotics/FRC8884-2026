@@ -103,9 +103,9 @@ public class MotionMagicTurret extends SubsystemBase {
     }
 
     private double wrapAngleDegrees(double angle){
-        if (angle < -180.0) {
+        if (angle < Constants.Turret.rotationLimit1) {
             angle += 360.0;
-        } else if (angle >= 210.0) {
+        } else if (angle >= Constants.Turret.rotationLimit2) {
             angle -= 360.0;
         }
         return angle;
@@ -205,6 +205,15 @@ public class MotionMagicTurret extends SubsystemBase {
 
         return swerve.getPoseMeters().getX() > 12.5;
     }
+
+    // public boolean willGetDecapitated(){
+    //     double x = swerve.getPoseMeters().getX();
+    //     double y = swerve.getPoseMeters().getY();
+
+    //     if (rob.isRed()){
+    //         return (x < SMTH && x > SMTHELSE) &&  y < SMTHE || y > y;
+    //     }
+    // }
 
     @Override
     public void periodic() {
