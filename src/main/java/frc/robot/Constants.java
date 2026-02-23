@@ -81,6 +81,7 @@ public class Constants {
         public static final double currentWhenStalling = 14.7;
         public static final double maxHubHoodAlign = 10;
         // public static final double minHubHoodAlign = 1;
+        public static final double irlHoodDegrees = 12.5;
     }
 
     public static class Intake {

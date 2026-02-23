@@ -18,12 +18,12 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID);
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
-    private final MotionMagicTurret mmturret;
+    private final RobotContainer rob;
 
     private double targetVelocity = 9000;
 
     public Flywheels(RobotContainer rob) {
-        this.mmturret = rob.mmturret;
+        this.rob = rob;
         TalonFXConfiguration leftConfig = new TalonFXConfiguration();
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
@@ -102,7 +102,7 @@ public class Flywheels extends SubsystemBase {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
         SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
         // if (mmturret.isInAllianceZone()){
-        //     rpmToHub(mmturret.getDistanceToTarget());
+        //     rpmToHub(rob.mmturret.getDistanceToTarget());
         // } // check if its gonna lob
         // else{
         //     rpmToRest();

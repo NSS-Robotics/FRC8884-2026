@@ -66,10 +66,11 @@ public class RobotContainer {
     public final Flywheels flywheels = new Flywheels(this);
     public final IntakePivot intakePivot = new IntakePivot(this);
     public final Intake intake = new Intake();
-    public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
     public final Spindexer spindexer = new Spindexer();
-    public final Feeder feeder = new Feeder(this);
     public final ShooterHood shooterHood = new ShooterHood(this);
+    public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
+    public final Feeder feeder = new Feeder(this);
+
     // public final LEDs leds = new LEDs();
 
     public final Field2d fieldMap = new Field2d();

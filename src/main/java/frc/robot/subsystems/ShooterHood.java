@@ -19,13 +19,13 @@ public class ShooterHood extends SubsystemBase {
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private Slot0Configs slot0Configs;
     
-    private final MotionMagicTurret mmturret;
+    private final RobotContainer rob;
 
     private double degrees = 0;
     private double manualOffset = 0;
 
     public ShooterHood(RobotContainer rob) {
-        this.mmturret = rob.mmturret;
+        this.rob = rob;
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
@@ -129,7 +129,7 @@ public class ShooterHood extends SubsystemBase {
         // }else{
         //     alignHoodtoLob(mmturret.getDistanceToTarget());
         // }
-        alignHoodtoHub(mmturret.getDistanceToTarget());
+        alignHoodtoHub(rob.mmturret.getDistanceToTarget());
 
     }
 }
