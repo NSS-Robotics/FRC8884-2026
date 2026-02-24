@@ -11,8 +11,8 @@ import java.util.Optional;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
     
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -180,15 +180,22 @@ public class RobotContainer {
         return alliance.isPresent() && alliance.get() == Alliance.Red;
     }
 
-    // private void addCommandsToPathplanner() {
-    //     NamedCommands.registerCommand("Shoot", 
-    //         new SequentialCommandGroup(
-    //             new InstantCommand(() -> )
-    //         )
+    private void addCommandsToPathplanner() {
+        NamedCommands.registerCommand("Shoot", 
+            new SequentialCommandGroup(
+                new InstantCommand(() -> new FlywheelShoot(this)),
+                new InstantCommand(() -> new RunSpindexer(this))
+            )
+        );
+        NamedCommands.registerCommand("IntakeDown",    
+            new InstantCommand(() -> intakePivot.setPosition(15.5))
+        );
+
+        NamedCommands.registerCommand("Intake",
+            new InstantCommand(() -> new RunIntake(this))
+        );  
         
-        
-    //     )
-    // }
+    }
     
 
     public Command getAutonomousCommand() {

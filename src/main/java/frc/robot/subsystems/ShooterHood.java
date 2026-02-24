@@ -88,7 +88,8 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public double getDegrees() {
-        return 360 * getRotations() / Constants.Hood.gearRatio;
+        // return 360 * getRotations() / Constants.Hood.gearRatio;
+        return degrees;
     }
     
     public double getCurrent() {
