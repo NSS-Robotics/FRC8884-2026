@@ -179,7 +179,7 @@ public class RobotContainer {
         Optional<Alliance> alliance = DriverStation.getAlliance();
         return alliance.isPresent() && alliance.get() == Alliance.Red;
     }
-
+    /* 
     private void addCommandsToPathplanner() {
         NamedCommands.registerCommand("Shoot", 
             new SequentialCommandGroup(
@@ -196,6 +196,7 @@ public class RobotContainer {
         );  
         
     }
+        */
     
 
     public Command getAutonomousCommand() {

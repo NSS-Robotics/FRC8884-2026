@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -22,6 +23,10 @@ public class Feeder extends SubsystemBase {
 
     public Feeder(RobotContainer rob) {
         this.mmturret = rob.mmturret;
+        CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
+        currentLimitConfig.StatorCurrentLimit = Constants.Feeder.currentLimit;
+        currentLimitConfig.StatorCurrentLimitEnable = true;
+
         Slot0Configs slot0Configs = new Slot0Configs();
         slot0Configs.kP = Constants.Feeder.kP;
         slot0Configs.kI = Constants.Feeder.kI;
@@ -30,6 +35,7 @@ public class Feeder extends SubsystemBase {
         slot0Configs.kV = Constants.Feeder.kV;
         slot0Configs.kA = Constants.Feeder.kA;
         feederMotor.getConfigurator().apply(slot0Configs);
+        feederMotor.getConfigurator().apply(currentLimitConfig);
         feederMotor.setNeutralMode(NeutralModeValue.Coast);
     }
 

@@ -21,7 +21,9 @@ public class Constants {
         public static final double robotLength = Units.inchesToMeters(25);
     }
 
+
     public static class Flywheel {
+        public static final double currentLimit = 40;
         public static final double kP = 0.5;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -31,6 +33,7 @@ public class Constants {
     }
 
     public static class Feeder {
+        public static final double currentLimit = 40;
         public static final double kP = 25;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -40,6 +43,7 @@ public class Constants {
     }
 
     public static class Spindexer {
+        public static final double currentLimit = 40;
         public static final double kP = 0.3;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -49,6 +53,7 @@ public class Constants {
     }
 
     public static class Turret {
+        public static final double currentLimit = 40;
         public static final double kP = 4; // 6
         public static final double kI = 0;
         public static final double kD = 0; // 0.01
@@ -70,6 +75,7 @@ public class Constants {
     }
 
     public static class Hood {
+        public static final double currentLimit = 15;
         public static final double kP = 50.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -85,6 +91,7 @@ public class Constants {
     }
 
     public static class Intake {
+        public static final double currentLimit = 40;
         public static final double kP = 0.8;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -94,6 +101,7 @@ public class Constants {
     }
 
     public static class IntakePivot {
+        public static final double currentLimit = 40;
         public static final double kP = 1.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;

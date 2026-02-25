@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -19,6 +20,10 @@ public class Intake extends SubsystemBase{
     private static Slot0Configs intakeSlot0Configs = new Slot0Configs();
 
     public Intake() {
+        CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
+        currentLimitConfig.StatorCurrentLimit = Constants.Intake.currentLimit;
+        currentLimitConfig.StatorCurrentLimitEnable = true;
+
         intakeSlot0Configs.kP = Constants.Intake.kP;
         intakeSlot0Configs.kI = Constants.Intake.kI;
         intakeSlot0Configs.kD = Constants.Intake.kD;
@@ -26,6 +31,7 @@ public class Intake extends SubsystemBase{
         intakeSlot0Configs.kV = Constants.Intake.kV;
         intakeSlot0Configs.kA = Constants.Intake.kA;
 
+        intakeMotor.getConfigurator().apply(currentLimitConfig);
         intakeMotor.getConfigurator().apply(intakeSlot0Configs);
         intakeMotor.setNeutralMode(NeutralModeValue.Coast);
     }

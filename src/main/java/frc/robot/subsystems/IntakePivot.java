@@ -23,9 +23,9 @@ public class IntakePivot extends SubsystemBase {
 
   
   public IntakePivot(RobotContainer rob) {
-    CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
-        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 15;
-        turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    currentLimitsConfigs.StatorCurrentLimit = Constants.IntakePivot.currentLimit;
+    currentLimitsConfigs.StatorCurrentLimitEnable = true;
 
     slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.IntakePivot.kP;
@@ -41,6 +41,7 @@ public class IntakePivot extends SubsystemBase {
 
     // motor.getConfigurator().apply(motorConfig);
     motor.getConfigurator().apply(slot0Configs);
+    motor.getConfigurator().apply(currentLimitsConfigs);
     motor.setNeutralMode(NeutralModeValue.Brake);
     motor.setPosition(0);
     

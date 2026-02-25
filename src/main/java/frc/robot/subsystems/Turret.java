@@ -51,8 +51,8 @@ public class Turret extends SubsystemBase {
         turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
         CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
-        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 20;
-        turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
+        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = Constants.Turret.currentLimit;
+        turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = false;
 
         slot0Configs = new Slot0Configs();
         slot0Configs.kP = Constants.Turret.kP;

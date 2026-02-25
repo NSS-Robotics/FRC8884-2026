@@ -140,7 +140,7 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT Y", y);
         return new Pose2d(x, y, null);
     }
-
+    /*
     public double[] calculateMovingShot(double shootingVelocity, double theta, Pose2d robotPose, Pose2d targetPose){
         
         ChassisSpeeds speeds = swerve.getState().Speeds;
@@ -174,6 +174,41 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT TARGET ANGLE", targetAngle * 180 / Math.PI);
         SmartDashboard.putNumber("MMT ROBOT ANGLE", robotAngle*180/Math.PI);
         SmartDashboard.putNumber("MMT PHI", phi*180/Math.PI);
+        return new double[]{newShootingVelocity, newTheta, newPhi};
+    }
+        */
+    public double[] calculateMovingShot(double shootingVelocity, double theta, Pose2d robotPose, Pose2d targetPose){
+        
+        ChassisSpeeds speeds = swerve.getState().Speeds;
+        if (speeds.vxMetersPerSecond == 0 && speeds.vyMetersPerSecond == 0){
+            return new double[]{shootingVelocity, theta, 0};
+        }
+        Translation2d robotVelocityVector = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond); // TODO: MAYBE CHECK IF BOTH VX AND VY METERS ARE ZERO
+        double robotSpeed = robotVelocityVector.getNorm();
+        Translation2d toTarget = targetPose.getTranslation().minus(robotPose.getTranslation());
+        double targetAngle =  toTarget.getAngle().getRadians();
+        double robotAngle = robotVelocityVector.getAngle().getRadians();
+        double phi = robotAngle-targetAngle;
+
+        double thetar = Math.toRadians(theta);
+
+        double x = shootingVelocity * Math.cos(thetar) - robotSpeed * Math.cos(phi);
+        double y = -robotSpeed * Math.sin(phi);
+        double z = shootingVelocity * Math.sin(thetar);
+
+        double newShootingVelocity = Math.sqrt(x * x + y * y + z * z);
+        // double newTheta = Math.toDegrees(Math.atan(z / x));
+        // double newPhi = Math.toDegrees(Math.atan(y / x));
+        double newTheta = Math.toDegrees(Math.atan2(z, x));
+        double newPhi = Math.toDegrees(Math.atan2(y, x));
+
+        SmartDashboard.putNumber("MMT X SPEED", speeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("MMT Y SPEED", speeds.vyMetersPerSecond);
+
+        SmartDashboard.putNumber("MMT ROBOT SPEED", robotSpeed);
+        SmartDashboard.putNumber("MMT PHI", phi);
+        SmartDashboard.putNumber("MMT TURRET COMPENSATION", newPhi);
+
         return new double[]{newShootingVelocity, newTheta, newPhi};
     }
 

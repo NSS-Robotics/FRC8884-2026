@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -30,6 +31,10 @@ public class Flywheels extends SubsystemBase {
         TalonFXConfiguration rightConfig = new TalonFXConfiguration();
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
+        CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
+        currentLimitConfig.StatorCurrentLimit = Constants.Flywheel.currentLimit;
+        currentLimitConfig.StatorCurrentLimitEnable = true;
+
         Slot0Configs leftPIDConfigs = new Slot0Configs();
         leftPIDConfigs.kP = Constants.Flywheel.kP;
         leftPIDConfigs.kI = Constants.Flywheel.kI;
@@ -50,6 +55,9 @@ public class Flywheels extends SubsystemBase {
 
         rightFlywheelMotor.getConfigurator().apply(rightConfig);
         leftFlywheelMotor.getConfigurator().apply(leftConfig);
+
+        rightFlywheelMotor.getConfigurator().apply(currentLimitConfig);
+        leftFlywheelMotor.getConfigurator().apply(currentLimitConfig);
 
         rightFlywheelMotor.getConfigurator().apply(rightPIDConfigs);
         leftFlywheelMotor.getConfigurator().apply(leftPIDConfigs);
