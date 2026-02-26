@@ -30,6 +30,7 @@ public class Constants {
         public static final double kS = 0.0;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
+        public static final double flywheelRadiusMeters = 0.0508;
     }
 
     public static class Feeder {
@@ -54,9 +55,10 @@ public class Constants {
 
     public static class Turret {
         public static final double currentLimit = 40;
-        public static final double kP = 4; // 6
+        // public static final double kP = 4; // 6
+        public static final double kP = 4;
         public static final double kI = 0;
-        public static final double kD = 0; // 0.01
+        public static final double kD = 0.01; // 0.01
         public static final double kS = 0.35;
         public static final double kV = 0.0;
         public static final double kA = 0.0;

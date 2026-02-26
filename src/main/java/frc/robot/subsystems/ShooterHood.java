@@ -20,12 +20,16 @@ public class ShooterHood extends SubsystemBase {
     private Slot0Configs slot0Configs;
     
     private final RobotContainer rob;
+    private final CommandSwerveDrivetrain swerve;
+
 
     private double degrees = 0;
     private double manualOffset = 0;
 
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
+        this.swerve = rob.drivetrain;
+        
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
@@ -130,7 +134,7 @@ public class ShooterHood extends SubsystemBase {
         // }else{
         //     alignHoodtoLob(mmturret.getDistanceToTarget());
         // }
-        alignHoodtoHub(rob.mmturret.getDistanceToTarget());
+        alignHoodtoHub(rob.mmturret.futureDistance(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionRed)); // TODO: MAKE THE RED THING CHANGABLE
 
     }
 }
