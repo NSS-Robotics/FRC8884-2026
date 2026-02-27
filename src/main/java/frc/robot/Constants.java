@@ -8,13 +8,13 @@ import edu.wpi.first.math.util.Units;
 public class Constants {
     // Red positions
     public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));        
-    public static final Pose2d leftCornerRed = new Pose2d(8, 16, Rotation2d.fromDegrees(180));
-    public static final Pose2d rightCornerRed = new Pose2d(0.05, 16, Rotation2d.fromDegrees(180));
+    public static final Pose2d leftCornerRed = new Pose2d(16, 8, Rotation2d.fromDegrees(180));
+    public static final Pose2d rightCornerRed = new Pose2d(16, 0.05, Rotation2d.fromDegrees(180));
 
     // Blue positions
     public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180));
-    public static final Pose2d leftCornerBlue = new Pose2d(8, 0.05, Rotation2d.fromDegrees(0)); // TODO: ???
-    public static final Pose2d rightCornerBlue = new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(0));
+    public static final Pose2d leftCornerBlue = new Pose2d(0.05, 8, Rotation2d.fromDegrees(180)); // TODO: ???
+    public static final Pose2d rightCornerBlue = new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)); 
 
     public static class Dimensions {
         public static final double robotWidth = Units.inchesToMeters(30);

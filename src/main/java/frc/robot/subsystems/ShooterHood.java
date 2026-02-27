@@ -122,21 +122,44 @@ public class ShooterHood extends SubsystemBase {
         degrees = 0;
     }
 
+       public boolean willGetDecapitated(){
+        double x = swerve.getPoseMeters().getX();
+        double y = swerve.getPoseMeters().getY();
+        double redX =  11.915394; // TODO: CONSTANTS
+        double blueX = 4.625594;
+        double offset = 0.2;
+
+        if (rob.isRed()){
+            return (x < redX + offset && x > redX - offset) &&  (y < 1.37889 || y > 6.6842892) ; // should be 0.2 meter off trench for x and 0.1 for y
+        } else {
+            return (x < blueX + offset && x > blueX - offset) &&  (y < 1.37889 || y > 6.6842892); // should be 0.5 meter off trench for x and 0.1 for y
+        }
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Hood Rotations", getRotations());
         SmartDashboard.putNumber("Hood Degrees", getDegrees());
         SmartDashboard.putNumber("Hood", hoodMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Hood Current", getCurrent());
+         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
         degrees = SmartDashboard.getNumber("Set Angles", 0);
-        // if (mmturret.isInAllianceZone()){
-        //     alignHoodtoHub(mmturret.getDistanceToTarget());
-        // }else{
-        //     alignHoodtoLob(mmturret.getDistanceToTarget());
-        // }
-        double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // TODO: MAKE THE RED THING CHANGABLE
+         double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // TODO: MAKE THE RED THING CHANGABLE
+        if (rob.mmturret.isInAllianceZone()){
+            // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
+            alignHoodtoHub(future[0]); 
+        }else{
+            //alignHoodtoLob(rob.mmturret.getDistanceToTarget());
+            alignHoodtoLob(future[0]); 
 
+        }
         alignHoodtoHub(future[0]); 
+
+        if (willGetDecapitated()){
+            degrees = 0;
+            setDegrees();
+        }
+       
     }
 }

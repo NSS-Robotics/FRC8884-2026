@@ -226,12 +226,12 @@ public class MotionMagicTurret extends SubsystemBase {
         
         double theta = 90 - (Constants.Hood.irlHoodDegrees + shooterHood.getDegrees());
         Pose2d robotPose = swerve.getPoseMeters();
-        Pose2d targetPose = Constants.targetPositionBlue; // TODO: BE ABLE TO CHANGE RED AND BLUE SIDE
+        //Pose2d targetPose = Constants.targetPositionBlue; // TODO: BE ABLE TO CHANGE RED AND BLUE SIDE
 
-        ans = calculateMovingShot(shooterVelocity, theta, robotPose, targetPose); 
+        ans = calculateMovingShot(shooterVelocity, theta, robotPose, targetPos); 
         SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);
 
-        double future[] = aLookIntoTheFuture(currentPos, yDistance, targetPose);
+        double future[] = aLookIntoTheFuture(currentPos, yDistance, targetPos);
         double futureDegrees = future[1];
 
 
@@ -251,13 +251,14 @@ public class MotionMagicTurret extends SubsystemBase {
     }
 
     public double distanceToTime(double distance){
-        return -0.18 * Math.pow(distance, 2) + 1.31 * distance - 1.05; // TODO: GET 6-8 METERS CALLI 
-    }
+        return Math.min(Math.max(0.03 * Math.pow(distance, 2) + 0.01 * distance + 0.91, 1), 1.5);// TODO: GET 6-8 METERS CALLI 
+    }   
 
     public double[] aLookIntoTheFuture(Pose2d currentPose, double distance, Pose2d targetPose){
         ChassisSpeeds speeds = swerve.getState().Speeds;
         Translation2d robotVelocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
-        double time = distanceToTime(distance);
+        //double time = distanceToTime(distance);
+        double time = 1;
 
         Pose2d newPose = new Pose2d(currentPose.getX() + robotVelocity.getX() * time, // TODO: + FOR BLUE - FOR RED >:(
                                     currentPose.getY() + robotVelocity.getY() * time,
@@ -311,21 +312,10 @@ public class MotionMagicTurret extends SubsystemBase {
 
     public boolean isInAllianceZone() {
         if (rob.isRed()) {
-            return swerve.getPoseMeters().getX() < 4;
+            return swerve.getPoseMeters().getX() > 12.5;
         }
 
-        return swerve.getPoseMeters().getX() > 12.5;
-    }
-
-   public boolean willGetDecapitated(){
-        double x = swerve.getPoseMeters().getX();
-        double y = swerve.getPoseMeters().getY();
-
-        if (rob.isRed()){
-            return (x < 12.415394 && x > 11.415394) &&  y < 1.37889 || y > 6.6842892 ; // should be 0.5 meter off trench for x and 0.1 for y
-        } else {
-            return (x < 5.125594 && x > 4.125594) &&  y < 1.37889 || y > 6.6842892 ; // should be 0.5 meter off trench for x and 0.1 for y
-        }
+        return swerve.getPoseMeters().getX() < 4;
     }
 
     @Override
@@ -333,17 +323,29 @@ public class MotionMagicTurret extends SubsystemBase {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
 
-        // if (!isInAllianceZone()) { 
-        //     pointAtTarget(rob.lobTarget);
-        // } else {      
-        //     if (SmartDashboard.getBoolean("Target Red Hub", true)) {
-        //         pointAtTarget(Constants.targetPositionRed);
-        //     } else {
-        //         pointAtTarget(Constants.targetPositionBlue);
-        //     }     
-        // }
+        if (!isInAllianceZone()) { 
+            if (rob.isRed()){
+                if (swerve.getPoseMeters().getY()  > 4){
+                    pointAtTarget(Constants.leftCornerRed);
+                } else{
+                    pointAtTarget(Constants.rightCornerRed);
+                }
+            } else{
+                if (swerve.getPoseMeters().getY()  > 4){
+                    pointAtTarget(Constants.leftCornerBlue);
+                } else{
+                    pointAtTarget(Constants.rightCornerBlue);
+                }
+            }
+        } else {      
+            if (rob.isRed()){
+                pointAtTarget(Constants.targetPositionRed);
+            } else {
+                pointAtTarget(Constants.targetPositionBlue);
+            }     
+        }
         // pointAtTarget(Constants.targetPositionBlue);
-         pointAtTarget(Constants.targetPositionBlue); // TODO: GET THIS 
+        //  pointAtTarget(Constants.targetPositionBlue); // TODO: GET THIS 
 
         // if(!canMove()){
         //     stop();
@@ -359,5 +361,6 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT manual offset", manualOffset);
         SmartDashboard.putNumber("MMT PREDICTED DISTANCE", futureDistance);
         SmartDashboard.putNumber("MMT PREDICTED ANGLE", futureAngle); 
+        SmartDashboard.putBoolean("ALLIANCEZONE", isInAllianceZone());
     }
 }
