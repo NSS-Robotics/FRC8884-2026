@@ -72,7 +72,8 @@ public class ShooterHood extends SubsystemBase {
         //TODO: get actual curve
         // double angle = 0.45 * Math.pow(distance, 3) - 5.53 * Math.pow(distance, 2) + 22.04 * distance - 19.18;
         // double angle = 0.42 * Math.pow(distance, 3) - 4.72 * Math.pow(distance, 2) + 19.18 * distance - 18.21;
-        double angle = 0.10 * Math.pow(distance, 3) - 1.53 * Math.pow(distance, 2) + 10.36 * distance - 11.02;
+        // double angle = 0.10 * Math.pow(distance, 3) - 1.53 * Math.pow(distance, 2) + 10.36 * distance - 11.02;
+        double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) + 5.33 * distance - 4.88;
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
         degrees = angle;
@@ -134,7 +135,7 @@ public class ShooterHood extends SubsystemBase {
         // }else{
         //     alignHoodtoLob(mmturret.getDistanceToTarget());
         // }
-        alignHoodtoHub(rob.mmturret.futureDistance(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionRed)); // TODO: MAKE THE RED THING CHANGABLE
+        alignHoodtoHub(rob.mmturret.futureDistance(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue)); // TODO: MAKE THE RED THING CHANGABLE
 
     }
 }

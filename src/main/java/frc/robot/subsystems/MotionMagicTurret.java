@@ -218,14 +218,14 @@ public class MotionMagicTurret extends SubsystemBase {
         
         double theta = 90 - (Constants.Hood.irlHoodDegrees + shooterHood.getDegrees());
         Pose2d robotPose = swerve.getPoseMeters();
-        Pose2d targetPose = Constants.targetPositionRed; // TODO: BE ABLE TO CHANGE RED AND BLUE SIDE
+        Pose2d targetPose = Constants.targetPositionBlue; // TODO: BE ABLE TO CHANGE RED AND BLUE SIDE
 
         ans = calculateMovingShot(shooterVelocity, theta, robotPose, targetPose); 
         SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);
 
 
         double degreesToTarget = wrapAngleDegrees(offset - aimAngle 
-                                                  - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) - ans[2]); 
+                                                  - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) + ans[2]); //TODO + FOR BLUE - FOR RED 
     
         SmartDashboard.putNumber("MM Turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("MM Turret Offset x", turretOffset.getX());
@@ -243,8 +243,8 @@ public class MotionMagicTurret extends SubsystemBase {
         Translation2d robotVelocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
         double time = distanceToTime(distance);
 
-        Pose2d newPose = new Pose2d(currentPose.getX() - robotVelocity.getX() * time,
-                                    currentPose.getY() - robotVelocity.getY() * time,
+        Pose2d newPose = new Pose2d(currentPose.getX() + robotVelocity.getX() * time, // TODO: + FOR BLUE - FOR RED >:(
+                                    currentPose.getY() + robotVelocity.getY() * time,
                                     null);
 
         double xDistance = newPose.getX() - targetPose.getX();
@@ -295,14 +295,16 @@ public class MotionMagicTurret extends SubsystemBase {
         return swerve.getPoseMeters().getX() > 12.5;
     }
 
-    // public boolean willGetDecapitated(){
-    //     double x = swerve.getPoseMeters().getX();
-    //     double y = swerve.getPoseMeters().getY();
+   public boolean willGetDecapitated(){
+        double x = swerve.getPoseMeters().getX();
+        double y = swerve.getPoseMeters().getY();
 
-    //     if (rob.isRed()){
-    //         return (x < SMTH && x > SMTHELSE) &&  y < SMTHE || y > y;
-    //     }
-    // }
+        if (rob.isRed()){
+            return (x < 12.415394 && x > 11.415394) &&  y < 1.37889 || y > 6.6842892 ; // should be 0.5 meter off trench for x and 0.1 for y
+        } else {
+            return (x < 5.125594 && x > 4.125594) &&  y < 1.37889 || y > 6.6842892 ; // should be 0.5 meter off trench for x and 0.1 for y
+        }
+    }
 
     @Override
     public void periodic() {
@@ -319,7 +321,7 @@ public class MotionMagicTurret extends SubsystemBase {
         //     }     
         // }
         // pointAtTarget(Constants.targetPositionBlue);
-         pointAtTarget(Constants.targetPositionRed); // TODO: GET THIS 
+         pointAtTarget(Constants.targetPositionBlue); // TODO: GET THIS 
 
         // if(!canMove()){
         //     stop();
@@ -330,6 +332,6 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MM Turret Error Degrees", targetDegrees-getDegrees());
         SmartDashboard.putNumber("Distance to Target", getDistanceToTarget());
         SmartDashboard.putNumber("MMT manual offset", manualOffset);
-        SmartDashboard.putNumber("MMT PREDICTED DISTANCE", futureDistance(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionRed));
+        SmartDashboard.putNumber("MMT PREDICTED DISTANCE", futureDistance(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionBlue)); // TODO RED BLUE RED BLUE
     }
 }
