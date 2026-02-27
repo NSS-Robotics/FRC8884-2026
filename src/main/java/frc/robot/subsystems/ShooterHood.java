@@ -135,7 +135,8 @@ public class ShooterHood extends SubsystemBase {
         // }else{
         //     alignHoodtoLob(mmturret.getDistanceToTarget());
         // }
-        alignHoodtoHub(rob.mmturret.futureDistance(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue)); // TODO: MAKE THE RED THING CHANGABLE
+        double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // TODO: MAKE THE RED THING CHANGABLE
 
+        alignHoodtoHub(future[0]); 
     }
 }

@@ -179,18 +179,7 @@ public class MotionMagicTurret extends SubsystemBase {
         return new double[]{newShootingVelocity, newTheta, newPhi};
     }
 
-    public void pointAtTarget(Pose2d targetPos) { 
-        Pose2d currentPos = swerve.getPoseMeters();
-        
-        double robotRadians = currentPos.getRotation().getRadians(); 
-        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
-
-        turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
-
-        double xDistance = currentPos.getX() + turretOffset.getX() - targetPos.getX();
-        double yDistance = currentPos.getY() + turretOffset.getY() - targetPos.getY();  
-
-        setDistanceToTarget(Math.hypot(xDistance, yDistance));
+    public double degreesToSet(double xDistance, double yDistance){
         double aimAngle = Math.toDegrees(Math.atan(xDistance/yDistance));
 
         double offset = 90;
@@ -211,6 +200,25 @@ public class MotionMagicTurret extends SubsystemBase {
             offset = -90;
         }
 
+        return offset-aimAngle;
+
+    }
+
+    public void pointAtTarget(Pose2d targetPos) { 
+        Pose2d currentPos = swerve.getPoseMeters();
+        
+        double robotRadians = currentPos.getRotation().getRadians(); 
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+
+        turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
+
+        double xDistance = currentPos.getX() + turretOffset.getX() - targetPos.getX();
+        double yDistance = currentPos.getY() + turretOffset.getY() - targetPos.getY();  
+
+        setDistanceToTarget(Math.hypot(xDistance, yDistance));
+
+        double aimDegrees = degreesToSet(xDistance, yDistance);
+        
         double shooterVelocity = rpmToVelocity(flywheels.rpmToHub(distanceToTarget), Constants.Flywheel.flywheelRadiusMeters);
         SmartDashboard.putNumber("MMT SHOOTER VELOCITY", shooterVelocity);
         // double shooterVelocity = 15;
@@ -223,14 +231,22 @@ public class MotionMagicTurret extends SubsystemBase {
         ans = calculateMovingShot(shooterVelocity, theta, robotPose, targetPose); 
         SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);
 
+        double future[] = aLookIntoTheFuture(currentPos, yDistance, targetPose);
+        double futureDegrees = future[1];
 
-        double degreesToTarget = wrapAngleDegrees(offset - aimAngle 
-                                                  - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) + ans[2]); //TODO + FOR BLUE - FOR RED 
+
+        // double degreesToTarget = wrapAngleDegrees(aimDegrees
+        //                                           - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
+        //                                           + ans[2]); //TODO + FOR BLUE - FOR RED 
+
+        double degreesToTarget = wrapAngleDegrees(futureDegrees
+                                                  - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
+                                                  ); 
     
         SmartDashboard.putNumber("MM Turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("MM Turret Offset x", turretOffset.getX());
         SmartDashboard.putNumber("MM Turret Offset y", turretOffset.getY());
-        
+
         setDegrees(degreesToTarget+manualOffset);
     }
 
@@ -238,7 +254,7 @@ public class MotionMagicTurret extends SubsystemBase {
         return -0.18 * Math.pow(distance, 2) + 1.31 * distance - 1.05; // TODO: GET 6-8 METERS CALLI 
     }
 
-    public double futureDistance(Pose2d currentPose, double distance, Pose2d targetPose){
+    public double[] aLookIntoTheFuture(Pose2d currentPose, double distance, Pose2d targetPose){
         ChassisSpeeds speeds = swerve.getState().Speeds;
         Translation2d robotVelocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
         double time = distanceToTime(distance);
@@ -247,13 +263,19 @@ public class MotionMagicTurret extends SubsystemBase {
                                     currentPose.getY() + robotVelocity.getY() * time,
                                     null);
 
-        double xDistance = newPose.getX() - targetPose.getX();
-        double yDistance = newPose.getY() - targetPose.getY();
+        double robotRadians = currentPose.getRotation().getRadians(); 
+
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+
+        double xDistance = newPose.getX() + turretOffset.getX() - targetPose.getX();
+        double yDistance = newPose.getY() + turretOffset.getY() - targetPose.getY(); // pretty sure we need to add turret offset, can remove if bad
+
+        double newAimAngle = degreesToSet(xDistance, yDistance);
 
         double newDistance = Math.hypot(xDistance, yDistance);
         SmartDashboard.putNumber("MMT DISTANCE COMPENSATION", newDistance);
 
-        return newDistance;
+        return new double[]{newDistance, newAimAngle};
     }
 
 
@@ -327,11 +349,15 @@ public class MotionMagicTurret extends SubsystemBase {
         //     stop();
         // }
 
+        double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionBlue); //TODO: RED BLUE RED BLUE 
+        double futureDistance = future[0];
+        double futureAngle = future[1];
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());
         SmartDashboard.putNumber("MM Turret Error Degrees", targetDegrees-getDegrees());
         SmartDashboard.putNumber("Distance to Target", getDistanceToTarget());
         SmartDashboard.putNumber("MMT manual offset", manualOffset);
-        SmartDashboard.putNumber("MMT PREDICTED DISTANCE", futureDistance(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionBlue)); // TODO RED BLUE RED BLUE
+        SmartDashboard.putNumber("MMT PREDICTED DISTANCE", futureDistance);
+        SmartDashboard.putNumber("MMT PREDICTED ANGLE", futureAngle); 
     }
 }

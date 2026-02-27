@@ -31,8 +31,11 @@ public class FlywheelShoot extends Command {
 
     @Override
     public void execute() {
+
+        double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // TODO: MAKE THE RED THING CHANGABLE
+
         // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
-        flywheels.setVelocity(flywheels.rpmToHub(mmturret.futureDistance(swerve.getPoseMeters(), mmturret.getDistanceToTarget(), Constants.targetPositionBlue))); //TODO: MAKE IT DEPEND ON RED OR BLUE
+        flywheels.setVelocity(flywheels.rpmToHub(future[0])); //TODO: MAKE IT DEPEND ON RED OR BLUE
         // flywheels.setVelocity(mmturret.velocityToRpm(mmturret.ans[0], Constants.Flywheel.flywheelRadiusMeters));
         shooterHood.setDegrees();
     }
