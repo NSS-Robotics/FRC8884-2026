@@ -8,12 +8,17 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
+
 public class ShooterHood extends SubsystemBase {
+
     private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID);
     
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
@@ -29,6 +34,7 @@ public class ShooterHood extends SubsystemBase {
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
         this.swerve = rob.drivetrain;
+
         
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
@@ -68,11 +74,6 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoHub(double distance){
-        // 0.45x^3 - 5.53x^2 + 22.04x - 19.18; subject to change, this one is just a test also passed certain meters it goes down
-        //TODO: get actual curve
-        // double angle = 0.45 * Math.pow(distance, 3) - 5.53 * Math.pow(distance, 2) + 22.04 * distance - 19.18;
-        // double angle = 0.42 * Math.pow(distance, 3) - 4.72 * Math.pow(distance, 2) + 19.18 * distance - 18.21;
-        // double angle = 0.10 * Math.pow(distance, 3) - 1.53 * Math.pow(distance, 2) + 10.36 * distance - 11.02;
         double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) + 5.33 * distance - 4.88;
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
@@ -123,14 +124,22 @@ public class ShooterHood extends SubsystemBase {
     }
 
        public boolean willGetDecapitated(){
-        double x = swerve.getPoseMeters().getX();
-        double y = swerve.getPoseMeters().getY();
-        double redX =  11.915394; // TODO: CONSTANTS
-        double blueX = 4.625594;
-        double offset = 0.2;
+        Pose2d currentPos = swerve.getPoseMeters();
+        
+        double robotRadians = currentPos.getRotation().getRadians(); 
+        Translation2d turretOffset = new Translation2d(Constants.Turret.offsetFromCenter.getX(), -Constants.Turret.offsetFromCenter.getY()).rotateBy(new Rotation2d(robotRadians));
+
+
+        Pose2d turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
+
+        double x = turretLocation.getX();
+        double y = turretLocation.getY();
+        double redX =  Constants.Hood.trenchRedX; 
+        double blueX = Constants.Hood.trenchBlueX;
+        double offset = Constants.Hood.trenchOffset;
 
         if (rob.isRed()){
-            return (x < redX + offset && x > redX - offset) &&  (y < 1.37889 || y > 6.6842892) ; // should be 0.2 meter off trench for x and 0.1 for y
+            return (x < redX + offset && x > redX - offset) &&  (y < 1.37889 || y > 6.6842892) ; // should be 0.2 meter off trench for x and 0.1 for y // TODO: CONSTANTS
         } else {
             return (x < blueX + offset && x > blueX - offset) &&  (y < 1.37889 || y > 6.6842892); // should be 0.5 meter off trench for x and 0.1 for y
         }
@@ -145,7 +154,8 @@ public class ShooterHood extends SubsystemBase {
          SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
         degrees = SmartDashboard.getNumber("Set Angles", 0);
-         double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // TODO: MAKE THE RED THING CHANGABLE
+        double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // TODO: MAKE THE RED THING CHANGABLE
+        // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
         if (rob.mmturret.isInAllianceZone()){
             // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
             alignHoodtoHub(future[0]); 

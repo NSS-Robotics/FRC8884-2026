@@ -104,9 +104,10 @@ public class RobotContainer {
         /* longer commands */
         driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
         driverController.rightBumper().whileTrue(new RunSpindexer(this));
-        driverController.b().whileTrue(new Unjam(this));
+        driverController.b().whileTrue(new Unjam(this));      
         driverController.leftTrigger().whileTrue(new RunIntake(this));
         driverController.leftBumper().whileTrue(new IntakeUnjam(this));
+        driverController.povUp().onTrue(new Snap(this,5)); // TODO: when limelight works
         
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));

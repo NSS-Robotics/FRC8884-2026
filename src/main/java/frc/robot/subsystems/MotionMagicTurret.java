@@ -38,6 +38,9 @@ public class MotionMagicTurret extends SubsystemBase {
     public double targetDegrees;
     private double distanceToTarget;
     public static double[] ans;
+    public double previousVelocityX = 0;
+    public double previousVelocityY = 0;
+    public double previousTime = 1;
 
     private final Translation2d offsetFromRobotCenter;
 
@@ -217,7 +220,7 @@ public class MotionMagicTurret extends SubsystemBase {
 
         setDistanceToTarget(Math.hypot(xDistance, yDistance));
 
-        double aimDegrees = degreesToSet(xDistance, yDistance);
+        /*double aimDegrees = degreesToSet(xDistance, yDistance);
         
         double shooterVelocity = rpmToVelocity(flywheels.rpmToHub(distanceToTarget), Constants.Flywheel.flywheelRadiusMeters);
         SmartDashboard.putNumber("MMT SHOOTER VELOCITY", shooterVelocity);
@@ -229,7 +232,7 @@ public class MotionMagicTurret extends SubsystemBase {
         //Pose2d targetPose = Constants.targetPositionBlue; // TODO: BE ABLE TO CHANGE RED AND BLUE SIDE
 
         ans = calculateMovingShot(shooterVelocity, theta, robotPose, targetPos); 
-        SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);
+        SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);*/
 
         double future[] = aLookIntoTheFuture(currentPos, yDistance, targetPos);
         double futureDegrees = future[1];
@@ -237,7 +240,7 @@ public class MotionMagicTurret extends SubsystemBase {
 
         // double degreesToTarget = wrapAngleDegrees(aimDegrees
         //                                           - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
-        //                                           + ans[2]); //TODO + FOR BLUE - FOR RED 
+        //                                           + ans[2]); //TODO + FOR BLUE - FOR RED *idk if this is still an issue, probably not
 
         double degreesToTarget = wrapAngleDegrees(futureDegrees
                                                   - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
@@ -251,18 +254,53 @@ public class MotionMagicTurret extends SubsystemBase {
     }
 
     public double distanceToTime(double distance){
-        return Math.min(Math.max(0.03 * Math.pow(distance, 2) + 0.01 * distance + 0.91, 1), 1.5);// TODO: GET 6-8 METERS CALLI 
+        return Math.min(Math.max(0.03 * Math.pow(distance, 2) + 0.01 * distance + 0.91, 1), 1.5);
     }   
+
+    public double getAcceleration(double v1, double v2, double t1, double t2){
+        if (t1 == t2){
+            return 0;
+        }
+        return (v1-v2)/(t1-t2);
+    }
 
     public double[] aLookIntoTheFuture(Pose2d currentPose, double distance, Pose2d targetPose){
         ChassisSpeeds speeds = swerve.getState().Speeds;
         Translation2d robotVelocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
-        //double time = distanceToTime(distance);
-        double time = 1;
+        double time = distanceToTime(distance);
+
+        double accelerationX;
+        double accelerationY;
+
+        accelerationX = getAcceleration(robotVelocity.getX(), previousVelocityX, time, previousTime);
+        previousVelocityX = robotVelocity.getX();
+        accelerationY = getAcceleration(robotVelocity.getY(), previousVelocityY, time, previousTime);
+        previousVelocityY = robotVelocity.getY();
+        previousTime = time;
+
+        double dvX = robotVelocity.getX() * time;
+        double dvY = robotVelocity.getY() * time;
+        double daX = accelerationX * time * time / 2;
+        double daY = accelerationY * time * time / 2; 
+
+        if (rob.isRed()){
+            dvX *= -1.0;
+            dvY *= -1.0;
+            daX *= -1.0;
+            daY *= -1.0;
+        }
 
         Pose2d newPose = new Pose2d(currentPose.getX() + robotVelocity.getX() * time, // TODO: + FOR BLUE - FOR RED >:(
                                     currentPose.getY() + robotVelocity.getY() * time,
                                     null);
+
+        // Pose2d newPose = new Pose2d(currentPose.getX() + dvX, 
+        //                             currentPose.getY() + dvY,
+        //                             null);
+
+        // Pose2d newPose = new Pose2d(currentPose.getX() + dvX + daX,
+        //                             currentPose.getY() + dvY + daY,
+        //                             null);
 
         double robotRadians = currentPose.getRotation().getRadians(); 
 
@@ -275,6 +313,7 @@ public class MotionMagicTurret extends SubsystemBase {
 
         double newDistance = Math.hypot(xDistance, yDistance);
         SmartDashboard.putNumber("MMT DISTANCE COMPENSATION", newDistance);
+        SmartDashboard.putNumber("TIME CALLI", time);
 
         return new double[]{newDistance, newAimAngle};
     }
@@ -345,13 +384,15 @@ public class MotionMagicTurret extends SubsystemBase {
             }     
         }
         // pointAtTarget(Constants.targetPositionBlue);
-        //  pointAtTarget(Constants.targetPositionBlue); // TODO: GET THIS 
+        //  pointAtTarget(Constants.targetPositionBlue); 
 
         // if(!canMove()){
         //     stop();
         // }
 
+        // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
         double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionBlue); //TODO: RED BLUE RED BLUE 
+ 
         double futureDistance = future[0];
         double futureAngle = future[1];
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());

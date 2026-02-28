@@ -12,7 +12,8 @@ public class Constants {
     public static final Pose2d rightCornerRed = new Pose2d(16, 0.05, Rotation2d.fromDegrees(180));
 
     // Blue positions
-    public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180));
+    //public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
+    public static final Pose2d targetPositionBlue = new Pose2d(4.625, 3.90, Rotation2d.fromDegrees(180));
     public static final Pose2d leftCornerBlue = new Pose2d(0.05, 8, Rotation2d.fromDegrees(180)); // TODO: ???
     public static final Pose2d rightCornerBlue = new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)); 
 
@@ -34,7 +35,7 @@ public class Constants {
     }
 
     public static class Feeder {
-        public static final double currentLimit = 40;
+        public static final double currentLimit = 60;
         public static final double kP = 25;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -44,8 +45,8 @@ public class Constants {
     }
 
     public static class Spindexer {
-        public static final double currentLimit = 40;
-        public static final double kP = 0.3;
+        public static final double currentLimit = 60;
+        public static final double kP = 5.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kS = 0.0;
@@ -90,6 +91,11 @@ public class Constants {
         public static final double maxHubHoodAlign = 20;
         // public static final double minHubHoodAlign = 1;
         public static final double irlHoodDegrees = 12.5;
+
+        public static final double trenchRedX = 11.915394; // decapitation
+        public static final double trenchBlueX = 4.625594;
+        public static final double trenchOffset = 0.35;
+
     }
 
     public static class Intake {
