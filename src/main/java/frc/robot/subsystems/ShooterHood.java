@@ -154,8 +154,8 @@ public class ShooterHood extends SubsystemBase {
          SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
         degrees = SmartDashboard.getNumber("Set Angles", 0);
-        double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // TODO: MAKE THE RED THING CHANGABLE
-        // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+        // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // 
+        double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
         if (rob.mmturret.isInAllianceZone()){
             // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
             alignHoodtoHub(future[0]); 

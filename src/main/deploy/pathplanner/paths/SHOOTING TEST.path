@@ -1,0 +1,89 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 12.96717715231788,
+        "y": 3.911581125827814
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 13.47537251655629,
+        "y": 4.049519867549668
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.041647350993376,
+        "y": 4.042259933774834
+      },
+      "prevControl": {
+        "x": 14.104627535907149,
+        "y": 3.6993678159109566
+      },
+      "nextControl": {
+        "x": 13.845629139072846,
+        "y": 5.1094701986754965
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 13.627831125827813,
+        "y": 6.6921357615894035
+      },
+      "prevControl": {
+        "x": 13.714950331125827,
+        "y": 5.552326158940397
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeDown",
+      "waypointRelativePos": 0.9656675749318795,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.0158038147138964,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Flywheels",
+      "waypointRelativePos": 1.1356948228882833,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -94.52882423693242
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -0.8814039965820633
+  },
+  "useDefaultConstraints": true
+}

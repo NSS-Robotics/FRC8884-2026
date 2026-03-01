@@ -48,6 +48,8 @@ public class MotionMagicTurret extends SubsystemBase {
 
     public Pose2d turretLocation = new Pose2d();
 
+    public boolean autoShoot = false;
+
     public MotionMagicTurret(RobotContainer rob, Translation2d translation) {
         this.intakePivot = rob.intakePivot;
         this.swerve = rob.drivetrain;
@@ -290,17 +292,9 @@ public class MotionMagicTurret extends SubsystemBase {
             daY *= -1.0;
         }
 
-        Pose2d newPose = new Pose2d(currentPose.getX() + robotVelocity.getX() * time, // TODO: + FOR BLUE - FOR RED >:(
-                                    currentPose.getY() + robotVelocity.getY() * time,
+        Pose2d newPose = new Pose2d(currentPose.getX() + dvX + daX, 
+                                    currentPose.getY() + dvY + daY,
                                     null);
-
-        // Pose2d newPose = new Pose2d(currentPose.getX() + dvX, 
-        //                             currentPose.getY() + dvY,
-        //                             null);
-
-        // Pose2d newPose = new Pose2d(currentPose.getX() + dvX + daX,
-        //                             currentPose.getY() + dvY + daY,
-        //                             null);
 
         double robotRadians = currentPose.getRotation().getRadians(); 
 
@@ -390,11 +384,20 @@ public class MotionMagicTurret extends SubsystemBase {
         //     stop();
         // }
 
-        // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
-        double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionBlue); //TODO: RED BLUE RED BLUE 
+        double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+        // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionBlue);
  
         double futureDistance = future[0];
         double futureAngle = future[1];
+
+        if (autoShoot){
+            // double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), mmturret.getDistanceToTarget(), Constants.targetPositionBlue); 
+            // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
+            flywheels.setVelocity(flywheels.rpmToHub(future[0]));   
+            // flywheels.setVelocity(mmturret.velocityToRpm(mmturret.ans[0], Constants.Flywheel.flywheelRadiusMeters));
+            shooterHood.setDegrees();
+        }
+
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());
         SmartDashboard.putNumber("MM Turret Error Degrees", targetDegrees-getDegrees());

@@ -8,20 +8,19 @@ import edu.wpi.first.math.util.Units;
 public class Constants {
     // Red positions
     public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));        
-    public static final Pose2d leftCornerRed = new Pose2d(16, 8, Rotation2d.fromDegrees(180));
-    public static final Pose2d rightCornerRed = new Pose2d(16, 0.05, Rotation2d.fromDegrees(180));
+    public static final Pose2d leftCornerRed = new Pose2d(16, 8 - 0.5, Rotation2d.fromDegrees(180));
+    public static final Pose2d rightCornerRed = new Pose2d(16, 0.05 + 0.5, Rotation2d.fromDegrees(180));
 
     // Blue positions
     //public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
     public static final Pose2d targetPositionBlue = new Pose2d(4.625, 3.90, Rotation2d.fromDegrees(180));
-    public static final Pose2d leftCornerBlue = new Pose2d(0.05, 8, Rotation2d.fromDegrees(180)); // TODO: ???
-    public static final Pose2d rightCornerBlue = new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)); 
+    public static final Pose2d leftCornerBlue = new Pose2d(0.05, 8 - 0.5, Rotation2d.fromDegrees(180)); 
+    public static final Pose2d rightCornerBlue = new Pose2d(0.05, 0.05 + 0.5, Rotation2d.fromDegrees(180)); 
 
     public static class Dimensions {
         public static final double robotWidth = Units.inchesToMeters(30);
         public static final double robotLength = Units.inchesToMeters(25);
     }
-
 
     public static class Flywheel {
         public static final double currentLimit = 40;
@@ -88,7 +87,7 @@ public class Constants {
         public static final double gearRatio = 64.0/14.0 * 172.0/10.0;
         public static final double maxHoodAngle = 25;
         public static final double currentWhenStalling = 14.7;
-        public static final double maxHubHoodAlign = 20;
+        public static final double maxHubHoodAlign = 17;
         // public static final double minHubHoodAlign = 1;
         public static final double irlHoodDegrees = 12.5;
 

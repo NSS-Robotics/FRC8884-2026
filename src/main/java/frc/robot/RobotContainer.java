@@ -13,7 +13,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-    
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -45,7 +48,7 @@ public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(1).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    // private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -76,12 +79,12 @@ public class RobotContainer {
     public final Field2d fieldMap = new Field2d();
 
     public RobotContainer() {
-        // addCommandsToPathplanner();
-        // autoChooser = AutoBuilder.buildAutoChooser();
+        addCommandsToPathplanner();
         CameraServer.startAutomaticCapture();
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
         configureBindings();
         configureFuelSim();
-        configurePathPlanner();
 
         SmartDashboard.putData(fieldMap);
     }
@@ -98,7 +101,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         /* instant commands */
-        driverController.povDown().onTrue(new InstantCommand(shooterHood::zeroHood)); // zero hood
+        // driverController.povDown().onTrue(new InstantCommand(shooterHood::zeroHood)); // zero hood
         driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
 
         /* longer commands */
@@ -107,7 +110,10 @@ public class RobotContainer {
         driverController.b().whileTrue(new Unjam(this));      
         driverController.leftTrigger().whileTrue(new RunIntake(this));
         driverController.leftBumper().whileTrue(new IntakeUnjam(this));
-        driverController.povUp().onTrue(new Snap(this,5)); // TODO: when limelight works
+        driverController.povUp().onTrue(new Snap(this,7, 0)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
+        driverController.povLeft().onTrue(new Snap(this,7, -90));
+        driverController.povDown().onTrue(new Snap(this,7, -179));
+        driverController.povRight().onTrue(new Snap(this,7, 90));
         
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
@@ -174,35 +180,55 @@ public class RobotContainer {
         fuelSim.enableAirResistance();
     }
 
-    private void configurePathPlanner() {
-        
-    }
-
     public boolean isRed() {
         Optional<Alliance> alliance = DriverStation.getAlliance();
         return alliance.isPresent() && alliance.get() == Alliance.Red;
     }
+    
 
     private void addCommandsToPathplanner() {
-        NamedCommands.registerCommand("Shoot", 
-            new SequentialCommandGroup(
-                new InstantCommand(() -> new FlywheelShoot(this)), //TODO: RUN FLYWHEEL ALL THE TIME SO WE DONT NEED TO HAVE TO SHOOT IT HERE
-                new InstantCommand(() -> new RunSpindexer(this))
-            )
+        // NamedCommands.registerCommand("Shoot", 
+        //     new SequentialCommandGroup(
+        //         new InstantCommand(() -> new AutoFlywheelShoot(this)), //TODO: RUN FLYWHEEL ALL THE TIME SO WE DONT NEED TO HAVE TO SHOOT IT HERE
+        //         new InstantCommand(() -> new AutoRunSpindexer(this))
+        //     )
+        // );  
+
+        // TOOD: STOP RUNNING WHEN TELEOP STARTS 
+
+        NamedCommands.registerCommand("Flywheels", 
+            new InstantCommand(() -> {
+                // double future[] = mmturret.aLookIntoTheFuture(drivetrain.getPoseMeters(), mmturret.getDistanceToTarget(), isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+                // flywheels.setVelocity(flywheels.rpmToHub(future[0]));   
+                // shooterHood.setDegrees();
+                mmturret.autoShoot = true;
+            })
         );
+        NamedCommands.registerCommand("Spindexer", 
+            new InstantCommand(() ->{
+                spindexer.setSpeed(-2500);
+                feeder.setSpeed(-1200);
+            })
+        );
+
+        // NamedCommands.registerCommand("Stop Spindexer",
+        //     new InstantCommand(() -> new AutoStopSpindexer(this))
+        // );
+        
         NamedCommands.registerCommand("IntakeDown",    
             new InstantCommand(() -> intakePivot.setPosition(15.5))
         );
 
+        // NamedCommands.registerCommand("Intake",
+        //     new InstantCommand(() -> new AutoRunIntake(this))
+        // );  
         NamedCommands.registerCommand("Intake",
-            new InstantCommand(() -> new RunIntake(this))
+            new InstantCommand(() -> intake.setVelocity(4200)) // TODO: MAKE CONSTANT?
         );  
         
     }
-    
-    
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }

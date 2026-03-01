@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Red Right Neutral 1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "IntakeDown"
@@ -19,19 +25,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Right Neutral 1"
+            "pathName": "Red Right Neutral 1.1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Right Neutral 2"
+            "pathName": "Red Right Neutral 1.2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Red Right Neutral 1.3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Red Right Neutral 1.4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Flywheels"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Red Right Neutral 1.5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Spindexer"
           }
         }
       ]

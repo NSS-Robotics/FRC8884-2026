@@ -10,6 +10,10 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -52,6 +56,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+    private final SwerveRequest.ApplyRobotSpeeds autoRequest = new SwerveRequest.ApplyRobotSpeeds();
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -134,6 +139,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         displayOnElastic();
+        configurePathPlanner();
     }
 
     /**
@@ -159,6 +165,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         displayOnElastic();
+        configurePathPlanner();
     }
 
     /**
@@ -192,6 +199,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         displayOnElastic();
+        configurePathPlanner();
     }
 
     /**
@@ -344,5 +352,39 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 builder.addDoubleProperty("Robot Angle", () -> getRotation3d().getAngle(), null);
             }
         });
+    }
+
+    private void configurePathPlanner() {
+        RobotConfig config;
+
+        try {
+            config = RobotConfig.fromGUISettings();
+
+            AutoBuilder.configure(
+                () -> this.getState().Pose, // Supplier of current robot pose
+                this::resetPose,  // Consumer for seeding pose against auto
+                () -> this.getKinematics().toChassisSpeeds(this.getState().ModuleStates),
+                (speeds, feedforward) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
+                new PPHolonomicDriveController(
+                    new PIDConstants(5, 0, 0),
+                    new PIDConstants(5, 0, 0)
+                ),
+                config,
+                () -> {
+                        // Boolean supplier that controls when the path will be mirrored for the red alliance
+                        // This will flip the path being followed to the red side of the field during auto only.
+                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                        var alliance = DriverStation.getAlliance();
+                        if (alliance.isPresent()) {
+                            return alliance.get() == DriverStation.Alliance.Blue;
+                        }
+                        return false;
+                },
+                this
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

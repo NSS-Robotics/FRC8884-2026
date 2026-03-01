@@ -21,10 +21,12 @@ public class Snap extends Command {
     private double radianVelocity;
     
     private final double angleDeadZone;
+    private final double direction;
 
-    public Snap(RobotContainer rob, double angleDeadband) {
+    public Snap(RobotContainer rob, double angleDeadband, double direction) {
         this.swerve = rob.drivetrain;
         this.angleDeadZone = angleDeadband;
+        this.direction = direction;
     }
     
     @Override
@@ -32,26 +34,19 @@ public class Snap extends Command {
         currentRotations = swerve.getPoseMeters().getRotation();
     }
     
-    public Rotation2d closestDegree(double rotations) {
-        if(rotations > 315 || rotations < 45){
-            return Rotation2d.fromDegrees(0);
-        } else if(rotations > 45 || rotations < 135){
-            return Rotation2d.fromDegrees(90);
-        } else if(rotations > 135 || rotations < 225){
-            return  Rotation2d.fromDegrees(180);
-        } 
-         return Rotation2d.fromDegrees(270);
+    public Rotation2d closestDegree() {
+         return Rotation2d.fromDegrees(direction);
     }
 
     @Override
     public void execute() {
         currentRotations = swerve.getPoseMeters().getRotation();
-        targetRotations = closestDegree(currentRotations.getDegrees());
+        targetRotations = closestDegree();
         // Get rotation rate
         if ((targetRotations.getDegrees() + angleDeadZone) > currentRotations.getDegrees()) {
-            radianVelocity = 0.2;
+            radianVelocity = 0.3;
         } else if (((targetRotations.getDegrees()) - angleDeadZone) < currentRotations.getDegrees()) {
-            radianVelocity = -0.2;
+            radianVelocity = -0.3;
         }
 
         swerve.setControl(
@@ -65,7 +60,8 @@ public class Snap extends Command {
 
     @Override
     public boolean isFinished() {
-        return swerve.getPoseMeters().getRotation().getDegrees() - targetRotations.getDegrees() < angleDeadZone;
+        return (Math.abs(swerve.getPoseMeters().getRotation().getDegrees() - targetRotations.getDegrees()) < angleDeadZone) || 
+               (Math.abs(swerve.getPoseMeters().getRotation().getDegrees() - targetRotations.getDegrees()) > (360 - angleDeadZone)) ;
     }
 
     // @Override
