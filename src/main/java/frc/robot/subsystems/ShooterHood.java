@@ -74,8 +74,14 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoHub(double distance){
-        double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) + 5.33 * distance - 4.88;
-        angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
+        // double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) + 5.33 * distance - 4.88;
+        double angle;
+        if (distance < 4.49) {
+            angle = 1.21 * Math.pow(distance, 3) - 9.9 * Math.pow(distance, 2) + 28.61 * distance - 22.42;
+        } else{
+            angle = -1.1 * Math.pow(distance, 2) + 13.5 * distance - 24.47;
+        }
+        angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
         degrees = angle;
         setDegrees();
@@ -88,7 +94,7 @@ public class ShooterHood extends SubsystemBase {
         setDegrees();
     }
 
-    private void changeDegrees(double deg) {
+    public void changeDegrees(double deg) {
         double rotations = (getDegrees() + deg) * Constants.Hood.gearRatio / 360;
         setRotations(rotations);
     }
@@ -164,10 +170,10 @@ public class ShooterHood extends SubsystemBase {
             alignHoodtoLob(future[0]); 
 
         }
-        alignHoodtoHub(future[0]); 
+        // alignHoodtoHub(future[0]); 
 
         if (willGetDecapitated()){
-            degrees = 0;
+            degrees = 0.5;
             setDegrees();
         }
        

@@ -3,48 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 10.506,
-        "y": 0.674
+        "x": 13.468,
+        "y": 4.942
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.506,
-        "y": 0.6740000000000004
+        "x": 13.634978476821193,
+        "y": 6.205228476821192
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 11.979826158940398,
-        "y": 0.674
+        "x": 12.952657284768211,
+        "y": 7.323749999999999
       },
       "prevControl": {
-        "x": 11.27927235099338,
-        "y": 0.6266357615894039
+        "x": 14.032572860990808,
+        "y": 7.002951784125997
       },
       "nextControl": {
-        "x": 12.488420444242806,
-        "y": 0.7083859111321137
+        "x": 11.872741708545615,
+        "y": 7.644548215874
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 13.729470198675497,
-        "y": 2.503153973509933
+        "x": 8.735,
+        "y": 4.884
       },
       "prevControl": {
-        "x": 13.81658940397351,
-        "y": 0.36147350993377625
+        "x": 8.182880794701987,
+        "y": 7.585107615894039
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.3,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.55,
+      "rotationDegrees": 59.630914052548356
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -57,11 +70,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 59.631
   },
   "reversed": false,
-  "folder": "Red Right Neutral",
+  "folder": "Right Neutral",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

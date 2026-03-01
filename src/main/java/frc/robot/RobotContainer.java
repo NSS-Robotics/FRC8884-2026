@@ -29,6 +29,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -102,6 +103,8 @@ public class RobotContainer {
 
         /* instant commands */
         // driverController.povDown().onTrue(new InstantCommand(shooterHood::zeroHood)); // zero hood
+        // driverController.povUp().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(1)));
+        // driverController.povDown().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(-1)));
         driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
 
         /* longer commands */
@@ -110,11 +113,11 @@ public class RobotContainer {
         driverController.b().whileTrue(new Unjam(this));      
         driverController.leftTrigger().whileTrue(new RunIntake(this));
         driverController.leftBumper().whileTrue(new IntakeUnjam(this));
-        driverController.povUp().onTrue(new Snap(this,7, 0)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
-        driverController.povLeft().onTrue(new Snap(this,7, -90));
-        driverController.povDown().onTrue(new Snap(this,7, -179));
-        driverController.povRight().onTrue(new Snap(this,7, 90));
-        
+        // driverController.povUp().onTrue(new Snap(this,5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
+        // driverController.povLeft().onTrue(new Snap(this,5, 90));
+        // driverController.povDown().onTrue(new Snap(this,5, 0)); // TODO: UNCOMMENT 
+        // driverController.povRight().onTrue(new Snap(this,5, -90));
+
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
@@ -223,8 +226,20 @@ public class RobotContainer {
         //     new InstantCommand(() -> new AutoRunIntake(this))
         // );  
         NamedCommands.registerCommand("Intake",
-            new InstantCommand(() -> intake.setVelocity(4200)) // TODO: MAKE CONSTANT?
+            new InstantCommand(() -> intake.setVelocity(4000)) // TODO: MAKE CONSTANT?
         );  
+
+        NamedCommands.registerCommand("Unjam Intake", 
+            new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                    intake.setVelocity(2500);
+                    intakePivot.setPosition(8);
+                    }
+                ),    
+                new WaitCommand(0.35),
+                new InstantCommand(() -> intakePivot.setPosition(15.5))
+            )
+        );
         
     }
 

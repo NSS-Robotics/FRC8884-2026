@@ -247,7 +247,7 @@ public class MotionMagicTurret extends SubsystemBase {
         double degreesToTarget = wrapAngleDegrees(futureDegrees
                                                   - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
                                                   ); 
-    
+        
         SmartDashboard.putNumber("MM Turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("MM Turret Offset x", turretOffset.getX());
         SmartDashboard.putNumber("MM Turret Offset y", turretOffset.getY());
@@ -269,7 +269,16 @@ public class MotionMagicTurret extends SubsystemBase {
     public double[] aLookIntoTheFuture(Pose2d currentPose, double distance, Pose2d targetPose){
         ChassisSpeeds speeds = swerve.getState().Speeds;
         Translation2d robotVelocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        double robotRadians = currentPose.getRotation().getRadians(); 
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+        Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
         double time = distanceToTime(distance);
+
+        double turretVelocityX = speeds.vxMetersPerSecond;
+        double turretVelocityY = speeds.vyMetersPerSecond;
+
+        double lookaheadDistance = distance;
+        Pose2d lookaheadTurretPose = turretPose;
 
         double accelerationX;
         double accelerationY;
@@ -286,28 +295,54 @@ public class MotionMagicTurret extends SubsystemBase {
         double daY = accelerationY * time * time / 2; 
 
         if (rob.isRed()){
+            // turretVelocityX *= -1.0;
+            // turretVelocityY *= -1.0;
             dvX *= -1.0;
             dvY *= -1.0;
             daX *= -1.0;
             daY *= -1.0;
         }
 
+        // for (int i = 0; i < 10; i++){
+        //     double timeOfFlight = distanceToTime(lookaheadDistance);
+        //     double offsetX = turretVelocityX * timeOfFlight;
+        //     double offsetY = turretVelocityY * timeOfFlight;
+
+        //     double accelerationX;
+        //     double accelerationY;
+        //     accelerationX = getAcceleration(turretVelocityX, previousVelocityX, timeOfFlight, previousTime);
+        //     previousVelocityX = turretVelocityX;
+        //     accelerationY = getAcceleration(turretVelocityY, previousVelocityY, timeOfFlight, previousTime);
+        //     previousVelocityY = turretVelocityY;
+        //     previousTime = timeOfFlight;
+
+        //     if (rob.isRed()){
+        //         accelerationX *= -1.0;
+        //         accelerationY *= -1.0;
+        //     }
+            
+        //     lookaheadTurretPose = new Pose2d(turretPose.getX() + offsetX + accelerationX, turretPose.getY() + offsetY + accelerationY, null);
+            
+        //     double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
+        //     double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
+
+        //     lookaheadDistance = Math.hypot(xDistance, yDistance);
+        // }
+
         Pose2d newPose = new Pose2d(currentPose.getX() + dvX + daX, 
                                     currentPose.getY() + dvY + daY,
                                     null);
 
-        double robotRadians = currentPose.getRotation().getRadians(); 
-
-        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
-
         double xDistance = newPose.getX() + turretOffset.getX() - targetPose.getX();
-        double yDistance = newPose.getY() + turretOffset.getY() - targetPose.getY(); // pretty sure we need to add turret offset, can remove if bad
-
+        double yDistance = newPose.getY() + turretOffset.getY() - targetPose.getY(); 
+        // double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
+        // double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
         double newAimAngle = degreesToSet(xDistance, yDistance);
 
         double newDistance = Math.hypot(xDistance, yDistance);
         SmartDashboard.putNumber("MMT DISTANCE COMPENSATION", newDistance);
-        SmartDashboard.putNumber("TIME CALLI", time);
+        SmartDashboard.putNumber("MMT NEW ANGLE", newAimAngle);
+        SmartDashboard.putNumber("TIME CALLI", distanceToTime(distance));
 
         return new double[]{newDistance, newAimAngle};
     }

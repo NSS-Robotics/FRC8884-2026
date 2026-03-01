@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Right Neutral 1"
+            "pathName": "Right Neutral 0.9"
           }
         },
         {
@@ -25,25 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Right Neutral 1.1"
+            "pathName": "Right Neutral 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Right Neutral 1.2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Right Neutral 1.3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Right Neutral 1.4"
+            "pathName": "Right Neutral 1.1"
           }
         },
         {
@@ -55,13 +43,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Right Neutral 1.5"
+            "pathName": "Right Neutral 2"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Spindexer"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spindexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Unjam Intake"
+                }
+              }
+            ]
           }
         }
       ]

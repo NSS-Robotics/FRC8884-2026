@@ -13,7 +13,7 @@ public class RunIntake extends Command {
 
     @Override
     public void execute() {
-        intake.setVelocity(4000);
+        intake.setVelocity(3800);
     }
 
     @Override

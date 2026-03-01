@@ -76,6 +76,9 @@ public class Robot extends TimedRobot {
 
     timer.start();
     m_robotContainer.shooterHood.zeroHood();
+    m_robotContainer.flywheels.stop();
+    m_robotContainer.spindexer.stop();
+    m_robotContainer.feeder.stop(); // TODO: WE WWANT FLYWHEELSE MOVING AT ALL TIMES, SO MAYBE THIS ISNT GOOD NOT SURE CHECK LATER :)
   }
 
   @Override

@@ -5,33 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "IntakeDown"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
+            "pathName": "Left Neutral 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Red Left Neutral 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Red Left Neutral 2"
+            "pathName": "Left Neutral 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Spindexer"
           }
         }
       ]
