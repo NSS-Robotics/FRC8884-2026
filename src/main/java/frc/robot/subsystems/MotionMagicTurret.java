@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import org.opencv.core.Mat;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -37,7 +35,7 @@ public class MotionMagicTurret extends SubsystemBase {
 
     public double targetDegrees;
     private double distanceToTarget;
-    public static double[] ans;
+    public /* static */ double[] ans;
     public double previousVelocityX = 0;
     public double previousVelocityY = 0;
     public double previousTime = 1;
@@ -77,7 +75,7 @@ public class MotionMagicTurret extends SubsystemBase {
         MotionMagicConfigs motionMagicConfigs = turretMotorConfig.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 30; // maximum for an x60 is 100rps
         motionMagicConfigs.MotionMagicAcceleration = 30*3; // 0.5s to reach, *5 to take 0.2 sec, allegedy
-        // motionMagicConfigs.MotionMagicJerk = 25*2*10; // *10 than acceleration, optional, according to some guy on chief delphi
+        motionMagicConfigs.MotionMagicJerk = 9999.0; // TODO: figure out if this is a good value
 
         SmartDashboard.putBoolean("Target Red Hub", true);
 
@@ -126,29 +124,15 @@ public class MotionMagicTurret extends SubsystemBase {
         Translation2d turretoffset = new Translation2d(xOffset, -yOffset).rotateBy(new Rotation2d(robotRadians));
 
         // x and y axis inverted
-        /* 
-        double d = Math.hypot(xOffset, yOffset);    
-        double theta = Math.atan2(yOffset,xOffset);
-        //double alpha = theta + robotRadians - Math.PI/2; 
-        // double alpha = theta + robotRadians; 
-        double alpha = robotRadians + theta + Math.PI;
-
-        double x = d * Math.cos(alpha);
-        double y = d * Math.sin(alpha);
-        */
-        //double x = xOffset  * Math.cos(robotRadians) - yOffset*Math.sin(robotRadians);
-        //double y = xOffset  * Math.sin(robotRadians) + yOffset*Math.cos(robotRadians);
         double x = turretoffset.getX();
         double y = turretoffset.getY();
 
-        //SmartDashboard.putNumber("MMT robotdeg", alpha*180/Math.PI);
         SmartDashboard.putNumber("MMT X", x);
         SmartDashboard.putNumber("MMT Y", y);
         return new Pose2d(x, y, null);
     }
 
     public double[] calculateMovingShot(double shootingVelocity, double theta, Pose2d robotPose, Pose2d targetPose){
-        
         ChassisSpeeds speeds = swerve.getState().Speeds;
         Translation2d robotVelocityVector = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
         double robotSpeed = robotVelocityVector.getNorm();
@@ -168,8 +152,6 @@ public class MotionMagicTurret extends SubsystemBase {
         double z = shootingVelocity * Math.sin(thetar);
 
         double newShootingVelocity = Math.sqrt(x * x + y * y + z * z);
-        // double newTheta = Math.toDegrees(Math.atan(z / x));
-        // double newPhi = Math.toDegrees(Math.atan(y / x));
         double newTheta = Math.toDegrees(Math.atan2(z, x));
         double newPhi = Math.toDegrees(Math.atan2(y, x));
 
@@ -337,6 +319,8 @@ public class MotionMagicTurret extends SubsystemBase {
         double yDistance = newPose.getY() + turretOffset.getY() - targetPose.getY(); 
         // double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
         // double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
+
+        
         double newAimAngle = degreesToSet(xDistance, yDistance);
 
         double newDistance = Math.hypot(xDistance, yDistance);
@@ -347,8 +331,7 @@ public class MotionMagicTurret extends SubsystemBase {
         return new double[]{newDistance, newAimAngle};
     }
 
-
-    public double rpmToVelocity(double rpm, double wheelRadiusMeters){ // IDK???
+    public double rpmToVelocity(double rpm, double wheelRadiusMeters){
         double angularVelocity = rpm*2*Math.PI/60; // rad/s
         return angularVelocity*wheelRadiusMeters * 0.85;
 
@@ -393,13 +376,13 @@ public class MotionMagicTurret extends SubsystemBase {
 
         if (!isInAllianceZone()) { 
             if (rob.isRed()){
-                if (swerve.getPoseMeters().getY()  > 4){
+                if (swerve.getPoseMeters().getY() > 4){
                     pointAtTarget(Constants.leftCornerRed);
                 } else{
                     pointAtTarget(Constants.rightCornerRed);
                 }
             } else{
-                if (swerve.getPoseMeters().getY()  > 4){
+                if (swerve.getPoseMeters().getY() > 4){
                     pointAtTarget(Constants.leftCornerBlue);
                 } else{
                     pointAtTarget(Constants.rightCornerBlue);
@@ -412,24 +395,14 @@ public class MotionMagicTurret extends SubsystemBase {
                 pointAtTarget(Constants.targetPositionBlue);
             }     
         }
-        // pointAtTarget(Constants.targetPositionBlue);
-        //  pointAtTarget(Constants.targetPositionBlue); 
-
-        // if(!canMove()){
-        //     stop();
-        // }
 
         double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
-        // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, Constants.targetPositionBlue);
  
         double futureDistance = future[0];
         double futureAngle = future[1];
 
-        if (autoShoot){
-            // double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), mmturret.getDistanceToTarget(), Constants.targetPositionBlue); 
-            // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
-            flywheels.setVelocity(flywheels.rpmToHub(future[0]));   
-            // flywheels.setVelocity(mmturret.velocityToRpm(mmturret.ans[0], Constants.Flywheel.flywheelRadiusMeters));
+        if (autoShoot) {
+            flywheels.setVelocity(flywheels.rpmToHub(future[0]));
             shooterHood.setDegrees();
         }
 

@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -19,37 +18,25 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID);
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
-    private final RobotContainer rob;
-
     private double targetVelocity = 9000;
 
     public Flywheels(RobotContainer rob) {
-        this.rob = rob;
         TalonFXConfiguration leftConfig = new TalonFXConfiguration();
-        leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-
         TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Flywheel.currentLimit;
         currentLimitConfig.StatorCurrentLimitEnable = true;
 
-        Slot0Configs leftPIDConfigs = new Slot0Configs();
-        leftPIDConfigs.kP = Constants.Flywheel.kP;
-        leftPIDConfigs.kI = Constants.Flywheel.kI;
-        leftPIDConfigs.kD = Constants.Flywheel.kD;
-        leftPIDConfigs.kS = Constants.Flywheel.kS;
-        leftPIDConfigs.kV = Constants.Flywheel.kV;
-        leftPIDConfigs.kA = Constants.Flywheel.kA;
-
-        Slot0Configs rightPIDConfigs = new Slot0Configs();
-        rightPIDConfigs.kP = Constants.Flywheel.kP;
-        rightPIDConfigs.kI = Constants.Flywheel.kI;
-        rightPIDConfigs.kD = Constants.Flywheel.kD;
-        rightPIDConfigs.kS = Constants.Flywheel.kS;
-        rightPIDConfigs.kV = Constants.Flywheel.kV;
-        rightPIDConfigs.kA = Constants.Flywheel.kA;
+        Slot0Configs pidConfigs = new Slot0Configs();
+        pidConfigs.kP = Constants.Flywheel.kP;
+        pidConfigs.kI = Constants.Flywheel.kI;
+        pidConfigs.kD = Constants.Flywheel.kD;
+        pidConfigs.kS = Constants.Flywheel.kS;
+        pidConfigs.kV = Constants.Flywheel.kV;
+        pidConfigs.kA = Constants.Flywheel.kA;
 
         SmartDashboard.putNumber("Set RPM", 0);
 
@@ -59,12 +46,11 @@ public class Flywheels extends SubsystemBase {
         rightFlywheelMotor.getConfigurator().apply(currentLimitConfig);
         leftFlywheelMotor.getConfigurator().apply(currentLimitConfig);
 
-        rightFlywheelMotor.getConfigurator().apply(rightPIDConfigs);
-        leftFlywheelMotor.getConfigurator().apply(leftPIDConfigs);
+        rightFlywheelMotor.getConfigurator().apply(pidConfigs);
+        leftFlywheelMotor.getConfigurator().apply(pidConfigs);
 
         rightFlywheelMotor.setNeutralMode(NeutralModeValue.Coast);
         leftFlywheelMotor.setNeutralMode(NeutralModeValue.Coast);
-
     }
 
     public void setVelocity(double rpm) {
@@ -101,13 +87,6 @@ public class Flywheels extends SubsystemBase {
         setVelocity(500);
     }
 
-    // public void makeThemSpin(double power) {
-    //     flywheelMotor.set(power);
-    //     followerFlywheelMotor.set(power);
-    // }
-
-
-
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
@@ -118,9 +97,6 @@ public class Flywheels extends SubsystemBase {
         // else{
         //     rpmToRest();
         // }
-
-
-
     }
 
     @Override

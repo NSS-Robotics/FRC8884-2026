@@ -6,14 +6,12 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Spindexer extends SubsystemBase {
     private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID, new CANBus("Jeff"));
-    private VelocityVoltage spindexerVelocity = new VelocityVoltage(0).withSlot(0);
 
     public Spindexer() {
         Slot0Configs slot0Configs = new Slot0Configs();
@@ -34,10 +32,6 @@ public class Spindexer extends SubsystemBase {
 
     public double getSpeed() {
         return spindexerMotor.getVelocity().getValueAsDouble();
-    }
-
-    public void makeSpin(double power) {
-        spindexerMotor.set(power);
     }
 
     public void stop() {

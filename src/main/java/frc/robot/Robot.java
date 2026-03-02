@@ -36,12 +36,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
-    // m_robotContainer.fieldMap.setRobotPose(m_robotContainer.mmturret.turretLocation);
-    // m_robotContainer.fieldMap.setRobotPose(new Pose2d(
-    //   m_robotContainer.simulatedPosition.getX(),
-    //   m_robotContainer.simulatedPosition.getY(),
-    //   Rotation2d.fromDegrees(m_robotContainer.mmturret.getDegrees())
-    // ));
   }
 
   @Override
@@ -78,7 +72,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.shooterHood.zeroHood();
     m_robotContainer.flywheels.stop();
     m_robotContainer.spindexer.stop();
-    m_robotContainer.feeder.stop(); // TODO: WE WWANT FLYWHEELSE MOVING AT ALL TIMES, SO MAYBE THIS ISNT GOOD NOT SURE CHECK LATER :)
+    m_robotContainer.feeder.stop(); // TODO: WE WANT FLYWHEELS MOVING AT ALL TIMES, SO MAYBE THIS ISNT GOOD NOT SURE CHECK LATER :)
+    m_robotContainer.intake.stopIntake();
   }
 
   @Override

@@ -13,8 +13,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,14 +27,12 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -197,7 +193,7 @@ public class RobotContainer {
         //     )
         // );  
 
-        // TOOD: STOP RUNNING WHEN TELEOP STARTS 
+        // TODO: STOP RUNNING WHEN TELEOP STARTS 
 
         NamedCommands.registerCommand("Flywheels", 
             new InstantCommand(() -> {
@@ -229,18 +225,9 @@ public class RobotContainer {
             new InstantCommand(() -> intake.setVelocity(4000)) // TODO: MAKE CONSTANT?
         );  
 
-        NamedCommands.registerCommand("Unjam Intake", 
-            new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    intake.setVelocity(2500);
-                    intakePivot.setPosition(8);
-                    }
-                ),    
-                new WaitCommand(0.35),
-                new InstantCommand(() -> intakePivot.setPosition(15.5))
-            )
+        NamedCommands.registerCommand("Unjam Intake",
+            new IntakeUnjam(this)
         );
-        
     }
 
     public Command getAutonomousCommand() {

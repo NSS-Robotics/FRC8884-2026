@@ -16,7 +16,7 @@ import frc.robot.RobotContainer;
 public class Feeder extends SubsystemBase {
     private final TalonFX feederMotor = new TalonFX(Constants.CanIDs.feederMotorID, new CANBus("Jeff"));
 
-    private Boolean canMove = true;
+    private boolean canMove = true;
     private final MotionMagicTurret mmturret;
 
     private VelocityVoltage feederVelocity = new VelocityVoltage(0).withSlot(0);
@@ -34,13 +34,13 @@ public class Feeder extends SubsystemBase {
         slot0Configs.kS = Constants.Feeder.kS;
         slot0Configs.kV = Constants.Feeder.kV;
         slot0Configs.kA = Constants.Feeder.kA;
+
         feederMotor.getConfigurator().apply(slot0Configs);
         feederMotor.getConfigurator().apply(currentLimitConfig);
         feederMotor.setNeutralMode(NeutralModeValue.Coast);
     }
 
     public void setSpeed(double speedRPM) {
-
         feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
     }
 
@@ -51,17 +51,11 @@ public class Feeder extends SubsystemBase {
     public void stop() {
         feederMotor.setControl(new VoltageOut(0));
     }
-    
-    public void canMove(){
-        if (Math.abs(mmturret.targetDegrees-mmturret.getDegrees()) > Constants.Turret.tolerance){
-            canMove = false;
-        } else{
-            canMove = true;
-        }
-    }
 
-    public void makeSpin(double power) {
-        feederMotor.set(power);
+    public void canMove() {
+        canMove = !(
+            Math.abs(mmturret.targetDegrees-mmturret.getDegrees()) > Constants.Turret.tolerance
+        );
     }
 
     @Override

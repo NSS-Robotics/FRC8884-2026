@@ -1,13 +1,11 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,17 +14,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-
 public class ShooterHood extends SubsystemBase {
-
     private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID);
     
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
-    private Slot0Configs slot0Configs;
     
     private final RobotContainer rob;
     private final CommandSwerveDrivetrain swerve;
-
 
     private double degrees = 0;
     private double manualOffset = 0;
@@ -34,13 +28,12 @@ public class ShooterHood extends SubsystemBase {
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
         this.swerve = rob.drivetrain;
-
         
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
 
-        slot0Configs = new Slot0Configs();
+        Slot0Configs slot0Configs = new Slot0Configs();
         slot0Configs.kP = Constants.Hood.kP;
         slot0Configs.kI = Constants.Hood.kI;
         slot0Configs.kD = Constants.Hood.kD;
@@ -55,7 +48,6 @@ public class ShooterHood extends SubsystemBase {
         hoodMotor.setNeutralMode(NeutralModeValue.Brake);
         SmartDashboard.putNumber("Set Angles", 0); // need for getNumber
         hoodMotor.setPosition(0);
-        //this.zeroHood();
     }
 
     public void setRotations(double rotations) {
@@ -86,8 +78,8 @@ public class ShooterHood extends SubsystemBase {
         degrees = angle;
         setDegrees();
     }
-    public void alignHoodtoLob(double distance){
 
+    public void alignHoodtoLob(double distance){
         double angle = 0;
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         degrees = angle;
@@ -101,7 +93,6 @@ public class ShooterHood extends SubsystemBase {
 
     public double getDegrees() {
         return 360 * getRotations() / Constants.Hood.gearRatio;
-        //return degrees;
     }
     
     public double getCurrent() {
@@ -125,16 +116,17 @@ public class ShooterHood extends SubsystemBase {
             changeDegrees(-1);
         }
         this.stop();
+
+        // tell the hood that this is the correct zero position
         hoodMotor.setPosition(0);
         degrees = 0;
     }
 
-       public boolean willGetDecapitated(){
+    public boolean willGetDecapitated(){
         Pose2d currentPos = swerve.getPoseMeters();
         
         double robotRadians = currentPos.getRotation().getRadians(); 
         Translation2d turretOffset = new Translation2d(Constants.Turret.offsetFromCenter.getX(), -Constants.Turret.offsetFromCenter.getY()).rotateBy(new Rotation2d(robotRadians));
-
 
         Pose2d turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
 
@@ -157,25 +149,21 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Degrees", getDegrees());
         SmartDashboard.putNumber("Hood", hoodMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Hood Current", getCurrent());
-         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
+        SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
-        degrees = SmartDashboard.getNumber("Set Angles", 0);
-        // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), Constants.targetPositionBlue); // 
+        // degrees = SmartDashboard.getNumber("Set Angles", 0);
         double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
         if (rob.mmturret.isInAllianceZone()){
             // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
             alignHoodtoHub(future[0]); 
-        }else{
+        } else {
             //alignHoodtoLob(rob.mmturret.getDistanceToTarget());
             alignHoodtoLob(future[0]); 
-
         }
-        // alignHoodtoHub(future[0]); 
 
         if (willGetDecapitated()){
             degrees = 0.5;
             setDegrees();
         }
-       
     }
 }
