@@ -16,9 +16,9 @@ import frc.robot.RobotContainer;
 
 public class ShooterHood extends SubsystemBase {
     private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.shooterHoodMotorID);
-    
+
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
-    
+
     private final RobotContainer rob;
     private final CommandSwerveDrivetrain swerve;
 
@@ -28,7 +28,7 @@ public class ShooterHood extends SubsystemBase {
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
         this.swerve = rob.drivetrain;
-        
+
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
@@ -59,18 +59,19 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void setDegrees() {
-        degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0)+manualOffset;
+        degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0) + manualOffset;
 
         double rotations = degrees * Constants.Hood.gearRatio / 360;
         setRotations(rotations);
     }
 
-    public void alignHoodtoHub(double distance){
-        // double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) + 5.33 * distance - 4.88;
+    public void alignHoodtoHub(double distance) {
+        // double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) +
+        // 5.33 * distance - 4.88;
         double angle;
         if (distance < 4.49) {
             angle = 1.21 * Math.pow(distance, 3) - 9.9 * Math.pow(distance, 2) + 28.61 * distance - 22.42;
-        } else{
+        } else {
             angle = -1.1 * Math.pow(distance, 2) + 13.5 * distance - 24.47;
         }
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
@@ -79,7 +80,7 @@ public class ShooterHood extends SubsystemBase {
         setDegrees();
     }
 
-    public void alignHoodtoLob(double distance){
+    public void alignHoodtoLob(double distance) {
         double angle = 0;
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         degrees = angle;
@@ -94,7 +95,7 @@ public class ShooterHood extends SubsystemBase {
     public double getDegrees() {
         return 360 * getRotations() / Constants.Hood.gearRatio;
     }
-    
+
     public double getCurrent() {
         return hoodMotor.getStatorCurrent().getValueAsDouble();
     }
@@ -109,7 +110,7 @@ public class ShooterHood extends SubsystemBase {
 
     public void stop() {
         hoodMotor.setControl(new VoltageOut(0));
-    }   
+    }
 
     public void zeroHood() {
         while (getCurrent() < Constants.Hood.currentWhenStalling) {
@@ -122,24 +123,26 @@ public class ShooterHood extends SubsystemBase {
         degrees = 0;
     }
 
-    public boolean willGetDecapitated(){
+    public boolean willGetDecapitated() {
         Pose2d currentPos = swerve.getPoseMeters();
-        
-        double robotRadians = currentPos.getRotation().getRadians(); 
-        Translation2d turretOffset = new Translation2d(Constants.Turret.offsetFromCenter.getX(), -Constants.Turret.offsetFromCenter.getY()).rotateBy(new Rotation2d(robotRadians));
 
-        Pose2d turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
+        double robotRadians = currentPos.getRotation().getRadians();
+        Translation2d turretOffset = new Translation2d(Constants.Turret.offsetFromCenter.getX(),
+                -Constants.Turret.offsetFromCenter.getY()).rotateBy(new Rotation2d(robotRadians));
+
+        Pose2d turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(),
+                currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
 
         double x = turretLocation.getX();
         double y = turretLocation.getY();
-        double redX =  Constants.Hood.trenchRedX; 
+        double redX = Constants.Hood.trenchRedX;
         double blueX = Constants.Hood.trenchBlueX;
         double offset = Constants.Hood.trenchOffset;
 
-        if (rob.isRed()){
-            return (x < redX + offset && x > redX - offset) &&  (y < 1.37889 || y > 6.6842892) ; // should be 0.2 meter off trench for x and 0.1 for y // TODO: CONSTANTS
+        if (rob.isRed()) {
+            return (x < redX + offset && x > redX - offset) && (y < 1.37889 || y > 6.6842892); // should be 0.2 meter off trench for x and 0.1 for y // TODO: CONSTANTS
         } else {
-            return (x < blueX + offset && x > blueX - offset) &&  (y < 1.37889 || y > 6.6842892); // should be 0.5 meter off trench for x and 0.1 for y
+            return (x < blueX + offset && x > blueX - offset) && (y < 1.37889 || y > 6.6842892); // should be 0.5 meter off trench for x and 0.1 for y
         }
     }
 
@@ -152,16 +155,17 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
-        double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(), rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
-        if (rob.mmturret.isInAllianceZone()){
+        double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        if (rob.mmturret.isInAllianceZone()) {
             // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
-            alignHoodtoHub(future[0]); 
+            alignHoodtoHub(future[0]);
         } else {
-            //alignHoodtoLob(rob.mmturret.getDistanceToTarget());
-            alignHoodtoLob(future[0]); 
+            // alignHoodtoLob(rob.mmturret.getDistanceToTarget());
+            alignHoodtoLob(future[0]);
         }
 
-        if (willGetDecapitated()){
+        if (willGetDecapitated()) {
             degrees = 0.5;
             setDegrees();
         }

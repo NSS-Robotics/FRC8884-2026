@@ -75,7 +75,7 @@ public class MotionMagicTurret extends SubsystemBase {
         MotionMagicConfigs motionMagicConfigs = turretMotorConfig.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 30; // maximum for an x60 is 100rps
         motionMagicConfigs.MotionMagicAcceleration = 30*3; // 0.5s to reach, *5 to take 0.2 sec, allegedy
-        motionMagicConfigs.MotionMagicJerk = 9999.0; // TODO: figure out if this is a good value
+        // motionMagicConfigs.MotionMagicJerk = 9999.0; // TODO: figure out if this is a good value
 
         SmartDashboard.putBoolean("Target Red Hub", true);
 

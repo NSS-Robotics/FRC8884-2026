@@ -109,19 +109,18 @@ public class RobotContainer {
         driverController.b().whileTrue(new Unjam(this));      
         driverController.leftTrigger().whileTrue(new RunIntake(this));
         driverController.leftBumper().whileTrue(new IntakeUnjam(this));
-        // driverController.povUp().onTrue(new Snap(this,5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
-        // driverController.povLeft().onTrue(new Snap(this,5, 90));
-        // driverController.povDown().onTrue(new Snap(this,5, 0)); // TODO: UNCOMMENT 
-        // driverController.povRight().onTrue(new Snap(this,5, -90));
+        driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
+        driverController.povLeft().whileTrue(new Snap(this, 5, 90));
+        driverController.povDown().whileTrue(new Snap(this, 5, 0)); // TODO: UNCOMMENT 
+        driverController.povRight().whileTrue(new Snap(this, 5, -90));
 
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
-            // .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.5)));
-             .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.7)));
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.7)));
 
 
-        // driverController.leftBumper()
+    // driverController.leftBumper()
         //     .whileTrue(new InstantCommand(() -> {
         //         fuelSim.launchFuel(
         //             LinearVelocity.ofBaseUnits(7, MetersPerSecond),

@@ -3,13 +3,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Limelight;
 
 public class Snap extends Command {
     private final CommandSwerveDrivetrain swerve;
@@ -51,21 +47,17 @@ public class Snap extends Command {
 
         swerve.setControl(
             alignRequest
-                .withHeadingPID(5, 0, 0.1)
+                .withHeadingPID(4, 0, 0)
                 .withTargetDirection(targetRotations)
                 // .withMaxAbsRotationalRate(0.2)
-              //  .withTargetRateFeedforward(Units.degreesToRadians(36))
+                // .withTargetRateFeedforward(Units.degreesToRadians(36))
         );
     }
 
-    @Override
-    public boolean isFinished() {
-        return (Math.abs(swerve.getPoseMeters().getRotation().getDegrees() - targetRotations.getDegrees()) < angleDeadZone) || 
-               (Math.abs(swerve.getPoseMeters().getRotation().getDegrees() - targetRotations.getDegrees()) > (360 - angleDeadZone)) ;
-    }
-
     // @Override
-    // public void end(boolean interrupted) {
-    //     swerve.setControl(alignRequest.withVelocityX(0).withVelocityY(0));
+    // public boolean isFinished() {
+    //     double degreeError = Math.abs(swerve.getPoseMeters().getRotation().getDegrees() - targetRotations.getDegrees());
+    //     return (degreeError < angleDeadZone) || 
+    //            (degreeError > (360 - angleDeadZone));
     // }
 }
