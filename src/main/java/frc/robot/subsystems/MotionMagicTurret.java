@@ -248,6 +248,201 @@ public class MotionMagicTurret extends SubsystemBase {
         return (v1-v2)/(t1-t2);
     }
 
+    public double[] sotmPredictVelocityAccelerationIteration(Pose2d currentPose, double distance, Pose2d targetPose){
+        ChassisSpeeds speeds = swerve.getState().Speeds;
+        double robotRadians = currentPose.getRotation().getRadians(); 
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+        Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
+
+        double turretVelocityX = speeds.vxMetersPerSecond;
+        double turretVelocityY = speeds.vyMetersPerSecond;
+
+        if (rob.isRed()){
+            turretVelocityX *= -1.0;
+            turretVelocityY *= -1.0;
+        }
+
+        double accelerationX;
+        double accelerationY;
+
+        double lookaheadDistance = distance;
+        Pose2d lookaheadTurretPose = turretPose;
+
+        for (int i = 0; i < 20; i++){
+            double timeOfFlight = distanceToTime(lookaheadDistance);
+            // if (Math.abs(lookaheadDistance - timeOfFlight) < 0.001){
+            //     break;
+            // }
+            double dvX = turretVelocityX * timeOfFlight;
+            double dvY = turretVelocityY * timeOfFlight;
+
+            accelerationX = getAcceleration(turretVelocityX, previousVelocityX, timeOfFlight, previousTime);
+            previousVelocityX = turretVelocityX;
+            accelerationY = getAcceleration(turretVelocityY, previousVelocityY, timeOfFlight, previousTime);
+            previousVelocityY = turretVelocityY;
+            previousTime = timeOfFlight;
+
+            double daX = accelerationX * timeOfFlight * timeOfFlight / 2;
+            double daY = accelerationY * timeOfFlight * timeOfFlight / 2; 
+
+            if (rob.isRed()){
+                daX *= -1.0;
+                daY *= -1.0;
+            }
+
+            lookaheadTurretPose = new Pose2d(turretPose.getX() + dvX + daX, turretPose.getY() + dvY + daY, null);
+            
+            double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
+            double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
+
+            lookaheadDistance = Math.hypot(xDistance, yDistance);
+        }
+
+        double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
+        double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
+
+        double newAimAngle = degreesToSet(xDistance, yDistance);
+
+        double newDistance = Math.hypot(xDistance, yDistance);
+        SmartDashboard.putNumber("MMT DISTANCE COMPENSATION", newDistance);
+        SmartDashboard.putNumber("MMT NEW ANGLE", newAimAngle);
+        SmartDashboard.putNumber("TIME CALLI", distanceToTime(distance));
+
+        return new double[]{newDistance, newAimAngle};
+    }
+
+        public double[] sotmPredictVelocityIteration(Pose2d currentPose, double distance, Pose2d targetPose){
+        ChassisSpeeds speeds = swerve.getState().Speeds;
+        double robotRadians = currentPose.getRotation().getRadians(); 
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+        Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
+
+        double turretVelocityX = speeds.vxMetersPerSecond;
+        double turretVelocityY = speeds.vyMetersPerSecond;
+
+        if (rob.isRed()){
+            turretVelocityX *= -1.0;
+            turretVelocityY *= -1.0;
+        }
+
+        double lookaheadDistance = distance;
+        Pose2d lookaheadTurretPose = turretPose;
+
+        for (int i = 0; i < 20; i++){
+            double timeOfFlight = distanceToTime(lookaheadDistance);
+            // if (Math.abs(lookaheadDistance - timeOfFlight) < 0.001){
+            //     break;
+            // }
+            double dvX = turretVelocityX * timeOfFlight;
+            double dvY = turretVelocityY * timeOfFlight;
+
+            lookaheadTurretPose = new Pose2d(turretPose.getX() + dvX, turretPose.getY() + dvY, null);
+            
+            double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
+            double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
+
+            lookaheadDistance = Math.hypot(xDistance, yDistance);
+        }
+
+        double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
+        double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
+
+        double newAimAngle = degreesToSet(xDistance, yDistance);
+
+        double newDistance = Math.hypot(xDistance, yDistance);
+        SmartDashboard.putNumber("MMT DISTANCE COMPENSATION", newDistance);
+        SmartDashboard.putNumber("MMT NEW ANGLE", newAimAngle);
+        SmartDashboard.putNumber("TIME CALLI", distanceToTime(distance));
+
+        return new double[]{newDistance, newAimAngle};
+    }
+
+    public double[] sotmPredictVelocityAcceleration(Pose2d currentPose, double distance, Pose2d targetPose){
+        ChassisSpeeds speeds = swerve.getState().Speeds;
+        double robotRadians = currentPose.getRotation().getRadians(); 
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+        Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
+
+        double time = distanceToTime(distance);
+
+        double turretVelocityX = speeds.vxMetersPerSecond;
+        double turretVelocityY = speeds.vyMetersPerSecond;
+
+        double accelerationX;
+        double accelerationY;
+
+        accelerationX = getAcceleration(turretPose.getX(), previousVelocityX, time, previousTime);
+        previousVelocityX = turretVelocityX;
+        accelerationY = getAcceleration(turretPose.getY(), previousVelocityY, time, previousTime);
+        previousVelocityY = turretVelocityY;
+        previousTime = time;
+
+        double dvX = turretVelocityX * time;
+        double dvY = turretVelocityY * time;
+        double daX = accelerationX * time * time / 2;
+        double daY = accelerationY * time * time / 2; 
+
+        if (rob.isRed()){
+            dvX *= -1.0;
+            dvY *= -1.0;
+            daX *= -1.0;
+            daY *= -1.0;
+        }
+
+        Pose2d newPose = new Pose2d(turretPose.getX() + dvX + daX, 
+                                    turretPose.getY() + dvY + daY,
+                                    null);
+
+        double xDistance = newPose.getX() - targetPose.getX();
+        double yDistance = newPose.getY() - targetPose.getY(); 
+
+        double newAimAngle = degreesToSet(xDistance, yDistance);
+
+        double newDistance = Math.hypot(xDistance, yDistance);
+        SmartDashboard.putNumber("MMT DISTANCE COMPENSATION", newDistance);
+        SmartDashboard.putNumber("MMT NEW ANGLE", newAimAngle);
+        SmartDashboard.putNumber("TIME CALLI", distanceToTime(distance));
+
+        return new double[]{newDistance, newAimAngle};
+    }
+
+    public double[] sotmPredictVelocity(Pose2d currentPose, double distance, Pose2d targetPose){
+        ChassisSpeeds speeds = swerve.getState().Speeds;
+        double robotRadians = currentPose.getRotation().getRadians(); 
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+        Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
+
+        double time = distanceToTime(distance);
+
+        double turretVelocityX = speeds.vxMetersPerSecond;
+        double turretVelocityY = speeds.vyMetersPerSecond;
+
+
+        double dvX = turretVelocityX * time;
+        double dvY = turretVelocityY * time;
+
+        if (rob.isRed()){
+            dvX *= -1.0;
+            dvY *= -1.0;
+        }
+
+        Pose2d newPose = new Pose2d(turretPose.getX() + dvX, 
+                                    turretPose.getY() + dvY,
+                                    null);
+
+        double xDistance = newPose.getX() - targetPose.getX();
+        double yDistance = newPose.getY() - targetPose.getY(); 
+
+        double newAimAngle = degreesToSet(xDistance, yDistance);
+
+        double newDistance = Math.hypot(xDistance, yDistance);
+        SmartDashboard.putNumber("MMT DISTANCE COMPENSATION", newDistance);
+        SmartDashboard.putNumber("MMT NEW ANGLE", newAimAngle);
+        SmartDashboard.putNumber("TIME CALLI", distanceToTime(distance));
+
+        return new double[]{newDistance, newAimAngle};
+    }
+
     public double[] aLookIntoTheFuture(Pose2d currentPose, double distance, Pose2d targetPose){
         ChassisSpeeds speeds = swerve.getState().Speeds;
         Translation2d robotVelocity = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
