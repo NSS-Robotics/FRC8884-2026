@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -12,6 +13,7 @@ import frc.robot.Constants;
 
 public class Spindexer extends SubsystemBase {
     private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID, new CANBus("Jeff"));
+    final DutyCycleOut spinOut = new DutyCycleOut(0);
 
     public Spindexer() {
         Slot0Configs slot0Configs = new Slot0Configs();
@@ -21,7 +23,7 @@ public class Spindexer extends SubsystemBase {
         slot0Configs.kS = Constants.Spindexer.kS;
         slot0Configs.kV = Constants.Spindexer.kV;
         slot0Configs.kA = Constants.Spindexer.kA;
-        spindexerMotor.getConfigurator().apply(slot0Configs);
+        //spindexerMotor.getConfigurator().apply(slot0Configs);
 
         spindexerMotor.setNeutralMode(NeutralModeValue.Brake);
     }
@@ -32,6 +34,12 @@ public class Spindexer extends SubsystemBase {
 
     public double getSpeed() {
         return spindexerMotor.getVelocity().getValueAsDouble();
+    }
+
+    public void makeSpin(double power) {
+        //spindexerMotor.set(power);
+        //spindexerMotor.setControl(new DutyCycleOut(power));
+        spindexerMotor.setControl(spinOut.withOutput(power));
     }
 
     public void stop() {

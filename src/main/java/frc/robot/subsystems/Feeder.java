@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,6 +16,8 @@ import frc.robot.RobotContainer;
 
 public class Feeder extends SubsystemBase {
     private final TalonFX feederMotor = new TalonFX(Constants.CanIDs.feederMotorID, new CANBus("Jeff"));
+     final DutyCycleOut feedOut = new DutyCycleOut(0);
+
 
     private boolean canMove = true;
     private final MotionMagicTurret mmturret;
@@ -43,10 +46,17 @@ public class Feeder extends SubsystemBase {
     public void setSpeed(double speedRPM) {
         feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
     }
+    public void makeSpin(double power) {
+        //spindexerMotor.set(power);
+        //spindexerMotor.setControl(new DutyCycleOut(power));
+        feederMotor.setControl(feedOut.withOutput(power));
+    }
 
     public double getSpeed() {
         return feederMotor.getVelocity().getValueAsDouble();
     }
+
+    // TODO: try using feeder with DutyCycleOut instead of VelocityVoltage
 
     public void stop() {
         feederMotor.setControl(new VoltageOut(0));
