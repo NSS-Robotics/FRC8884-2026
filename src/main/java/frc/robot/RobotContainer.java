@@ -15,6 +15,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -87,12 +88,25 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        SlewRateLimiter xFilter = new SlewRateLimiter(1);
+        SlewRateLimiter yFilter = new SlewRateLimiter(1);
+
         drivetrain.setDefaultCommand(
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
+            drivetrain.applyRequest(() -> {
+                double xVel = -driverController.getLeftY() * MaxSpeed;
+                double yVel = -driverController.getLeftX() * MaxSpeed;
+
+                // if (flywheels.getVelocity() > 10) {
+                //     // if velocity > 10, we're shooting
+                //     // TODO: fix for when we decide to use a resting flywheel speed
+                //     xVel = xFilter.calculate(xVel);
+                //     yVel = yFilter.calculate(yVel);
+                // }
+
+                return drive.withVelocityX(xVel) // Drive forward with negative Y (forward)
+                    .withVelocityY(yVel) // Drive left with negative X (left)
+                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate); // Drive counterclockwise with negative X (left)
+            })
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);

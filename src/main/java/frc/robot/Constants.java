@@ -45,7 +45,7 @@ public class Constants {
 
     public static class Spindexer {
         public static final double currentLimit = 60;
-        public static final double kP = 5.0;
+        public static final double kP = 0.05;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kS = 0.0;
@@ -88,7 +88,7 @@ public class Constants {
         public static final double minHoodAngle = 0.5;
         public static final double maxHoodAngle = 25;
         public static final double currentWhenStalling = 14.7;
-        public static final double maxHubHoodAlign = 17;
+        public static final double maxHubHoodAlign = 22;
         // public static final double minHubHoodAlign = 1;
         public static final double irlHoodDegrees = 12.5;
 

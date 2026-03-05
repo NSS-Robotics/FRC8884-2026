@@ -13,7 +13,9 @@ import frc.robot.Constants;
 
 public class Spindexer extends SubsystemBase {
     private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID, new CANBus("Jeff"));
-    final DutyCycleOut spinOut = new DutyCycleOut(0);
+    private final DutyCycleOut spinOut = new DutyCycleOut(0);
+    private  double maxPower = 0.5;
+    private double targetSpeed = 0.0;
 
     public Spindexer() {
         Slot0Configs slot0Configs = new Slot0Configs();
@@ -29,7 +31,8 @@ public class Spindexer extends SubsystemBase {
     }
 
     public void setSpeed(double rotationsPerMinute) {
-        spindexerMotor.setControl(new VelocityVoltage(rotationsPerMinute/60));
+        targetSpeed = rotationsPerMinute/60;
+        // spindexerMotor.setControl(new VelocityVoltage(rotationsPerMinute/60));
     }
 
     public double getSpeed() {
@@ -44,10 +47,24 @@ public class Spindexer extends SubsystemBase {
 
     public void stop() {
         spindexerMotor.setControl(new VoltageOut(0));
+        targetSpeed = 0;
     }
 
     @Override
     public void periodic() {
+        double ts = Math.abs(targetSpeed);
+        double speed = Math.abs(getSpeed());
+        double power = (ts - speed)/ts * maxPower;
+        if (speed > ts) {
+            power = 0;
+        }
+
+        if (targetSpeed < 0) {
+            spindexerMotor.setControl(spinOut.withOutput(-power));
+        } else {
+            spindexerMotor.setControl(spinOut.withOutput(power));
+        }
+
         SmartDashboard.putNumber("Spindexer Speed", getSpeed());
     }
 }

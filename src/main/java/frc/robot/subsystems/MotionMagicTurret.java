@@ -158,6 +158,8 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT X SPEED", speeds.vxMetersPerSecond);
         SmartDashboard.putNumber("MMT Y SPEED", speeds.vyMetersPerSecond);
 
+        newTheta = 90-Constants.Hood.irlHoodDegrees - newTheta;
+
         SmartDashboard.putNumber("MMT ROBOT SPEED", robotSpeed);
         SmartDashboard.putNumber("MMT THETA", theta);
         SmartDashboard.putNumber("MMT TARGET ANGLE", targetAngle * 180 / Math.PI);
@@ -219,7 +221,12 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);*/
 
         double future[] = aLookIntoTheFuture(currentPos, yDistance, targetPos);
-        double futureDegrees = future[1];
+        double sotmV[] = sotmPredictVelocity(currentPos, yDistance, targetPos);
+        double sotmVA[] = sotmPredictVelocityAcceleration(currentPos, yDistance, targetPos);
+        double sotmVAI[] = sotmPredictVelocityAccelerationIteration(currentPos, yDistance, targetPos);
+        double sotmVI[] = sotmPredictVelocityIteration(currentPos, yDistance, targetPos);
+
+        double futureDegrees = sotmV[1];
 
 
         // double degreesToTarget = wrapAngleDegrees(aimDegrees
@@ -415,8 +422,7 @@ public class MotionMagicTurret extends SubsystemBase {
         double time = distanceToTime(distance);
 
         double turretVelocityX = speeds.vxMetersPerSecond;
-        double turretVelocityY = speeds.vyMetersPerSecond;
-
+        double turretVelocityY = speeds.vyMetersPerSecond;      
 
         double dvX = turretVelocityX * time;
         double dvY = turretVelocityY * time;
@@ -591,13 +597,14 @@ public class MotionMagicTurret extends SubsystemBase {
             }     
         }
 
-        double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+        // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+        double sotmV[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
  
-        double futureDistance = future[0];
-        double futureAngle = future[1];
+        double futureDistance = sotmV[0];
+        double futureAngle = sotmV[1];
 
         if (autoShoot) {
-            flywheels.setVelocity(flywheels.rpmToHub(future[0]));
+            flywheels.setVelocity(flywheels.rpmToHub(sotmV[0]));
             shooterHood.setDegrees();
         }
 
@@ -611,3 +618,4 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putBoolean("ALLIANCEZONE", isInAllianceZone());
     }
 }
+ 
