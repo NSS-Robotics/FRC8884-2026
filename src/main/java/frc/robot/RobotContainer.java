@@ -88,8 +88,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        SlewRateLimiter xFilter = new SlewRateLimiter(1);
-        SlewRateLimiter yFilter = new SlewRateLimiter(1);
+        SlewRateLimiter xFilter = new SlewRateLimiter(1, -2, 0);
+        SlewRateLimiter yFilter = new SlewRateLimiter(1, -2, 0);
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
@@ -115,7 +115,7 @@ public class RobotContainer {
         // driverController.povDown().onTrue(new InstantCommand(shooterHood::zeroHood)); // zero hood
         // driverController.povUp().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(1)));
         // driverController.povDown().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(-1)));
-        driverController.y().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
+        driverController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
 
         /* longer commands */
         driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
@@ -127,6 +127,7 @@ public class RobotContainer {
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); // TODO: UNCOMMENT 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
+        driverController.y().whileTrue(new InstantCommand(/* lower hood and keep down until released, for trench */));
 
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
@@ -207,7 +208,7 @@ public class RobotContainer {
         // );  
 
         // TODO: STOP RUNNING WHEN TELEOP STARTS 
-
+ 
         NamedCommands.registerCommand("Flywheels", 
             new InstantCommand(() -> {
                 // double future[] = mmturret.aLookIntoTheFuture(drivetrain.getPoseMeters(), mmturret.getDistanceToTarget(), isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 

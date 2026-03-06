@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,7 +19,12 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID);
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
-    private double targetVelocity = 9000;
+    private double targetVelocity = 0;
+    private final double maxPower = 0.9;
+    private final double minPower = 0.2;
+
+    private final DutyCycleOut flywheelOutL = new DutyCycleOut(0);
+    private final DutyCycleOut flywheelOutR = new DutyCycleOut(0);
 
     public Flywheels(RobotContainer rob) {
         TalonFXConfiguration leftConfig = new TalonFXConfiguration();
@@ -54,10 +60,10 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void setVelocity(double rpm) {
-        targetVelocity = rpm;
+        targetVelocity = (rpm)/60; // +25
 
-        rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
-        leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
+        // rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
+        // leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
     }
 
     public double getVelocity() {
@@ -65,6 +71,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void stop() {
+        targetVelocity = 0;
         VoltageOut voltageOut = new VoltageOut(0);
         rightFlywheelMotor.setControl(voltageOut);
         leftFlywheelMotor.setControl(voltageOut);
@@ -97,6 +104,23 @@ public class Flywheels extends SubsystemBase {
         // else{
         //     rpmToRest();
         // }
+
+        double ts = Math.abs(targetVelocity);
+        double speed = Math.abs(getVelocity());
+        double power = (ts - speed)/ts;
+
+        power = Math.min(Math.max(power, minPower), maxPower);
+        if (targetVelocity == 0){
+            power =0;
+        }
+
+        if (targetVelocity < 0) {
+            leftFlywheelMotor.setControl(flywheelOutL.withOutput(-power));
+            rightFlywheelMotor.setControl(flywheelOutR.withOutput(power));
+        } else {
+            leftFlywheelMotor.setControl(flywheelOutL.withOutput(power));
+            rightFlywheelMotor.setControl(flywheelOutR.withOutput(-power));
+        }
     }
 
     @Override

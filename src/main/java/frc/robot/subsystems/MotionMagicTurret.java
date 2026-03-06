@@ -220,14 +220,13 @@ public class MotionMagicTurret extends SubsystemBase {
         ans = calculateMovingShot(shooterVelocity, theta, robotPose, targetPos); 
         SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);*/
 
-        double future[] = aLookIntoTheFuture(currentPos, yDistance, targetPos);
+        // double future[] = aLookIntoTheFuture(currentPos, yDistance, targetPos);
         double sotmV[] = sotmPredictVelocity(currentPos, yDistance, targetPos);
-        double sotmVA[] = sotmPredictVelocityAcceleration(currentPos, yDistance, targetPos);
-        double sotmVAI[] = sotmPredictVelocityAccelerationIteration(currentPos, yDistance, targetPos);
-        double sotmVI[] = sotmPredictVelocityIteration(currentPos, yDistance, targetPos);
+        // double sotmVA[] = sotmPredictVelocityAcceleration(currentPos, yDistance, targetPos);
+        // double sotmVAI[] = sotmPredictVelocityAccelerationIteration(currentPos, yDistance, targetPos);
+        // double sotmVI[] = sotmPredictVelocityIteration(currentPos, yDistance, targetPos);
 
         double futureDegrees = sotmV[1];
-
 
         // double degreesToTarget = wrapAngleDegrees(aimDegrees
         //                                           - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 

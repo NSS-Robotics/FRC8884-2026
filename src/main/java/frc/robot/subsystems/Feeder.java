@@ -16,8 +16,10 @@ import frc.robot.RobotContainer;
 
 public class Feeder extends SubsystemBase {
     private final TalonFX feederMotor = new TalonFX(Constants.CanIDs.feederMotorID, new CANBus("Jeff"));
-     final DutyCycleOut feedOut = new DutyCycleOut(0);
-
+    private final DutyCycleOut feedOut = new DutyCycleOut(0);
+    private double targetSpeed = 0;
+    private final double maxPower = 0.9;
+    private final double minPower = 0.4;
 
     private boolean canMove = true;
     private final MotionMagicTurret mmturret;
@@ -44,7 +46,8 @@ public class Feeder extends SubsystemBase {
     }
 
     public void setSpeed(double speedRPM) {
-        feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
+        targetSpeed = speedRPM/60;
+        // feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
     }
     public void makeSpin(double power) {
         //spindexerMotor.set(power);
@@ -56,9 +59,8 @@ public class Feeder extends SubsystemBase {
         return feederMotor.getVelocity().getValueAsDouble();
     }
 
-    // TODO: try using feeder with DutyCycleOut instead of VelocityVoltage
-
     public void stop() {
+        targetSpeed = 0;
         feederMotor.setControl(new VoltageOut(0));
     }
 
@@ -70,6 +72,23 @@ public class Feeder extends SubsystemBase {
 
     @Override
     public void periodic() {
+        double ts = Math.abs(targetSpeed);
+        double speed = Math.abs(getSpeed());
+        double power = (ts - speed)/ts * maxPower;
+        power = Math.min(Math.max(power, minPower), maxPower);
+        if (speed > ts) {
+            power = 0;
+        }
+        if (targetSpeed == 0){
+            power =0;
+        }
+
+        if (targetSpeed < 0) {
+            feederMotor.setControl(feedOut.withOutput(-power));
+        } else {
+            feederMotor.setControl(feedOut.withOutput(power));
+        }
+
         SmartDashboard.putNumber("Feeder Speed", getSpeed());
         SmartDashboard.putBoolean("canMove", canMove);
         canMove();

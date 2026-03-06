@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -41,7 +42,12 @@ public class ShooterHood extends SubsystemBase {
         slot0Configs.kV = Constants.Hood.kV;
         slot0Configs.kA = Constants.Hood.kA;
 
+        MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
+        mmConfigs.MotionMagicCruiseVelocity = 5;
+        mmConfigs.MotionMagicAcceleration = 10;
+
         hoodMotor.clearStickyFaults();
+        hoodMotor.getConfigurator().apply(mmConfigs);
         hoodMotor.getConfigurator().apply(slot0Configs);
         hoodMotor.getConfigurator().apply(hoodCurrentLimits);
 
@@ -125,6 +131,7 @@ public class ShooterHood extends SubsystemBase {
 
     public boolean willGetDecapitated() {
         Pose2d currentPos = swerve.getPoseMeters();
+        // TODO: maybe have projected pose as the current pose idk
 
         double robotRadians = currentPos.getRotation().getRadians();
         Translation2d turretOffset = new Translation2d(Constants.Turret.offsetFromCenter.getX(),
@@ -159,12 +166,12 @@ public class ShooterHood extends SubsystemBase {
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         double sotmV[] = rob.mmturret.sotmPredictVelocity(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVA[] = rob.mmturret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
-                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVAI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
-                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
-                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        // double sotmVA[] = rob.mmturret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        // double sotmVAI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        // double sotmVI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         
         if (rob.mmturret.isInAllianceZone()) {
             // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
