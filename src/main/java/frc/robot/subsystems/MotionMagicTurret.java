@@ -221,12 +221,12 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);*/
 
         // double future[] = aLookIntoTheFuture(currentPos, distanceToTarget, targetPos);
-        // double sotmV[] = sotmPredictVelocity(currentPos, distanceToTarget, targetPos);
-        double sotmVA[] = sotmPredictVelocityAcceleration(currentPos, distanceToTarget, targetPos);
+        double sotmV[] = sotmPredictVelocity(currentPos, distanceToTarget, targetPos);
+        // double sotmVA[] = sotmPredictVelocityAcceleration(currentPos, distanceToTarget, targetPos);
         // double sotmVAI[] = sotmPredictVelocityAccelerationIteration(currentPos, distanceToTarget, targetPos);
         // double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, targetPos);
 
-        double futureDegrees = sotmVA[1];
+        double futureDegrees = sotmV[1];
 
         // double degreesToTarget = wrapAngleDegrees(aimDegrees
         //                                           - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
@@ -262,6 +262,7 @@ public class MotionMagicTurret extends SubsystemBase {
 
         double turretVelocityX = speeds.vxMetersPerSecond;
         double turretVelocityY = speeds.vyMetersPerSecond;
+        double time = distanceToTime(distance);
 
         if (rob.isRed()){
             turretVelocityX *= -1.0;
@@ -270,24 +271,23 @@ public class MotionMagicTurret extends SubsystemBase {
 
         double accelerationX;
         double accelerationY;
+        double dvX = turretVelocityX * time;
+        double dvY = turretVelocityY * time;
+
+        accelerationX = getAcceleration(turretVelocityX, previousVelocityX, time, previousTime);
+        previousVelocityX = turretVelocityX;
+        accelerationY = getAcceleration(turretVelocityY, previousVelocityY, time, previousTime);
+        previousVelocityY = turretVelocityY;
+        previousTime = time;
+
+        double daX = accelerationX * time * time / 2.0;
+        double daY = accelerationY * time * time / 2.0; 
 
         double lookaheadDistance = distance;
         Pose2d lookaheadTurretPose = turretPose;
 
         for (int i = 0; i < 5; i++){ // TODO: SAME THING AS BOTTOM TODO :)
             double timeOfFlight = distanceToTime(lookaheadDistance);
-  
-            double dvX = turretVelocityX * timeOfFlight;
-            double dvY = turretVelocityY * timeOfFlight;
-
-            accelerationX = getAcceleration(turretVelocityX, previousVelocityX, timeOfFlight, previousTime);
-            previousVelocityX = turretVelocityX;
-            accelerationY = getAcceleration(turretVelocityY, previousVelocityY, timeOfFlight, previousTime);
-            previousVelocityY = turretVelocityY;
-            previousTime = timeOfFlight;
-
-            double daX = accelerationX * timeOfFlight * timeOfFlight / 2.0;
-            double daY = accelerationY * timeOfFlight * timeOfFlight / 2.0; 
 
             if (rob.isRed()){
                 daX *= -1.0;

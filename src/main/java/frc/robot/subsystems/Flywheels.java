@@ -21,7 +21,7 @@ public class Flywheels extends SubsystemBase {
 
     private double targetVelocity = 0;
     private final double maxPower = 1.0;
-    private final double minPower = 0.2;
+    private final double minPower = 0.1;
 
     private final DutyCycleOut flywheelOutL = new DutyCycleOut(0);
     private final DutyCycleOut flywheelOutR = new DutyCycleOut(0);
@@ -81,11 +81,11 @@ public class Flywheels extends SubsystemBase {
         double d = Math.min(distance, 9);
         if (d < 4.49){
             return Math.max(Math.min(-23.63 * Math.pow(d, 3) + 236.53 * Math.pow(d, 2) - 493.68 * d + 1860.02, 3000), 0);
-        // } else if (d >= 4.49 && d < 5.7) {
-        //     return Math.max(Math.min(357.14 * Math.pow(d, 3) - 5514.73 * Math.pow(d, 2) + 28472.27 * d - 46897.74, 3000), 0);
-        } else {
-            return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
+        } else  {
+            return Math.max(Math.min(357.14 * Math.pow(d, 3) - 5514.73 * Math.pow(d, 2) + 28472.27 * d - 46897.74, 3000), 0);
         }
+            // return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
+
     }
 
     public void rpmToLob(double distance){
@@ -124,6 +124,8 @@ public class Flywheels extends SubsystemBase {
         //     leftFlywheelMotor.setControl(flywheelOutL.withOutput(power));
         //     rightFlywheelMotor.setControl(flywheelOutR.withOutput(-power));
         // }
+
+        // SmartDashboard.putNumber("FLYWHEEL RPM", )
     }
 
     @Override

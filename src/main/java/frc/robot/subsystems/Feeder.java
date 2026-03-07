@@ -19,7 +19,7 @@ public class Feeder extends SubsystemBase {
     private final DutyCycleOut feedOut = new DutyCycleOut(0);
     private double targetSpeed = 0;
     private final double maxPower = 0.9;
-    private final double minPower = 0.4;
+    private final double minPower = 0.6;
 
     private boolean canMove = true;
     private final MotionMagicTurret mmturret;
@@ -80,7 +80,7 @@ public class Feeder extends SubsystemBase {
         //     power = 0;
         // }
         // if (targetSpeed == 0){
-        //     power =0;
+        //     power = 0;
         // }
 
         // if (targetSpeed < 0) {

@@ -37,10 +37,10 @@ public class FlywheelShoot extends Command {
         // double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         
-        // double sotmV[] = mmturret.sotmPredictVelocity(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVA[] = mmturret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
+        double sotmV[] = mmturret.sotmPredictVelocity(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        // double sotmVA[] = mmturret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
+        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmVAI[] = mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmVI[] = mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
@@ -51,7 +51,7 @@ public class FlywheelShoot extends Command {
 
         // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
 
-        flywheels.setVelocity(flywheels.rpmToHub(sotmVA[0]));
+        flywheels.setVelocity(flywheels.rpmToHub(sotmV[0]));
         // flywheels.setVelocity(mmturret.velocityToRpm(mmturret.ans[0],
         // Constants.Flywheel.flywheelRadiusMeters));
 
