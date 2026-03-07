@@ -409,7 +409,7 @@ public class MotionMagicTurret extends SubsystemBase {
     }
 
     public double[] sotmPredictVelocity(Pose2d currentPose, double distance, Pose2d targetPose){
-        ChassisSpeeds speeds = swerve.getState().Speeds;
+        ChassisSpeeds speeds = swerve.getState().Speeds; //TODO: ACCOUNT FOR ROTATIONS
         double robotRadians = currentPose.getRotation().getRadians(); 
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
         Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);

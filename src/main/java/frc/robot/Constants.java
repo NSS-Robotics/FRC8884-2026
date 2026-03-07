@@ -36,7 +36,7 @@ public class Constants {
 
     public static class Feeder {
         public static final double currentLimit = 60;
-        public static final double kP = 1.0;
+        public static final double kP = 0.5;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kS = 0.0;
