@@ -75,10 +75,13 @@ public class ShooterHood extends SubsystemBase {
         // double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) +
         // 5.33 * distance - 4.88;
         double angle;
-        if (distance < 4.49) {
-            angle = 1.21 * Math.pow(distance, 3) - 9.9 * Math.pow(distance, 2) + 28.61 * distance - 22.42;
-        } else {
-            angle = -1.1 * Math.pow(distance, 2) + 13.5 * distance - 24.47;
+        double d = Math.min(distance, 9); 
+        if (d < 4.49) {
+            angle = 1.21 * Math.pow(d, 3) - 9.9 * Math.pow(d, 2) + 28.61 * d - 22.42;
+        // } else if (d >= 4.49 && d < 5.7) {
+        //     angle = -1.1 * Math.pow(d, 2) + 13.5 * d - 24.47;
+        } else{
+            angle = -0.02 * Math.pow(d, 3) + 0.28 * Math.pow(d, 2) + 0.37 * d + 8.66; // lob
         }
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
@@ -164,10 +167,10 @@ public class ShooterHood extends SubsystemBase {
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
         // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmV[] = rob.mmturret.sotmPredictVelocity(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
-                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmVA[] = rob.mmturret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+        // double sotmV[] = rob.mmturret.sotmPredictVelocity(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        double sotmVA[] = rob.mmturret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmVAI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmVI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
@@ -175,10 +178,10 @@ public class ShooterHood extends SubsystemBase {
         
         if (rob.mmturret.isInAllianceZone()) {
             // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
-            alignHoodtoHub(sotmV[0]);
+            alignHoodtoHub(sotmVA[0]);
         } else {
             // alignHoodtoLob(rob.mmturret.getDistanceToTarget());
-            alignHoodtoLob(sotmV[0]);
+            alignHoodtoLob(sotmVA[0]);
         }
 
         if (willGetDecapitated()) {

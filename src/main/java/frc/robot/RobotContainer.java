@@ -17,15 +17,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.ImmutableLinearVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -34,8 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.FuelSim;
 import frc.robot.commands.*;
@@ -88,20 +78,27 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        SlewRateLimiter xFilter = new SlewRateLimiter(1, -2, 0);
-        SlewRateLimiter yFilter = new SlewRateLimiter(1, -2, 0);
+        // FIXME(maybe): figure out how to properly cap acceleration
+        // SlewRateLimiter xFilter = new SlewRateLimiter(1, -5, 0);
+        // SlewRateLimiter yFilter = new SlewRateLimiter(1, -5, 0);
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
                 double xVel = -driverController.getLeftY() * MaxSpeed;
                 double yVel = -driverController.getLeftX() * MaxSpeed;
 
-                // if (flywheels.getVelocity() > 10) {
-                //     // if velocity > 10, we're shooting
-                //     // TODO: fix for when we decide to use a resting flywheel speed
-                //     xVel = xFilter.calculate(xVel);
-                //     yVel = yFilter.calculate(yVel);
-                // }
+                if (flywheels.getVelocity() > 10) {
+                    // if velocity > 10, we're shooting
+
+                    // TODO: fix for when we decide to use a resting flywheel speed
+                    // xVel = xFilter.calculate(xVel);
+                    // yVel = yFilter.calculate(yVel);
+
+
+                    // TODO: don't instantly change from 2m/s to 5m/s
+                    // xVel = -driverController.getLeftY() * 2;
+                    // yVel = -driverController.getLeftX() * 2;
+                }
 
                 return drive.withVelocityX(xVel) // Drive forward with negative Y (forward)
                     .withVelocityY(yVel) // Drive left with negative X (left)
@@ -132,7 +129,7 @@ public class RobotContainer {
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
-            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.7)));
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.5)));
 
 
     // driverController.leftBumper()

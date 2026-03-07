@@ -47,7 +47,7 @@ public class Feeder extends SubsystemBase {
 
     public void setSpeed(double speedRPM) {
         targetSpeed = speedRPM/60;
-        // feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
+        feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
     }
     public void makeSpin(double power) {
         //spindexerMotor.set(power);
@@ -72,22 +72,22 @@ public class Feeder extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double ts = Math.abs(targetSpeed);
-        double speed = Math.abs(getSpeed());
-        double power = (ts - speed)/ts * maxPower;
-        power = Math.min(Math.max(power, minPower), maxPower);
-        if (speed > ts) {
-            power = 0;
-        }
-        if (targetSpeed == 0){
-            power =0;
-        }
+        // double ts = Math.abs(targetSpeed);
+        // double speed = Math.abs(getSpeed());
+        // double power = (ts - speed)/ts * maxPower;
+        // power = Math.min(Math.max(power, minPower), maxPower);
+        // if (speed > ts) {
+        //     power = 0;
+        // }
+        // if (targetSpeed == 0){
+        //     power =0;
+        // }
 
-        if (targetSpeed < 0) {
-            feederMotor.setControl(feedOut.withOutput(-power));
-        } else {
-            feederMotor.setControl(feedOut.withOutput(power));
-        }
+        // if (targetSpeed < 0) {
+        //     feederMotor.setControl(feedOut.withOutput(-power));
+        // } else {
+        //     feederMotor.setControl(feedOut.withOutput(power));
+        // }
 
         SmartDashboard.putNumber("Feeder Speed", getSpeed());
         SmartDashboard.putBoolean("canMove", canMove);

@@ -20,7 +20,7 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
     private double targetVelocity = 0;
-    private final double maxPower = 0.9;
+    private final double maxPower = 1.0;
     private final double minPower = 0.2;
 
     private final DutyCycleOut flywheelOutL = new DutyCycleOut(0);
@@ -62,8 +62,8 @@ public class Flywheels extends SubsystemBase {
     public void setVelocity(double rpm) {
         targetVelocity = (rpm)/60; // +25
 
-        // rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
-        // leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
+        rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
+        leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
     }
 
     public double getVelocity() {
@@ -78,10 +78,13 @@ public class Flywheels extends SubsystemBase {
     }
 
     public double rpmToHub(double distance) {
-        if (distance < 4.49){
-            return Math.max(Math.min(-23.63 * Math.pow(distance, 3) + 236.53 * Math.pow(distance, 2) - 493.68 * distance + 1860.02, 3000), 0);
+        double d = Math.min(distance, 9);
+        if (d < 4.49){
+            return Math.max(Math.min(-23.63 * Math.pow(d, 3) + 236.53 * Math.pow(d, 2) - 493.68 * d + 1860.02, 3000), 0);
+        // } else if (d >= 4.49 && d < 5.7) {
+        //     return Math.max(Math.min(357.14 * Math.pow(d, 3) - 5514.73 * Math.pow(d, 2) + 28472.27 * d - 46897.74, 3000), 0);
         } else {
-            return Math.max(Math.min(357.14 * Math.pow(distance, 3) - 5514.73 * Math.pow(distance, 2) + 28472.27 * distance - 46897.74, 3000), 0);
+            return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
         }
     }
 
@@ -105,22 +108,22 @@ public class Flywheels extends SubsystemBase {
         //     rpmToRest();
         // }
 
-        double ts = Math.abs(targetVelocity);
-        double speed = Math.abs(getVelocity());
-        double power = (ts - speed)/ts;
+        // double ts = Math.abs(targetVelocity);
+        // double speed = Math.abs(getVelocity());
+        // double power = (ts - speed)/ts;
 
-        power = Math.min(Math.max(power, minPower), maxPower);
-        if (targetVelocity == 0){
-            power =0;
-        }
+        // power = Math.min(Math.max(power, minPower), maxPower);
+        // if (targetVelocity == 0){
+        //     power =0;
+        // }
 
-        if (targetVelocity < 0) {
-            leftFlywheelMotor.setControl(flywheelOutL.withOutput(-power));
-            rightFlywheelMotor.setControl(flywheelOutR.withOutput(power));
-        } else {
-            leftFlywheelMotor.setControl(flywheelOutL.withOutput(power));
-            rightFlywheelMotor.setControl(flywheelOutR.withOutput(-power));
-        }
+        // if (targetVelocity < 0) {
+        //     leftFlywheelMotor.setControl(flywheelOutL.withOutput(-power));
+        //     rightFlywheelMotor.setControl(flywheelOutR.withOutput(power));
+        // } else {
+        //     leftFlywheelMotor.setControl(flywheelOutL.withOutput(power));
+        //     rightFlywheelMotor.setControl(flywheelOutR.withOutput(-power));
+        // }
     }
 
     @Override

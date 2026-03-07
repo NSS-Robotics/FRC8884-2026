@@ -19,7 +19,7 @@ public class RunSpindexer extends Command {
         spindexer.setSpeed(-2500);
         // spindexer.makeSpin(-0.23);
         // feeder.makeSpin(-1.0/3.0);
-        feeder.setSpeed(-1400);
+        feeder.setSpeed(-2100);
     }
 
     @Override

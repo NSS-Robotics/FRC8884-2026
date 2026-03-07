@@ -8,6 +8,7 @@ import edu.wpi.first.math.util.Units;
 public class Constants {
     // Red positions
     public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));        
+    // public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));        
     public static final Pose2d leftCornerRed = new Pose2d(16, 8 - 0.5, Rotation2d.fromDegrees(180));
     public static final Pose2d rightCornerRed = new Pose2d(16, 0.05 + 0.5, Rotation2d.fromDegrees(180));
 
@@ -35,7 +36,7 @@ public class Constants {
 
     public static class Feeder {
         public static final double currentLimit = 60;
-        public static final double kP = 25;
+        public static final double kP = 5;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kS = 0.0;
@@ -58,7 +59,7 @@ public class Constants {
         // public static final double kP = 4; // 6
         public static final double kP = 4;
         public static final double kI = 0;
-        public static final double kD = 0.01; // 0.01
+        public static final double kD = 0.01;
         public static final double kS = 0.35;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
@@ -95,7 +96,6 @@ public class Constants {
         public static final double trenchRedX = 11.915394; // decapitation
         public static final double trenchBlueX = 4.625594;
         public static final double trenchOffset = 0.35;
-
     }
 
     public static class Intake {
