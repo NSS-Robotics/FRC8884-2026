@@ -416,8 +416,8 @@ public class MotionMagicTurret extends SubsystemBase {
 
         double time = distanceToTime(distance);
 
-        double turretVelocityX = speeds.vxMetersPerSecond;
-        double turretVelocityY = speeds.vyMetersPerSecond;      
+        double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
+        double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
 
         double dvX = turretVelocityX * time;
         double dvY = turretVelocityY * time;
