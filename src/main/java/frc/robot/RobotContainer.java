@@ -79,18 +79,22 @@ public class RobotContainer {
 
     private void configureBindings() {
         // FIXME(maybe): figure out how to properly cap acceleration
+        // SlewRateLimiter xFilter = new SlewRateLimiter(1);
         // SlewRateLimiter xFilter = new SlewRateLimiter(1, -5, 0);
+        // SlewRateLimiter yFilter = new SlewRateLimiter(1);
         // SlewRateLimiter yFilter = new SlewRateLimiter(1, -5, 0);
+        // positiveratelimit = accel cap
+        // negativeratelimit = decel cap
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
                 double xVel = -driverController.getLeftY() * MaxSpeed;
                 double yVel = -driverController.getLeftX() * MaxSpeed;
 
-                if (flywheels.getVelocity() > 10) {
+                if (driverController.rightTrigger().getAsBoolean()) {
                     // if velocity > 10, we're shooting
 
-                    // TODO: fix for when we decide to use a resting flywheel speed
+                    // TODO: fix for when  we decide to use a resting flywheel speed
                     // TODO: stop using flywheelvelocity>10, only do this if we are actively shooting (holding down righttrigger)
                     // xVel = xFilter.calculate(xVel);
                     // yVel = yFilter.calculate(yVel);
@@ -130,8 +134,7 @@ public class RobotContainer {
         driverController.x()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
-            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.5)));
-
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
 
     // driverController.leftBumper()
         //     .whileTrue(new InstantCommand(() -> {
@@ -216,10 +219,11 @@ public class RobotContainer {
             })
         );
         NamedCommands.registerCommand("Spindexer", 
-            new InstantCommand(() ->{
-                spindexer.setSpeed(-2500);
-                feeder.setSpeed(-1200);
-            })
+            // new InstantCommand(() ->{
+            //     spindexer.setSpeed(-2500);
+            //     feeder.setSpeed(-1200);
+            // })
+            new RunSpindexer(this)
         );
 
         // NamedCommands.registerCommand("Stop Spindexer",
@@ -227,7 +231,7 @@ public class RobotContainer {
         // );
         
         NamedCommands.registerCommand("IntakeDown",    
-            new InstantCommand(() -> intakePivot.setPosition(15.5))
+            new InstantCommand(() -> intakePivot.setPosition(15.9))
         );
 
         // NamedCommands.registerCommand("Intake",
@@ -235,7 +239,7 @@ public class RobotContainer {
         // );  
         NamedCommands.registerCommand("Intake",
             new InstantCommand(() -> intake.setVelocity(4000)) // TODO: MAKE CONSTANT?
-        );  
+        );
 
         NamedCommands.registerCommand("Unjam Intake",
             new IntakeUnjam(this)

@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.shooterHood.zeroHood();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -74,6 +75,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.spindexer.stop();
     m_robotContainer.feeder.stop(); // TODO: WE WANT FLYWHEELS MOVING AT ALL TIMES, SO MAYBE THIS ISNT GOOD NOT SURE CHECK LATER :)
     m_robotContainer.intake.stopIntake();
+    m_robotContainer.mmturret.autoShoot = false;
   }
 
   @Override

@@ -40,9 +40,9 @@ public class Snap extends Command {
         targetRotations = closestDegree();
         // Get rotation rate
         if ((targetRotations.getDegrees() + angleDeadZone) > currentRotations.getDegrees()) {
-            radianVelocity = 0.3;
+            radianVelocity = 0.5;
         } else if (((targetRotations.getDegrees()) - angleDeadZone) < currentRotations.getDegrees()) {
-            radianVelocity = -0.3;
+            radianVelocity = -0.5;
         }
 
         swerve.setControl(

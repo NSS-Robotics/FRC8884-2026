@@ -7,13 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeDown"
+            "name": "Intake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "IntakeDown"
           }
         },
         {
@@ -48,6 +48,12 @@
                 "type": "named",
                 "data": {
                   "name": "Unjam Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Neutral 2.1"
                 }
               }
             ]

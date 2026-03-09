@@ -76,6 +76,7 @@ public class ShooterHood extends SubsystemBase {
         // 5.33 * distance - 4.88;
         double angle;
         double d = Math.min(distance, 9); 
+        d += 0.35;
         if (d < 4.49) {
             angle = 1.21 * Math.pow(d, 3) - 9.9 * Math.pow(d, 2) + 28.61 * d - 22.42;
         } else {

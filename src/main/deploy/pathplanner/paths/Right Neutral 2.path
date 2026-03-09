@@ -4,40 +4,40 @@
     {
       "anchor": {
         "x": 8.735,
-        "y": 4.884
+        "y": 4.659
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.46601821192053,
-        "y": 7.534288079470198
+        "x": 8.85073344370861,
+        "y": 7.38104966887417
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 11.921746688741724,
-        "y": 7.425389072847682
+        "x": 11.958046357615894,
+        "y": 7.294710264900662
       },
       "prevControl": {
-        "x": 10.70126323017067,
-        "y": 7.361153101343942
+        "x": 10.815322181505254,
+        "y": 7.304397232448504
       },
       "nextControl": {
-        "x": 12.749379139072849,
-        "y": 7.468948675496688
+        "x": 12.814465231788077,
+        "y": 7.287450331125827
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.136026490066223,
-        "y": 5.603145695364237
+        "x": 13.025,
+        "y": 7.295
       },
       "prevControl": {
-        "x": 13.78754966887417,
-        "y": 7.149511589403972
+        "x": 12.33530629139073,
+        "y": 7.287740066225166
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,10 +47,24 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.49613899613899626,
-      "rotationDegrees": 0.0
+      "rotationDegrees": -90.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.5448504983388708,
+      "maxWaypointRelativePos": 1.172093023255814,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -63,7 +77,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Right Neutral",

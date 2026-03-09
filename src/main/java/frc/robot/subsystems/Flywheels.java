@@ -78,7 +78,8 @@ public class Flywheels extends SubsystemBase {
     }
 
     public double rpmToHub(double distance) {
-        double d = Math.min(distance, 9);
+        double d = Math.min(distance, 9); 
+        d += 0.35; //TODO: HOTFIX
         if (d < 4.49){
             return Math.max(Math.min(-23.63 * Math.pow(d, 3) + 236.53 * Math.pow(d, 2) - 493.68 * d + 1860.02, 3000), 0);
         } else  {

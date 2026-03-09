@@ -5,9 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeDown"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Left Neutral 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Flywheels"
           }
         },
         {
@@ -17,9 +35,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Spindexer"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spindexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Unjam Intake"
+                }
+              }
+            ]
           }
         }
       ]
