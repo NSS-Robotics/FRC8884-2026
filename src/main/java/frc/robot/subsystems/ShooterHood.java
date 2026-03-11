@@ -166,7 +166,7 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Current", getCurrent());
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
-        // degrees = SmartDashboard.getNumber("Set Angles", 0);
+        degrees = SmartDashboard.getNumber("Set Angles", 0);
         // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         double sotmV[] = rob.mmturret.sotmPredictVelocity(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
@@ -178,13 +178,13 @@ public class ShooterHood extends SubsystemBase {
         // double sotmVI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         
-        if (rob.mmturret.isInAllianceZone()) {
-            // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
-            alignHoodtoHub(sotmV[0]);
-        } else {
-            // alignHoodtoLob(rob.mmturret.getDistanceToTarget());
-            alignHoodtoLob(sotmV[0]);
-        }
+        // if (rob.mmturret.isInAllianceZone()) {
+        //     // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
+        //     alignHoodtoHub(sotmV[0]);
+        // } else {
+        //     // alignHoodtoLob(rob.mmturret.getDistanceToTarget());
+        //     alignHoodtoLob(sotmV[0]);
+        // }
 
         if (willGetDecapitated()) {
             degrees = 0.5;

@@ -25,22 +25,22 @@ public class Constants {
 
     public static class Flywheel {
         public static final double currentLimit = 40;
-        public static final double kP = 0.5;
+        public static final double kP = 0.1; // TODO: tune
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 0.0;
-        public static final double kV = 0.0;
+        public static final double kS = 0.25;
+        public static final double kV = 0.123;
         public static final double kA = 0.0;
         public static final double flywheelRadiusMeters = 0.0508;
     }
 
     public static class Feeder {
         public static final double currentLimit = 80;
-        public static final double kP = 0.5;
+        public static final double kP = 0.75;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 0.0;
-        public static final double kV = 0.0;
+        public static final double kS = 1.0;
+        public static final double kV = 0.095;
         public static final double kA = 0.0;
     }
 

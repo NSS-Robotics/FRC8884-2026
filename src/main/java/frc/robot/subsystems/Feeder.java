@@ -24,6 +24,8 @@ public class Feeder extends SubsystemBase {
     private boolean canMove = true;
     private final MotionMagicTurret mmturret;
 
+    private Slot0Configs pidConfigs = new Slot0Configs();
+
     private VelocityVoltage feederVelocity = new VelocityVoltage(0).withSlot(0);
 
     public Feeder(RobotContainer rob) {
@@ -32,17 +34,20 @@ public class Feeder extends SubsystemBase {
         currentLimitConfig.StatorCurrentLimit = Constants.Feeder.currentLimit;
         currentLimitConfig.StatorCurrentLimitEnable = true;
 
-        Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.kP = Constants.Feeder.kP;
-        slot0Configs.kI = Constants.Feeder.kI;
-        slot0Configs.kD = Constants.Feeder.kD;
-        slot0Configs.kS = Constants.Feeder.kS;
-        slot0Configs.kV = Constants.Feeder.kV;
-        slot0Configs.kA = Constants.Feeder.kA;
+        pidConfigs.kP = Constants.Feeder.kP;
+        pidConfigs.kI = Constants.Feeder.kI;
+        pidConfigs.kD = Constants.Feeder.kD;
+        pidConfigs.kS = Constants.Feeder.kS;
+        pidConfigs.kV = Constants.Feeder.kV;
+        pidConfigs.kA = Constants.Feeder.kA;
 
-        feederMotor.getConfigurator().apply(slot0Configs);
+        feederMotor.getConfigurator().apply(pidConfigs);
         feederMotor.getConfigurator().apply(currentLimitConfig);
         feederMotor.setNeutralMode(NeutralModeValue.Coast);
+
+        SmartDashboard.putNumber("feed p", 0);
+        SmartDashboard.putNumber("feed s", 0);
+        SmartDashboard.putNumber("feed v", 0);
     }
 
     public void setSpeed(double speedRPM) {
@@ -92,5 +97,23 @@ public class Feeder extends SubsystemBase {
         SmartDashboard.putNumber("Feeder Speed", getSpeed());
         SmartDashboard.putBoolean("canMove", canMove);
         canMove();
+
+        double p = SmartDashboard.getNumber("feed p", 0);
+        double s = SmartDashboard.getNumber("feed s", 0);
+        double v = SmartDashboard.getNumber("feed v", 0);
+
+        boolean isChanged = (
+            p != pidConfigs.kP ||
+            s != pidConfigs.kS ||
+            v != pidConfigs.kV
+        );
+
+        if(isChanged){
+            pidConfigs.kP = p;
+            pidConfigs.kS = s;
+            pidConfigs.kV = v;
+            // feederMotor.getConfigurator().apply(pidConfigs);
+        }
+
     }
 }

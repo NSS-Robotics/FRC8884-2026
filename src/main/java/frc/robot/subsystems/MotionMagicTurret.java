@@ -375,7 +375,8 @@ public class MotionMagicTurret extends SubsystemBase {
             double dvX = turretVelocityX * timeOfFlight;
             double dvY = turretVelocityY * timeOfFlight;
 
-            lookaheadTurretPose = new Pose2d(turretPose.getX() + dvX, turretPose.getY() + dvY, null);
+            // lookaheadTurretPose = new Pose2d(turretPose.getX() + dvX, turretPose.getY() + dvY, null);
+            lookaheadTurretPose = new Pose2d(turretPose.getTranslation().plus(new Translation2d(dvX, dvY)), null);
             
             double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
             double yDistance = lookaheadTurretPose.getY() - targetPose.getY();

@@ -17,7 +17,7 @@ public class RunIntake extends Command {
     @Override
     public void execute() {
         // intake.setVelocity(SmartDashboard.getNumber("Intake RPM", 0));
-        intake.setVelocity(4000);
+        intake.setVelocity(3800);
     }
 
     @Override

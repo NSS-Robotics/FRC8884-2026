@@ -26,6 +26,9 @@ public class Flywheels extends SubsystemBase {
     private final DutyCycleOut flywheelOutL = new DutyCycleOut(0);
     private final DutyCycleOut flywheelOutR = new DutyCycleOut(0);
 
+
+    Slot0Configs pidConfigs = new Slot0Configs();
+
     public Flywheels(RobotContainer rob) {
         TalonFXConfiguration leftConfig = new TalonFXConfiguration();
         TalonFXConfiguration rightConfig = new TalonFXConfiguration();
@@ -36,7 +39,6 @@ public class Flywheels extends SubsystemBase {
         currentLimitConfig.StatorCurrentLimit = Constants.Flywheel.currentLimit;
         currentLimitConfig.StatorCurrentLimitEnable = true;
 
-        Slot0Configs pidConfigs = new Slot0Configs();
         pidConfigs.kP = Constants.Flywheel.kP;
         pidConfigs.kI = Constants.Flywheel.kI;
         pidConfigs.kD = Constants.Flywheel.kD;
@@ -57,6 +59,10 @@ public class Flywheels extends SubsystemBase {
 
         rightFlywheelMotor.setNeutralMode(NeutralModeValue.Coast);
         leftFlywheelMotor.setNeutralMode(NeutralModeValue.Coast);
+
+        SmartDashboard.putNumber("fly p", 0);
+        SmartDashboard.putNumber("fly s", 0);
+        SmartDashboard.putNumber("fly v", 0);
     }
 
     public void setVelocity(double rpm) {
@@ -127,6 +133,38 @@ public class Flywheels extends SubsystemBase {
         // }
 
         // SmartDashboard.putNumber("FLYWHEEL RPM", )
+
+        double p = SmartDashboard.getNumber("fly p", 0);
+        double s = SmartDashboard.getNumber("fly s", 0);
+        double v = SmartDashboard.getNumber("fly v", 0);
+        
+        // pidConfigs.kP = p;
+        // pidConfigs.kS = s;
+        // pidConfigs.kV = v;
+
+        boolean isChanged = false;
+
+        // if(p != pidConfigs.kP){
+        // pidConfigs.kP = p;
+        // isChanged = true; 
+        // }
+
+        // if(s != pidConfigs.kS){
+        // pidConfigs.kS = s;
+        // isChanged = true;
+        // }
+
+        // if(v != pidConfigs.kV){
+        // pidConfigs.kV = v;
+        // isChanged = true;
+        // }
+
+        // if(isChanged){
+        //     leftFlywheelMotor.getConfigurator().apply(pidConfigs);
+        //     rightFlywheelMotor.getConfigurator().apply(pidConfigs);
+        // }
+        // leftFlywheelMotor.getConfigurator().apply(pidConfigs);
+        // rightFlywheelMotor.getConfigurator().apply(pidConfigs);
     }
 
     @Override

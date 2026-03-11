@@ -11,6 +11,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Flywheels;
 import frc.robot.subsystems.MotionMagicTurret;
 import frc.robot.subsystems.ShooterHood;
+import frc.robot.subsystems.Feeder;
 
 public class FlywheelShoot extends Command {
 
@@ -18,6 +19,7 @@ public class FlywheelShoot extends Command {
     private final Flywheels flywheels;
     private final ShooterHood shooterHood;
     private final CommandSwerveDrivetrain swerve;
+    private final Feeder feeder;
 
     private MotionMagicTurret mmturret;
 
@@ -26,6 +28,7 @@ public class FlywheelShoot extends Command {
         this.flywheels = rob.flywheels;
         this.shooterHood = rob.shooterHood;
         this.swerve = rob.drivetrain;
+        this.feeder = rob.feeder;
         this.rob = rob;
 
         addRequirements(rob.flywheels);
@@ -49,14 +52,18 @@ public class FlywheelShoot extends Command {
         // double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(),
         // mmturret.getDistanceToTarget(), Constants.targetPositionBlue);
 
-        // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
+        flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
 
-        flywheels.setVelocity(flywheels.rpmToHub(sotmV[0]));
+        // flywheels.setVelocity(flywheels.rpmToHub(sotmV[0]));
         // flywheels.setVelocity(mmturret.velocityToRpm(mmturret.ans[0],
         // Constants.Flywheel.flywheelRadiusMeters));
 
         shooterHood.setDegrees();
+        feeder.setSpeed(-1000);
+
     }
+
+
 
     @Override
     public void end(boolean interrupted) {
