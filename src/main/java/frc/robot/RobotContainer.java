@@ -79,10 +79,10 @@ public class RobotContainer {
 
     private void configureBindings() {
         // FIXME(maybe): figure out how to properly cap acceleration
-        // SlewRateLimiter xFilter = new SlewRateLimiter(1);
-        // SlewRateLimiter xFilter = new SlewRateLimiter(1, -5, 0);
-        // SlewRateLimiter yFilter = new SlewRateLimiter(1);
-        // SlewRateLimiter yFilter = new SlewRateLimiter(1, -5, 0);
+        // SlewRateLimiter xFilter = new SlewRateLimiter(30);
+        // SlewRateLimiter xFilter = new SlewRateLimiter(5, -1000, 2);
+        // SlewRateLimiter yFilter = new SlewRateLimiter(30);
+        // SlewRateLimiter yFilter = new SlewRateLimiter(5, -1000, 2);
         // positiveratelimit = accel cap
         // negativeratelimit = decel cap
 
@@ -93,7 +93,7 @@ public class RobotContainer {
 
                 if (driverController.rightTrigger().getAsBoolean()) {
                     // if velocity > 10, we're shooting
-
+  
                     // TODO: fix for when  we decide to use a resting flywheel speed
                     // TODO: stop using flywheelvelocity>10, only do this if we are actively shooting (holding down righttrigger)
                     // xVel = xFilter.calculate(xVel);

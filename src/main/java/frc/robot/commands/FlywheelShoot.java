@@ -59,14 +59,13 @@ public class FlywheelShoot extends Command {
         // Constants.Flywheel.flywheelRadiusMeters));
 
         shooterHood.setDegrees();
-        feeder.setSpeed(-1000);
+        feeder.setSpeed(-3000);
 
     }
-
-
 
     @Override
     public void end(boolean interrupted) {
         flywheels.stop();
+        feeder.stop();
     }
 }

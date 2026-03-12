@@ -13,9 +13,11 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.MotionMagicTurret;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -92,9 +94,17 @@ public class Robot extends TimedRobot {
     else if (timer.get() < 85)  shift = Shift.ALLIANCEA;
     else if (timer.get() < 110) shift = Shift.ALLIANCEB;
     else                        shift = Shift.ENDGAME;
-    
+    double prefire = m_robotContainer.mmturret.distanceToTime(m_robotContainer.mmturret.getDegrees());
     // NOTE: Rumble does not work in simulation
     /*if (
+      ((time >= (10 - prefire)) && (time < 10)) ||
+      ((time >= (35 - prefire)) && (time < 35)) ||
+      ((time >= (60 - prefire)) && (time < 60)) ||
+      ((time >= (85 - prefire)) && (time < 85)) ||
+      ((time >= (110 - prefire)) && (time < 110)))
+    {
+        xbox.setRumble(RumbleType.kBothRumble, 1.0);
+    } else if (
       ((time >= (10 - switchNotification)) && (time < 10)) ||
       ((time >= (35 - switchNotification)) && (time < 35)) ||
       ((time >= (60 - switchNotification)) && (time < 60)) ||

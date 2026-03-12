@@ -44,7 +44,8 @@ public class MotionMagicTurret extends SubsystemBase {
     public double previousVelocityY = 0;
     public double previousTime = 1;
 
-    private ArrayList<Double> vQueue = new ArrayList<Double>();
+    private ArrayList<Double> vQueueX = new ArrayList<Double>();
+    private ArrayList<Double> vQueueY = new ArrayList<Double>();
     private ArrayList<Double> tQueue = new ArrayList<Double>();
 
     private final Translation2d offsetFromRobotCenter;
@@ -92,12 +93,12 @@ public class MotionMagicTurret extends SubsystemBase {
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
 
 
-        vQueue.add(0.0);
-        vQueue.add(0.0);
-        vQueue.add(0.0);
-        tQueue.add(0.0);
-        tQueue.add(0.0);
-        tQueue.add(0.0);
+        // vQueue.add(0.0);
+        // vQueue.add(0.0);
+        // vQueue.add(0.0);
+        // tQueue.add(0.0);
+        // tQueue.add(0.0);
+        // tQueue.add(0.0);
 
     }
 
@@ -267,29 +268,25 @@ public class MotionMagicTurret extends SubsystemBase {
         if (t1 == t2){
             return 0;
         }
-
-        vQueue.add(2, v1);
-        vQueue.remove(0);
-
         return (v1-v2)/(t1-t2);
     }
-    public double getAcceleration2(double v, double t){ // TODO TAKE MULITIPLE VELOCITES OVER TIME AND AVERAGE IT 
+    // public double getAcceleration2(double v, double t){ // TODO TAKE MULITIPLE VELOCITES OVER TIME AND AVERAGE IT 
 
-        vQueue.add(0, v);
-        vQueue.remove(3);
-        tQueue.add(0, t);
-        tQueue.remove(3);
+    //     vQueue.remove(0); // TODO: NEEDS TO BE XY
+    //     vQueue.add(v);
+    //     tQueue.remove(0);
+    //     tQueue.add(t);
 
-        if (tQueue.get(1) - tQueue.get(0) == 0 || tQueue.get(2) - tQueue.get(1) == 0){
-            return 0;
-        }
+    //     if (tQueue.get(1) - tQueue.get(0) == 0 || tQueue.get(2) - tQueue.get(1) == 0){
+    //         return 0;
+    //     }
 
-        double a1 = (vQueue.get(1) - vQueue.get(0)) / (tQueue.get(1) - tQueue.get(0));
-        double a2 = (vQueue.get(2) - vQueue.get(1)) / (tQueue.get(2) - tQueue.get(1));
+    //     double a1 = (vQueue.get(1) - vQueue.get(0)) / (tQueue.get(1) - tQueue.get(0));
+    //     double a2 = (vQueue.get(2) - vQueue.get(1)) / (tQueue.get(2) - tQueue.get(1));
 
-        return (a1+a2)/2.0;
+    //     return (a1+a2)/2.0;
 
-    }
+    // }
 
     public double[] sotmPredictVelocityAccelerationIteration(Pose2d currentPose, double distance, Pose2d targetPose){
         ChassisSpeeds speeds = swerve.getState().Speeds;
@@ -361,7 +358,7 @@ public class MotionMagicTurret extends SubsystemBase {
         double turretVelocityX = speeds.vxMetersPerSecond;
         double turretVelocityY = speeds.vyMetersPerSecond;
 
-        if (rob.isRed()){
+        if (!rob.isRed()){
             turretVelocityX *= -1.0;
             turretVelocityY *= -1.0;
         }
@@ -369,7 +366,7 @@ public class MotionMagicTurret extends SubsystemBase {
         double lookaheadDistance = distance;
         Pose2d lookaheadTurretPose = turretPose;
 
-        for (int i = 0; i < 2; i++){ // TODO: MAY BE INTERATING TOO MANY TIMES, TRY 2
+        for (int i = 0; i < 20; i++){ // TODO: MAY BE INTERATING TOO MANY TIMES, TRY 2
             double timeOfFlight = distanceToTime(lookaheadDistance);
 
             double dvX = turretVelocityX * timeOfFlight;
@@ -378,10 +375,11 @@ public class MotionMagicTurret extends SubsystemBase {
             // lookaheadTurretPose = new Pose2d(turretPose.getX() + dvX, turretPose.getY() + dvY, null);
             lookaheadTurretPose = new Pose2d(turretPose.getTranslation().plus(new Translation2d(dvX, dvY)), null);
             
-            double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
-            double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
+            // double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
+            // double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
 
-            lookaheadDistance = Math.hypot(xDistance, yDistance);
+            // lookaheadDistance = Math.hypot(xDistance, yDistance);
+            lookaheadDistance = targetPose.getTranslation().getDistance(lookaheadTurretPose.getTranslation());
         }
 
         double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
@@ -641,8 +639,9 @@ public class MotionMagicTurret extends SubsystemBase {
         
 
         // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
-        double sotmV[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
- 
+        double sotmV[] = sotmPredictVelocity(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+        double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+
         double futureDistance = sotmV[0];
         double futureAngle = sotmV[1];
 
@@ -650,6 +649,9 @@ public class MotionMagicTurret extends SubsystemBase {
             flywheels.setVelocity(flywheels.rpmToHub(sotmV[0]));
             shooterHood.setDegrees();
         }
+
+        SmartDashboard.putNumber("MMT SOTMVI DISTANCE", sotmVI[0]);
+        SmartDashboard.putNumber("MMT SOTMVI ANGLE", sotmVI[1]);
 
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());

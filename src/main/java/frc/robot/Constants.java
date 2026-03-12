@@ -36,11 +36,11 @@ public class Constants {
 
     public static class Feeder {
         public static final double currentLimit = 80;
-        public static final double kP = 0.75;
+        public static final double kP = 0.1;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 1.0;
-        public static final double kV = 0.095;
+        public static final double kS = 0.7;
+        public static final double kV = 0.1;
         public static final double kA = 0.0;
     }
 
