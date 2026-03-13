@@ -85,12 +85,16 @@ public class Flywheels extends SubsystemBase {
 
     public double rpmToHub(double distance) {
         double d = Math.min(distance, 9); 
-        d += 0.35; //TODO: HOTFIX
-        if (d < 4.49){
+        d-=0.135;
+        if (d < 5.1){
             // return Math.max(Math.min(-23.63 * Math.pow(d, 3) + 236.53 * Math.pow(d, 2) - 493.68 * d + 1860.02, 3000), 0);
-            return Math.max(Math.min(2.52 * Math.pow(d, 3) - 23.56 * Math.pow(d, 2) + 244.19 * d + 930.74, 3000), 0); 
+            double ans = 2.52 * Math.pow(d, 3) - 23.56 * Math.pow(d, 2) + 244.19 * d + 930.74;
+            if (d > 4.5){
+                d -= 0.1;
+            }
+            return Math.max(Math.min(ans, 3500), 0); 
         } else  {
-            return Math.max(Math.min(357.14 * Math.pow(d, 3) - 5514.73 * Math.pow(d, 2) + 28472.27 * d - 46897.74, 3000), 0); // TODO: GET THIS CURVE
+            return Math.max(Math.min(-37.40 * Math.pow(d,3) + 781.89 * Math.pow(d, 2) -5091.94 * d + 12529.60, 3500), 0); 
         }
             // return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
 

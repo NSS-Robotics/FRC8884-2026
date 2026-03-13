@@ -238,12 +238,12 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT TURRET COMPENSATION", ans[2]);*/
 
         // double future[] = aLookIntoTheFuture(currentPos, distanceToTarget, targetPos);
-        double sotmV[] = sotmPredictVelocity(currentPos, distanceToTarget, targetPos);
+        // double sotmV[] = sotmPredictVelocity(currentPos, distanceToTarget, targetPos);
         // double sotmVA[] = sotmPredictVelocityAcceleration(currentPos, distanceToTarget, targetPos);
         // double sotmVAI[] = sotmPredictVelocityAccelerationIteration(currentPos, distanceToTarget, targetPos);
-        // double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, targetPos);
+        double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, targetPos);
 
-        double futureDegrees = sotmV[1];
+        double futureDegrees = sotmVI[1];
 
         // double degreesToTarget = wrapAngleDegrees(aimDegrees
         //                                           - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
@@ -261,7 +261,7 @@ public class MotionMagicTurret extends SubsystemBase {
     }
 
     public double distanceToTime(double distance){
-        return Math.min(Math.max(0.03 * Math.pow(distance, 2) + 0.01 * distance + 0.91, 1), 1.5) + 0.125; // phase delay
+        return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.125; // phase delay
     }   
 
     public double getAcceleration(double v1, double v2, double t1, double t2){ // TODO TAKE MULITIPLE VELOCITES OVER TIME AND AVERAGE IT 
@@ -358,7 +358,7 @@ public class MotionMagicTurret extends SubsystemBase {
         double turretVelocityX = speeds.vxMetersPerSecond;
         double turretVelocityY = speeds.vyMetersPerSecond;
 
-        if (!rob.isRed()){
+        if (rob.isRed()){
             turretVelocityX *= -1.0;
             turretVelocityY *= -1.0;
         }
@@ -366,7 +366,7 @@ public class MotionMagicTurret extends SubsystemBase {
         double lookaheadDistance = distance;
         Pose2d lookaheadTurretPose = turretPose;
 
-        for (int i = 0; i < 20; i++){ // TODO: MAY BE INTERATING TOO MANY TIMES, TRY 2
+        for (int i = 0; i < 1; i++){ 
             double timeOfFlight = distanceToTime(lookaheadDistance);
 
             double dvX = turretVelocityX * timeOfFlight;
