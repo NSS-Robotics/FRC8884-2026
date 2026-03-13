@@ -355,10 +355,10 @@ public class MotionMagicTurret extends SubsystemBase {
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
         Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
 
-        double turretVelocityX = speeds.vxMetersPerSecond;
-        double turretVelocityY = speeds.vyMetersPerSecond;
+        double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
+        double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
 
-        if (rob.isRed()){
+        if (!rob.isRed()){
             turretVelocityX *= -1.0;
             turretVelocityY *= -1.0;
         }
@@ -366,7 +366,7 @@ public class MotionMagicTurret extends SubsystemBase {
         double lookaheadDistance = distance;
         Pose2d lookaheadTurretPose = turretPose;
 
-        for (int i = 0; i < 1; i++){ 
+        for (int i = 0; i < 25; i++){ 
             double timeOfFlight = distanceToTime(lookaheadDistance);
 
             double dvX = turretVelocityX * timeOfFlight;
