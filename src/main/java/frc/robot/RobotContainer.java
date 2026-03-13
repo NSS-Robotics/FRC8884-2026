@@ -44,7 +44,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     public final CommandXboxController driverController = new CommandXboxController(0);
-    //public final CommandXboxController operatorController = new CommandXboxController(1);
+    public final CommandXboxController operatorController = new CommandXboxController(1);
 
     public final FuelSim fuelSim = new FuelSim();
 
@@ -120,15 +120,18 @@ public class RobotContainer {
         driverController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
 
         /* longer commands */
-        driverController.rightTrigger().whileTrue(new FlywheelShoot(this));
-        driverController.rightBumper().whileTrue(new RunSpindexer(this));
-        driverController.b().whileTrue(new Unjam(this));      
-        driverController.leftTrigger().whileTrue(new RunIntake(this));
+        operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
+        operatorController.rightBumper().whileTrue(new RunSpindexer(this));
+        operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
+        operatorController.b().whileTrue(new Unjam(this));
+
+        driverController.leftTrigger().whileTrue(new RunIntake(this, 3200));
         driverController.leftBumper().whileTrue(new IntakeUnjam(this));
         driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); // TODO: UNCOMMENT 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
+        driverController.b().whileTrue(new RunIntake(this, -3200));
         driverController.y().whileTrue(new InstantCommand(/* lower hood and keep down until released, for trench */));
 
         driverController.x()

@@ -77,10 +77,12 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void stop() {
-        targetVelocity = 0;
-        VoltageOut voltageOut = new VoltageOut(0);
-        rightFlywheelMotor.setControl(voltageOut);
-        leftFlywheelMotor.setControl(voltageOut);
+        // targetVelocity = 500;
+        // VoltageOut voltageOut = new VoltageOut(0);
+        // rightFlywheelMotor.setControl(voltageOut);
+        // leftFlywheelMotor.setControl(voltageOut);
+        rpmToRest();
+        // :)
     }
 
     public double rpmToHub(double distance) {
@@ -106,7 +108,7 @@ public class Flywheels extends SubsystemBase {
 
     public void rpmToRest(){
         // TODO: resting set resting rpm
-        setVelocity(500);
+        setVelocity(1000);
     }
 
     @Override
