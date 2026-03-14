@@ -46,17 +46,31 @@ public class FlywheelShoot extends Command {
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmVAI[] = mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVI[] = mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
+
+        double sotmVI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        double sotmVILobRight[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+                rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
+        double sotmVILobLeft[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+                rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
         
         // double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(),
         // mmturret.getDistanceToTarget(), Constants.targetPositionBlue);
 
         // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
 
-        flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
+        // flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
 
-
+        if (!mmturret.isInAllianceZone()) { 
+            if (swerve.getPoseMeters().getY() > 4){
+                flywheels.setVelocity(flywheels.rpmToHub(sotmVILobRight[0]));
+            } else {
+                flywheels.setVelocity(flywheels.rpmToHub(sotmVILobLeft[0]));
+            } 
+        } else {      
+            // pointAtTarget(Constants.targetPositionBlue);
+            flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
+        }
         // flywheels.setVelocity(mmturret.velocityToRpm(mmturret.ans[0],
         // Constants.Flywheel.flywheelRadiusMeters));
 

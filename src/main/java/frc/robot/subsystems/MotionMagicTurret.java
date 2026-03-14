@@ -261,7 +261,7 @@ public class MotionMagicTurret extends SubsystemBase {
     }
 
     public double distanceToTime(double distance){
-        return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.125; // phase delay
+        return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.03; // phase delay
     }   
 
     public double getAcceleration(double v1, double v2, double t1, double t2){ // TODO TAKE MULITIPLE VELOCITES OVER TIME AND AVERAGE IT 
@@ -358,10 +358,10 @@ public class MotionMagicTurret extends SubsystemBase {
         double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
         double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
 
-        if (!rob.isRed()){
-            turretVelocityX *= -1.0;
-            turretVelocityY *= -1.0;
-        }
+        // if (!rob.isRed()){
+        //     turretVelocityX *= -1.0;
+        //     turretVelocityY *= -1.0;
+        // }
 
         double lookaheadDistance = distance;
         Pose2d lookaheadTurretPose = turretPose;
@@ -608,34 +608,39 @@ public class MotionMagicTurret extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-
-        if (!isInAllianceZone()) { 
-            if (rob.isRed()){
-                if (swerve.getPoseMeters().getY() > 4){
-                    pointAtTarget(Constants.leftCornerRed);
-                } else{
-                    pointAtTarget(Constants.rightCornerRed);
+        if(!intakePivot.isIntakeUp()){
+            if (!isInAllianceZone()) { 
+                if (rob.isRed()){
+                    if (swerve.getPoseMeters().getY() > 4){
+                        pointAtTarget(Constants.leftCornerRed);
+                    } else{
+                        pointAtTarget(Constants.rightCornerRed);
+                    }
+                } else {
+                    if (swerve.getPoseMeters().getY() > 4){
+                        pointAtTarget(Constants.leftCornerBlue);
+                    } else{
+                        pointAtTarget(Constants.rightCornerBlue);
+                    }
                 }
-            } else {
-                if (swerve.getPoseMeters().getY() > 4){
-                    pointAtTarget(Constants.leftCornerBlue);
-                } else{
-                    pointAtTarget(Constants.rightCornerBlue);
+            } else {      
+                if (rob.isRed()){
+                    // pointAtTarget(Constants.targetPositionBlue);
+
+                    pointAtTarget(Constants.targetPositionRed);
+                } else {
+                    pointAtTarget(Constants.targetPositionBlue);
+                    // pointAtTarget(Constants.targetPositionRed);
+
                 }
-            }
-        } else {      
-            if (rob.isRed()){
-                // pointAtTarget(Constants.targetPositionBlue);
-
-                pointAtTarget(Constants.targetPositionRed);
-            } else {
-                pointAtTarget(Constants.targetPositionBlue);
-                // pointAtTarget(Constants.targetPositionRed);
-
             }
         }
+
+        // pointAtTarget(Constants.targetPositionBlue);
         
 
         // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 

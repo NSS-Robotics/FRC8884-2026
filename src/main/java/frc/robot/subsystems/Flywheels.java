@@ -96,19 +96,19 @@ public class Flywheels extends SubsystemBase {
             }
             return Math.max(Math.min(ans, 3500), 0); 
         } else  {
-            return Math.max(Math.min(-37.40 * Math.pow(d,3) + 781.89 * Math.pow(d, 2) -5091.94 * d + 12529.60, 3500), 0); 
+            return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0); 
         }
             // return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
 
     }
 
     public void rpmToLob(double distance){
-
+        
     }
 
     public void rpmToRest(){
         // TODO: resting set resting rpm
-        setVelocity(1000);
+        setVelocity(0); // TODO: MAKE IT 1000
     }
 
     @Override

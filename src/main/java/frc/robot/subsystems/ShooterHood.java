@@ -81,7 +81,7 @@ public class ShooterHood extends SubsystemBase {
             // angle = 1.21 * Math.pow(d, 3) - 9.9 * Math.pow(d, 2) + 28.61 * d - 22.42;
             angle = 0.27 * Math.pow(d,3) - 3.08 * Math.pow(d, 2) + 12.92 * d  - 11.22;
         } else {
-            angle = 0.03 * Math.pow(d, 3) - 0.08 * Math.pow(d, 2) - 0.45 * d + 10.77; // TODO: CHANGE THIS
+            angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
         } 
         // else{
         //     angle = -0.02 * Math.pow(d, 3) + 0.28 * Math.pow(d, 2) + 0.37 * d + 8.66; // lob
@@ -178,13 +178,32 @@ public class ShooterHood extends SubsystemBase {
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         double sotmVI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+        double sotmVILobRight[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+                rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
+        double sotmVILobLeft[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+                rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
+
         
-        if (rob.mmturret.isInAllianceZone()) {
-            // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
-            alignHoodtoHub(sotmVI[0]);
-        } else {
-            // alignHoodtoLob(rob.mmturret.getDistanceToTarget());
-            alignHoodtoLob(sotmVI[0]);
+        // if (rob.mmturret.isInAllianceZone()) {
+        //     // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
+        //     alignHoodtoHub(sotmVI[0]);
+        // } else {
+        //     // alignHoodtoLob(rob.mmturret.getDistanceToTarget());
+        //     alignHoodtoLob(sotmVI[0]);
+        // }
+
+        if (!rob.mmturret.isInAllianceZone()) { 
+            if (swerve.getPoseMeters().getY() > 4){
+                alignHoodtoHub(sotmVILobLeft[0]);
+            } else {
+                alignHoodtoHub(sotmVILobRight[0]);
+            } 
+        } else {      
+            if (rob.isRed()){
+                // pointAtTarget(Constants.targetPositionBlue);
+
+                alignHoodtoHub(sotmVI[0]);
+            }
         }
 
         if (willGetDecapitated()) {
