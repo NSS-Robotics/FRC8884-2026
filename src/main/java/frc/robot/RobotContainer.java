@@ -131,15 +131,8 @@ public class RobotContainer {
         // driverController.povUp().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(1)));
         // driverController.povDown().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(-1)));
         driverController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
-        driverController.x()
-            .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a()
             .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
-=======
-        driverController.a()
-            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
-
->>>>>>> 08d4149140de7b1519237ddd9f435204d8d45bca
 
         /* longer commands */
         operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
@@ -156,13 +149,7 @@ public class RobotContainer {
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
         driverController.y().whileTrue(new InstantCommand(/* lower hood and keep down until released, for trench */));
-<<<<<<< HEAD
-
-       
-=======
-        driverController.x()
-            .onTrue(new IntakeUp(this));
->>>>>>> 08d4149140de7b1519237ddd9f435204d8d45bca
+        driverController.x().onTrue(new IntakeUp(this));
 
         
     // driverController.leftBumper()
