@@ -55,6 +55,7 @@ public class MotionMagicTurret extends SubsystemBase {
     public Pose2d turretLocation = new Pose2d();
 
     public boolean autoShoot = false;
+    public boolean isdocking = false;
 
     public MotionMagicTurret(RobotContainer rob, Translation2d translation) {
         this.intakePivot = rob.intakePivot;
@@ -638,6 +639,9 @@ public class MotionMagicTurret extends SubsystemBase {
 
                 }
             }
+        } else {
+            setDegrees(90);
+            isdocking = false;
         }
 
         // pointAtTarget(Constants.targetPositionBlue);
