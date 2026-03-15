@@ -194,16 +194,16 @@ public class ShooterHood extends SubsystemBase {
 
         if (!rob.mmturret.isInAllianceZone()) { 
             if (swerve.getPoseMeters().getY() > 4){
-                alignHoodtoHub(sotmVILobLeft[0]);
+                alignHoodtoHub(sotmVILobLeft[0]);   
             } else {
                 alignHoodtoHub(sotmVILobRight[0]);
             } 
         } else {      
-            if (rob.isRed()){
+
                 // pointAtTarget(Constants.targetPositionBlue);
 
-                alignHoodtoHub(sotmVI[0]);
-            }
+            alignHoodtoHub(sotmVI[0]);
+
         }
 
         if (willGetDecapitated()) {

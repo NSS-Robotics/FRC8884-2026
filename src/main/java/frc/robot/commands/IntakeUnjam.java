@@ -20,6 +20,7 @@ public class IntakeUnjam extends Command {
         intakePivot.setPosition(8);
         Timer.delay(0.35);
         intakePivot.setPosition(15.5);
+        Timer.delay(0.35);
     }
 
     @Override

@@ -5,21 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeDown"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right Neutral 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Neutral 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeDown"
+                }
+              }
+            ]
           }
         },
         {

@@ -19,6 +19,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -48,6 +49,9 @@ public class RobotContainer {
 
     public final FuelSim fuelSim = new FuelSim();
 
+    private final Timer shootAccelTimer = new Timer();
+    private boolean shootRecovery = false;
+
     public Pose2d simulatedPosition = new Pose2d();
     public Pose2d lobTarget = new Pose2d();
 
@@ -75,6 +79,8 @@ public class RobotContainer {
         configureFuelSim();
 
         SmartDashboard.putData(fieldMap);
+
+        shootAccelTimer.start();
     }
 
     private void configureBindings() {
@@ -88,22 +94,28 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
+                double cappedMaxSpeed = MaxSpeed;
+
+                if (operatorController.rightTrigger().getAsBoolean()) {
+                    // TODO: don't instantly change from 2m/s to 5m/s
+                    cappedMaxSpeed = 2;
+                    // shootRecovery = true;
+                } //else if (shootAccelTimer.get() <= 1 && shootRecovery) {
+                //     maxSpeed = 3;
+                // } else if (shootAccelTimer.get() <= 2 && shootRecovery) {
+                //     maxSpeed = 4;
+                // } else if (shootAccelTimer.get() <= 3 && shootRecovery) {
+                //     maxSpeed = 5;
+                // } else if (shootAccelTimer.get() > 3) {
+                //     shootRecovery = false;
+                // }
+
+                SmartDashboard.putNumber("Capped Max Speed", cappedMaxSpeed);
+                // SmartDashboard.putNumber("Shoot Accel Timer", shootAccelTimer.get());
+                // SmartDashboard.putBoolean("Shoot Recovery", shootRecovery);
+
                 double xVel = -driverController.getLeftY() * MaxSpeed;
                 double yVel = -driverController.getLeftX() * MaxSpeed;
-
-                if (driverController.rightTrigger().getAsBoolean()) {
-                    // if velocity > 10, we're shooting
-  
-                    // TODO: fix for when  we decide to use a resting flywheel speed
-                    // TODO: stop using flywheelvelocity>10, only do this if we are actively shooting (holding down righttrigger)
-                    // xVel = xFilter.calculate(xVel);
-                    // yVel = yFilter.calculate(yVel);
-
-
-                    // TODO: don't instantly change from 2m/s to 5m/s
-                    // xVel = -driverController.getLeftY() * 2;
-                    // yVel = -driverController.getLeftX() * 2;
-                }
 
                 return drive.withVelocityX(xVel) // Drive forward with negative Y (forward)
                     .withVelocityY(yVel) // Drive left with negative X (left)
@@ -118,9 +130,14 @@ public class RobotContainer {
         // driverController.povUp().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(1)));
         // driverController.povDown().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(-1)));
         driverController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
+        driverController.x()
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
+        driverController.a()
+            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
 
         /* longer commands */
         operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
+        operatorController.rightTrigger().onFalse(new InstantCommand(shootAccelTimer::restart));
         operatorController.rightBumper().whileTrue(new RunSpindexer(this));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
@@ -134,10 +151,7 @@ public class RobotContainer {
         driverController.b().whileTrue(new RunIntake(this, -3200));
         driverController.y().whileTrue(new InstantCommand(/* lower hood and keep down until released, for trench */));
 
-        driverController.x()
-            .onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
-        driverController.a()
-            .onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
+       
 
     // driverController.leftBumper()
         //     .whileTrue(new InstantCommand(() -> {
@@ -150,8 +164,8 @@ public class RobotContainer {
         //     }));
 
         //operator controller, zia can i have my spinning gear thing back plz
-        // operatorController.povDown()
-        //     .onTrue(new InstantCommand(() -> shooterHood.zeroHood()));
+        operatorController.povDown()
+            .onTrue(new InstantCommand(() -> shooterHood.zeroHood()));
         /*        operatorController.leftTrigger().onTrue(new InstantCommand(() ->
             lobTarget = isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue
         ));
@@ -241,7 +255,7 @@ public class RobotContainer {
         //     new InstantCommand(() -> new AutoRunIntake(this))
         // );  
         NamedCommands.registerCommand("Intake",
-            new InstantCommand(() -> intake.setVelocity(4000)) // TODO: MAKE CONSTANT?
+            new InstantCommand(() -> intake.setVelocity(4500)) // TODO: MAKE CONSTANT?
         );
 
         NamedCommands.registerCommand("Unjam Intake",

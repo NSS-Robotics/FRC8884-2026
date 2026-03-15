@@ -15,6 +15,7 @@ public class Spindexer extends SubsystemBase {
     private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID, new CANBus("Jeff"));
     private final DutyCycleOut spinOut = new DutyCycleOut(0);
     private final double maxPower = 0.5;
+    // private final double maxPower = 0.8;
     private double targetSpeed = 0.0;
 
     public Spindexer() {
