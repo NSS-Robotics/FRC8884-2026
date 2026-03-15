@@ -639,10 +639,10 @@ public class MotionMagicTurret extends SubsystemBase {
 
                 }
             }
-        } else {
-            setDegrees(90);
-            isdocking = false;
-        }
+        } //else {
+        //     setDegrees(90);
+        //     isdocking = false;
+        // }
 
         // pointAtTarget(Constants.targetPositionBlue);
         
