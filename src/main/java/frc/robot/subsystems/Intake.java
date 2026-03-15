@@ -18,6 +18,7 @@ public class Intake extends SubsystemBase{
     );
 
     private static Slot0Configs intakeSlot0Configs = new Slot0Configs();
+    public boolean isAuto = true;
 
     public Intake() {
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
@@ -45,11 +46,16 @@ public class Intake extends SubsystemBase{
     }
 
     public void stopIntake() {
+        if(!isAuto){
         intakeMotor.setControl(new VoltageOut(0));
+        }
     }
 
     @Override
     public void periodic() {
+        if(isAuto){
+            setVelocity(4500);
+        }
         SmartDashboard.putNumber("Intake Velocity", getVelocity());
     }
 }

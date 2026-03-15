@@ -25,6 +25,7 @@ public class ShooterHood extends SubsystemBase {
 
     private double degrees = 0;
     private double manualOffset = 0;
+    public boolean autoDecap = false;
 
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
@@ -206,7 +207,7 @@ public class ShooterHood extends SubsystemBase {
 
         }
 
-        if (willGetDecapitated()) {
+        if (willGetDecapitated() || autoDecap) {
             degrees = 0.5;
             setDegrees();
         }

@@ -15,8 +15,14 @@ public class AutoStopSpindexer extends Command {
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void execute() {
+        spindexer.isAutoShoot = false;
+        feeder.isAutoShoot = false;
         spindexer.stop();
         feeder.stop();
+    }
+    @Override
+    public void end(boolean interrupted) {
+
     }
 }

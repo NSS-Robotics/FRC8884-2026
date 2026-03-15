@@ -95,7 +95,7 @@ public class Constants {
 
         public static final double trenchRedX = 11.915394; // decapitation
         public static final double trenchBlueX = 4.625594;
-        public static final double trenchOffset = 0.35;
+        public static final double trenchOffset = 0.55;
     }
 
     public static class Intake {

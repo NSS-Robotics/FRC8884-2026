@@ -28,6 +28,8 @@ public class Feeder extends SubsystemBase {
 
     private VelocityVoltage feederVelocity = new VelocityVoltage(0).withSlot(0);
 
+    public boolean isAutoShoot = false;
+
     public Feeder(RobotContainer rob) {
         this.mmturret = rob.mmturret;
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
@@ -93,6 +95,10 @@ public class Feeder extends SubsystemBase {
         // } else {
         //     feederMotor.setControl(feedOut.withOutput(power));
         // }
+
+        if (isAutoShoot){
+            setSpeed(-4000);
+        }
 
         SmartDashboard.putNumber("Feeder Speed", getSpeed());
         SmartDashboard.putBoolean("canMove", canMove);

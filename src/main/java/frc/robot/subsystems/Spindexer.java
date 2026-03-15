@@ -14,7 +14,9 @@ import frc.robot.Constants;
 public class Spindexer extends SubsystemBase {
     private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID, new CANBus("Jeff"));
     private final DutyCycleOut spinOut = new DutyCycleOut(0);
-    private final double maxPower = 0.5;
+    private final double maxPower = 0.6;
+    private final double minPower = 0.1;
+    public boolean isAutoShoot = false;
     // private final double maxPower = 0.8;
     private double targetSpeed = 0.0;
 
@@ -53,10 +55,17 @@ public class Spindexer extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (isAutoShoot){
+            targetSpeed = -3000;
+        }
         double ts = Math.abs(targetSpeed);
         double speed = Math.abs(getSpeed());
         double power = (ts - speed)/ts * maxPower;
+        power = Math.min(Math.max(power, minPower), maxPower);
         if (speed > ts) {
+            power = 0;
+        }
+        if (targetSpeed == 0){
             power = 0;
         }
 

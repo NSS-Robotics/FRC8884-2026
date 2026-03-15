@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.shooterHood.zeroHood();
+    m_robotContainer.intake.isAuto = true;
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -67,12 +68,15 @@ public class Robot extends TimedRobot {
     }
 
     timer.start();
+    m_robotContainer.intake.isAuto = false;
     m_robotContainer.shooterHood.zeroHood();
     m_robotContainer.flywheels.stop();
     m_robotContainer.spindexer.stop();
     m_robotContainer.feeder.stop(); // TODO: WE WANT FLYWHEELS MOVING AT ALL TIMES, SO MAYBE THIS ISNT GOOD NOT SURE CHECK LATER :)
     m_robotContainer.intake.stopIntake();
     m_robotContainer.mmturret.autoShoot = false;
+    m_robotContainer.spindexer.isAutoShoot = false;
+    m_robotContainer.feeder.isAutoShoot = false;
   }
 
   @Override
@@ -113,7 +117,17 @@ public class Robot extends TimedRobot {
       operatorController.setRumble(RumbleType.kBothRumble, 0);
     }
 
+    int timeToNextShift;
+
+    if (time < 10) timeToNextShift = 10-time;
+    else if (time < 35) timeToNextShift = 35-time;
+    else if (time < 60) timeToNextShift = 60-time;
+    else if (time < 85) timeToNextShift = 85-time;
+    else if (time < 110) timeToNextShift = 110-time;
+    else timeToNextShift = 140-time;
+
     SmartDashboard.putString("Shift", shift.toString());
+    SmartDashboard.putNumber("Next Shift In", timeToNextShift);
   }
 
   @Override

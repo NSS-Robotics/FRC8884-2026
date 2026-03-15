@@ -16,7 +16,13 @@ public class AutoRunSpindexer extends Command {
 
     @Override
     public void execute() {
-        spindexer.setSpeed(-2500);
-        feeder.setSpeed(-2000);
+        // spindexer.setSpeed(-3000);
+        // feeder.setSpeed(-4000);
+        spindexer.isAutoShoot = true;
+        feeder.isAutoShoot = true;
+    }
+    @Override
+    public void end(boolean interrupted) {
+
     }
 }

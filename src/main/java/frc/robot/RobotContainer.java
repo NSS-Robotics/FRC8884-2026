@@ -234,16 +234,24 @@ public class RobotContainer {
             })
         );
         NamedCommands.registerCommand("Spindexer", 
-            // new InstantCommand(() ->{
-            //     spindexer.setSpeed(-2500);
-            //     feeder.setSpeed(-1200);
-            // })
-            new RunSpindexer(this)
+            // new AutoRunSpindexer(this)
+             new InstantCommand(() -> {
+
+                feeder.isAutoShoot = true;
+                spindexer.isAutoShoot = true;
+
+            })
         );
 
-        // NamedCommands.registerCommand("Stop Spindexer",
-        //     new InstantCommand(() -> new AutoStopSpindexer(this))
-        // );
+        NamedCommands.registerCommand("Stop Spindexer",
+            new InstantCommand(() -> {
+
+                feeder.isAutoShoot = false;
+                spindexer.isAutoShoot = false;
+                feeder.stop();
+                spindexer.stop();
+            })
+        );
         
         NamedCommands.registerCommand("IntakeDown",    
             new InstantCommand(() -> intakePivot.setPosition(15.9))
@@ -253,12 +261,30 @@ public class RobotContainer {
         //     new InstantCommand(() -> new AutoRunIntake(this))
         // );  
         NamedCommands.registerCommand("Intake",
-            new InstantCommand(() -> intake.setVelocity(4500)) // TODO: MAKE CONSTANT?
+            //new InstantCommand(() -> intake.setVelocity(4500)) // TODO: MAKE CONSTANT?
+            new InstantCommand(() -> {
+                intake.isAuto = true;
+            })
+
         );
 
         NamedCommands.registerCommand("Unjam Intake",
             new IntakeUnjam(this)
         );
+        NamedCommands.registerCommand("Auto Decap True", 
+            // new AutoRunSpindexer(this)
+             new InstantCommand(() -> {
+
+                shooterHood.autoDecap = true;
+
+        }));
+        NamedCommands.registerCommand("Auto Decap False", 
+            // new AutoRunSpindexer(this)
+             new InstantCommand(() -> {
+
+                shooterHood.autoDecap = false;
+
+        }));
     }
 
     public Command getAutonomousCommand() {
