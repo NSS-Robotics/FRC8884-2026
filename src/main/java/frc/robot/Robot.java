@@ -70,9 +70,10 @@ public class Robot extends TimedRobot {
     m_robotContainer.shooterHood.zeroHood();
     m_robotContainer.flywheels.stop();
     m_robotContainer.spindexer.stop();
-    m_robotContainer.feeder.stop(); // TODO: WE WANT FLYWHEELS MOVING AT ALL TIMES, SO MAYBE THIS ISNT GOOD NOT SURE CHECK LATER :)
+    m_robotContainer.feeder.stop();
     m_robotContainer.intake.stopIntake();
     m_robotContainer.mmturret.autoShoot = false;
+    m_robotContainer.shooterHood.disableAutoDecap();
   }
 
   @Override

@@ -85,7 +85,7 @@ public class RobotContainer {
                 double cappedMaxSpeed = MaxSpeed;
 
                 if (driverController.rightTrigger().getAsBoolean()) {
-                    cappedMaxSpeed = 2;
+                    cappedMaxSpeed = 1.5;
                 }
 
                 double xVel = -driverController.getLeftY() * cappedMaxSpeed;
@@ -116,32 +116,15 @@ public class RobotContainer {
         driverController.leftTrigger().whileTrue(new RunIntake(this, 3200));
         driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
-        driverController.povDown().whileTrue(new Snap(this, 5, 0)); // TODO: UNCOMMENT 
+        driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
-        driverController.y().whileTrue(new InstantCommand(/* lower hood and keep down until released, for trench */));
-
-        
-    // driverController.leftBumper()
-        //     .whileTrue(new InstantCommand(() -> {
-        //         fuelSim.launchFuel(
-        //             LinearVelocity.ofBaseUnits(7, MetersPerSecond),
-        //             Angle.ofBaseUnits(90 - shooterHood.getDegrees(), Degree),
-        //             Angle.ofBaseUnits(mmturret.getDegrees(), Degree),
-        //             Distance.ofBaseUnits(0.75, Meters)
-        //         );
-        //     }));
-
+    
         //operator controller, zia can i have my spinning gear thing back plz
         operatorController.povDown()
-            .onTrue(new InstantCommand(() -> shooterHood.zeroHood()));
-        /*        operatorController.leftTrigger().onTrue(new InstantCommand(() ->
-            lobTarget = isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue
-        ));
-        operatorController.rightTrigger().onTrue(new InstantCommand(() ->
-            lobTarget = isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue
-        ));
+            .onTrue(new InstantCommand(shooterHood::zeroHood));
 
+        /*
         operatorController.povRight().onTrue(new InstantCommand(() -> mmturret.setManualOffset(mmturret.getManualOffset()+5)));
         operatorController.povLeft().onTrue(new InstantCommand(() -> mmturret.setManualOffset(mmturret.getManualOffset()-5)));
 
@@ -189,7 +172,7 @@ public class RobotContainer {
     private void addCommandsToPathplanner() {
         // NamedCommands.registerCommand("Shoot", 
         //     new SequentialCommandGroup(
-        //         new InstantCommand(() -> new AutoFlywheelShoot(this)), //TODO: RUN FLYWHEEL ALL THE TIME SO WE DONT NEED TO HAVE TO SHOOT IT HERE
+        //         new InstantCommand(() -> new AutoFlywheelShoot(this)),
         //         new InstantCommand(() -> new AutoRunSpindexer(this))
         //     )
         // );  
@@ -202,6 +185,16 @@ public class RobotContainer {
                 mmturret.autoShoot = true;
             })
         );
+
+        // TODO: auto decap on rightside auto
+        NamedCommands.registerCommand("Auto Decap True",
+            new InstantCommand(shooterHood::enableAutoDecap)
+        );
+
+        NamedCommands.registerCommand("Auto Decap False",
+            new InstantCommand(shooterHood::disableAutoDecap)
+        );
+
         NamedCommands.registerCommand("Spindexer", 
             new RunSpindexer(this)
         );

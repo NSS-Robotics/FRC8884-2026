@@ -26,6 +26,8 @@ public class ShooterHood extends SubsystemBase {
     private double degrees = 0;
     private double manualOffset = 0;
 
+    private boolean autoDecap = false;
+
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
         this.swerve = rob.drivetrain;
@@ -120,6 +122,14 @@ public class ShooterHood extends SubsystemBase {
         return manualOffset;
     }
 
+    public void enableAutoDecap() {
+        autoDecap = true;
+    }
+
+    public void disableAutoDecap() {
+        autoDecap = false;
+    }
+
     public void stop() {
         hoodMotor.setControl(new VoltageOut(0));
     }
@@ -136,8 +146,18 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public boolean willGetDecapitated() {
+        // If the leftBumper is held down, manual override is triggered, 
+        // keeping the hood down until the driver says it's safe to lift.
+        boolean manualOverride = rob.driverController.rightBumper().getAsBoolean();
+        if (manualOverride) {
+            return true;
+        }
+
+        if (autoDecap) {
+            return true;
+        }
+
         Pose2d currentPos = swerve.getPoseMeters();
-        // TODO: maybe have projected pose as the current pose idk
 
         double robotRadians = currentPos.getRotation().getRadians();
         Translation2d turretOffset = new Translation2d(Constants.Turret.offsetFromCenter.getX(),
@@ -167,7 +187,7 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Current", getCurrent());
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
-        // degrees = SmartDashboard.getNumber("Set Angles", 0);
+        //degrees = SmartDashboard.getNumber("Set Angles", 0);
         // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmV[] = rob.mmturret.sotmPredictVelocity(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
@@ -198,12 +218,8 @@ public class ShooterHood extends SubsystemBase {
             } else {
                 alignHoodtoHub(sotmVILobRight[0]);
             } 
-        } else {      
-
-                // pointAtTarget(Constants.targetPositionBlue);
-
+        } else {
             alignHoodtoHub(sotmVI[0]);
-
         }
 
         if (willGetDecapitated()) {

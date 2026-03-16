@@ -5,6 +5,18 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Auto Decap True"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeDown"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -18,12 +30,6 @@
                 "type": "named",
                 "data": {
                   "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeDown"
                 }
               }
             ]
@@ -44,26 +50,38 @@
         {
           "type": "named",
           "data": {
-            "name": "Spindexer"
+            "name": "Auto Decap False"
           }
         },
         {
-          "type": "deadline",
+          "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 4.0
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "Unjam Intake"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spindexer"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Decap True"
           }
         },
         {
@@ -98,15 +116,15 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "named",
+          "data": {
+            "name": "Auto Decap False"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 4.0
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -117,6 +135,12 @@
                 "type": "named",
                 "data": {
                   "name": "Unjam Intake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
                 }
               }
             ]

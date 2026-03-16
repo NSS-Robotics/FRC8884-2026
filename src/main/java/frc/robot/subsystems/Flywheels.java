@@ -87,7 +87,7 @@ public class Flywheels extends SubsystemBase {
 
     public double rpmToHub(double distance) {
         double d = Math.min(distance, 9); 
-        d-=0.135;
+        // d-=0.135;
         if (d < 5.1){
             // return Math.max(Math.min(-23.63 * Math.pow(d, 3) + 236.53 * Math.pow(d, 2) - 493.68 * d + 1860.02, 3000), 0);
             double ans = 2.52 * Math.pow(d, 3) - 23.56 * Math.pow(d, 2) + 244.19 * d + 930.74;
@@ -106,9 +106,8 @@ public class Flywheels extends SubsystemBase {
         
     }
 
-    public void rpmToRest(){
-        // TODO: resting set resting rpm
-        setVelocity(0); // TODO: MAKE IT 1000
+    public void rpmToRest() {
+        setVelocity(1000); // TODO: MAKE IT 1000
     }
 
     @Override

@@ -45,18 +45,21 @@ public class Feeder extends SubsystemBase {
         feederMotor.getConfigurator().apply(currentLimitConfig);
         feederMotor.setNeutralMode(NeutralModeValue.Coast);
 
-        SmartDashboard.putNumber("feed p", 0);
-        SmartDashboard.putNumber("feed s", 0);
-        SmartDashboard.putNumber("feed v", 0);
+        // SmartDashboard.putNumber("feed p", 0);
+        // SmartDashboard.putNumber("feed s", 0);
+        // SmartDashboard.putNumber("feed v", 0);
     }
 
     public void setSpeed(double speedRPM) {
+        // TODO: should we use the code below to stop if error is big?? idk
+        // if (Math.abs(mmturret.getDegrees()-mmturret.targetDegrees) > 10) {
+        //     speedRPM /= 2.0;
+        // }
         targetSpeed = speedRPM/60;
         feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
     }
+
     public void makeSpin(double power) {
-        //spindexerMotor.set(power);
-        //spindexerMotor.setControl(new DutyCycleOut(power));
         feederMotor.setControl(feedOut.withOutput(power));
     }
 
@@ -98,22 +101,22 @@ public class Feeder extends SubsystemBase {
         SmartDashboard.putBoolean("canMove", canMove);
         canMove();
 
-        double p = SmartDashboard.getNumber("feed p", 0);
-        double s = SmartDashboard.getNumber("feed s", 0);
-        double v = SmartDashboard.getNumber("feed v", 0);
+        // double p = SmartDashboard.getNumber("feed p", 0);
+        // double s = SmartDashboard.getNumber("feed s", 0);
+        // double v = SmartDashboard.getNumber("feed v", 0);
 
-        boolean isChanged = (
-            p != pidConfigs.kP ||
-            s != pidConfigs.kS ||
-            v != pidConfigs.kV
-        );
+        // boolean isChanged = (
+        //     p != pidConfigs.kP ||
+        //     s != pidConfigs.kS ||
+        //     v != pidConfigs.kV
+        // );
 
-        if(isChanged){
-            pidConfigs.kP = p;
-            pidConfigs.kS = s;
-            pidConfigs.kV = v;
-            // feederMotor.getConfigurator().apply(pidConfigs);
-        }
+        // if(isChanged){
+        //     pidConfigs.kP = p;
+        //     pidConfigs.kS = s;
+        //     pidConfigs.kV = v;
+        //     feederMotor.getConfigurator().apply(pidConfigs);
+        // }
 
     }
 }

@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Auto Decap True"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "IntakeDown"
           }
         },
@@ -42,6 +48,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Auto Decap False"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -64,6 +76,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Decap True"
           }
         },
         {
@@ -111,6 +129,12 @@
                 "type": "named",
                 "data": {
                   "name": "Unjam Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Decap False"
                 }
               },
               {

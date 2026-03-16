@@ -211,7 +211,7 @@ public class MotionMagicTurret extends SubsystemBase {
 
     }
 
-    public void pointAtTarget(Pose2d targetPos) {  // TODO: MAKE IT SO IF TURRET ERROR IS LIKE MORE THAN 5 DONT SHOOT BECAUSE I DONT WANT TO HIT ANYONE (SORRY)
+    public void pointAtTarget(Pose2d targetPos) {
         Pose2d currentPos = swerve.getPoseMeters();
         
         double robotRadians = currentPos.getRotation().getRadians(); 
