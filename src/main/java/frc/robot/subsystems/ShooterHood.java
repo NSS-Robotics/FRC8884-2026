@@ -74,20 +74,33 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoHub(double distance) {
-        // double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) +
-        // 5.33 * distance - 4.88;
+        // NEW CALI (as of march 16)
         double angle;
-        double d = Math.min(distance, 9); 
-        d-=0.1;
-        if (d < 5.1) {
-            // angle = 1.21 * Math.pow(d, 3) - 9.9 * Math.pow(d, 2) + 28.61 * d - 22.42;
-            angle = 0.27 * Math.pow(d,3) - 3.08 * Math.pow(d, 2) + 12.92 * d  - 11.22;
+        double d = Math.min(distance, 9);
+        if (d < 5) {
+            angle = 0.26 * Math.pow(distance, 3) - 3.04 * Math.pow(distance, 2) + 12.85 * distance - 11.46;
         } else {
+            // copied from old cali
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
-        } 
-        // else{
-        //     angle = -0.02 * Math.pow(d, 3) + 0.28 * Math.pow(d, 2) + 0.37 * d + 8.66; // lob
-        // }
+        }
+
+        // OLD CALI
+        // // double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) +
+        // // 5.33 * distance - 4.88;
+        // double angle;
+        // double d = Math.min(distance, 9); 
+        // d-=0.1;
+        // if (d < 5.1) {
+        //     // angle = 1.21 * Math.pow(d, 3) - 9.9 * Math.pow(d, 2) + 28.61 * d - 22.42;
+        //     angle = 0.27 * Math.pow(d,3) - 3.08 * Math.pow(d, 2) + 12.92 * d  - 11.22;
+        // } else {
+        //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
+        // } 
+        // // else{
+        // //     angle = -0.02 * Math.pow(d, 3) + 0.28 * Math.pow(d, 2) + 0.37 * d + 8.66; // lob
+        // // }
+    
+
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
         degrees = angle;

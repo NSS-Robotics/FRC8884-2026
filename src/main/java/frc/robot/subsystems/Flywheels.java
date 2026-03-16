@@ -87,19 +87,29 @@ public class Flywheels extends SubsystemBase {
 
     public double rpmToHub(double distance) {
         double d = Math.min(distance, 9); 
-        // d-=0.135;
-        if (d < 5.1){
-            // return Math.max(Math.min(-23.63 * Math.pow(d, 3) + 236.53 * Math.pow(d, 2) - 493.68 * d + 1860.02, 3000), 0);
-            double ans = 2.52 * Math.pow(d, 3) - 23.56 * Math.pow(d, 2) + 244.19 * d + 930.74;
-            if (d > 4.5){
-                d -= 0.1;
-            }
-            return Math.max(Math.min(ans, 3500), 0); 
-        } else  {
-            return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0); 
-        }
-            // return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
 
+        // NEW CALI (as of March 16 - idk if this is actually gonna be better)
+        if (d <= 5) {
+            double ans = -3.76 * Math.pow(d, 3) + 45.71 * Math.pow(d, 2) + 22.76 * d + 1178.77;
+
+            return Math.max(Math.min(ans, 3700), 0); // Clamp RPM to between 0 and 3700
+        } else {
+            return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0);
+        }
+
+        // OLD CALI
+        // d-=0.135;
+        // if (d < 5.1){
+        //     // return Math.max(Math.min(-23.63 * Math.pow(d, 3) + 236.53 * Math.pow(d, 2) - 493.68 * d + 1860.02, 3000), 0);
+        //     double ans = 2.52 * Math.pow(d, 3) - 23.56 * Math.pow(d, 2) + 244.19 * d + 930.74;
+        //     if (d > 4.5){
+        //         d -= 0.1;
+        //     }
+        //     return Math.max(Math.min(ans, 3500), 0); 
+        // } else  {
+        //     return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0); 
+        // }
+        //     // return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
     }
 
     public void rpmToLob(double distance){
