@@ -15,7 +15,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -50,9 +49,6 @@ public class RobotContainer {
 
     public final FuelSim fuelSim = new FuelSim();
 
-    private final Timer shootAccelTimer = new Timer();
-    private boolean shootRecovery = false;
-
     public Pose2d simulatedPosition = new Pose2d();
     public Pose2d lobTarget = new Pose2d();
 
@@ -66,7 +62,6 @@ public class RobotContainer {
     public final ShooterHood shooterHood = new ShooterHood(this);
     public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
     public final Feeder feeder = new Feeder(this);
-
     // public final LEDs leds = new LEDs();
 
     public final Field2d fieldMap = new Field2d();
@@ -74,49 +69,27 @@ public class RobotContainer {
     public RobotContainer() {
         addCommandsToPathplanner();
         CameraServer.startAutomaticCapture();
+
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
+
         configureBindings();
         configureFuelSim();
 
         SmartDashboard.putData(fieldMap);
-
-        shootAccelTimer.start();
     }
 
     private void configureBindings() {
-        // FIXME(maybe): figure out how to properly cap acceleration
-        // SlewRateLimiter xFilter = new SlewRateLimiter(30);
-        // SlewRateLimiter xFilter = new SlewRateLimiter(5, -1000, 2);
-        // SlewRateLimiter yFilter = new SlewRateLimiter(30);
-        // SlewRateLimiter yFilter = new SlewRateLimiter(5, -1000, 2);
-        // positiveratelimit = accel cap
-        // negativeratelimit = decel cap
-
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
-                // double cappedMaxSpeed = MaxSpeed;
+                double cappedMaxSpeed = MaxSpeed;
 
-                // if (operatorController.rightTrigger().getAsBoolean()) {
-                    // TODO: don't instantly change from 2m/s to 5m/s
-                   // cappedMaxSpeed = 2;
-                    // shootRecovery = true;
-                //} else if (shootAccelTimer.get() <= 1 && shootRecovery) {
-                //     maxSpeed = 3;
-                // } else if (shootAccelTimer.get() <= 2 && shootRecovery) {
-                //     maxSpeed = 4;
-                // } else if (shootAccelTimer.get() <= 3 && shootRecovery) {
-                //     maxSpeed = 5;
-                // } else if (shootAccelTimer.get() > 3) {
-                //     shootRecovery = false;
-                // }
+                if (driverController.rightTrigger().getAsBoolean()) {
+                    cappedMaxSpeed = 2;
+                }
 
-                // SmartDashboard.putNumber("Capped Max Speed", cappedMaxSpeed);
-                // SmartDashboard.putNumber("Shoot Accel Timer", shootAccelTimer.get());
-                // SmartDashboard.putBoolean("Shoot Recovery", shootRecovery);
-
-                double xVel = -driverController.getLeftY() * MaxSpeed;
-                double yVel = -driverController.getLeftX() * MaxSpeed;
+                double xVel = -driverController.getLeftY() * cappedMaxSpeed;
+                double yVel = -driverController.getLeftX() * cappedMaxSpeed;
 
                 return drive.withVelocityX(xVel) // Drive forward with negative Y (forward)
                     .withVelocityY(yVel) // Drive left with negative X (left)
@@ -137,12 +110,10 @@ public class RobotContainer {
         /* longer commands */
         operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
         operatorController.rightBumper().whileTrue(new RunSpindexer(this));
-        // operatorController.leftBumper().onTrue(new IntakeUnjam(this));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
 
         driverController.leftTrigger().whileTrue(new RunIntake(this, 3200));
-       // driverController.leftBumper().whileTrue(new IntakeUnjam(this));
         driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); // TODO: UNCOMMENT 
@@ -222,8 +193,6 @@ public class RobotContainer {
         //         new InstantCommand(() -> new AutoRunSpindexer(this))
         //     )
         // );  
-
-        // TODO: STOP RUNNING WHEN TELEOP STARTS 
  
         NamedCommands.registerCommand("Flywheels", 
             new InstantCommand(() -> {
@@ -234,30 +203,19 @@ public class RobotContainer {
             })
         );
         NamedCommands.registerCommand("Spindexer", 
-            // new InstantCommand(() ->{
-            //     spindexer.setSpeed(-2500);
-            //     feeder.setSpeed(-1200);
-            // })
             new RunSpindexer(this)
         );
-
-        // NamedCommands.registerCommand("Stop Spindexer",
-        //     new InstantCommand(() -> new AutoStopSpindexer(this))
-        // );
         
         NamedCommands.registerCommand("IntakeDown",    
             new InstantCommand(() -> intakePivot.setPosition(15.9))
         );
 
-        // NamedCommands.registerCommand("Intake",
-        //     new InstantCommand(() -> new AutoRunIntake(this))
-        // );  
         NamedCommands.registerCommand("Intake",
-            new InstantCommand(() -> intake.setVelocity(4500)) // TODO: MAKE CONSTANT?
+            new InstantCommand(() -> intake.setVelocity(4500))
         );
 
         NamedCommands.registerCommand("Unjam Intake",
-            new IntakeUnjam(this)
+            new AutoIntakeUnjam(this)
         );
     }
 

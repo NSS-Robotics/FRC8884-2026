@@ -20,8 +20,6 @@ public class IntakeUnjam extends Command {
     public void execute() {
         intake.setVelocity(2500);
         intakePivot.setPosition(8);
-        // Timer.delay(0.35);
-        // intakePivot.setPosition(15.5);
     }
 
     @Override
