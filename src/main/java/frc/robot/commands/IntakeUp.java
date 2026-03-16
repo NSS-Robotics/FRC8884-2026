@@ -14,6 +14,7 @@ public class IntakeUp extends Command {
         intake = rob.intake;
         intakePivot = rob.intakePivot;
         mmturret = rob.mmturret;
+        addRequirements(rob.mmturret, rob.intake, rob.intakePivot);
     }
 
     @Override

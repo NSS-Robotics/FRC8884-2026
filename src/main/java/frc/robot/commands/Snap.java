@@ -23,6 +23,7 @@ public class Snap extends Command {
         this.swerve = rob.drivetrain;
         this.angleDeadZone = angleDeadband;
         this.direction = direction;
+        addRequirements(swerve);
     }
     
     @Override

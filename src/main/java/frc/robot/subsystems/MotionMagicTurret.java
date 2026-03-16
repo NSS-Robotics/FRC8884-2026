@@ -367,7 +367,9 @@ public class MotionMagicTurret extends SubsystemBase {
         double lookaheadDistance = distance;
         Pose2d lookaheadTurretPose = turretPose;
 
-        for (int i = 0; i < 25; i++){ 
+        double prevDistance = 1000;
+
+        for (int i = 0; i < 20; i++){ 
             double timeOfFlight = distanceToTime(lookaheadDistance);
 
             double dvX = turretVelocityX * timeOfFlight;
@@ -381,6 +383,10 @@ public class MotionMagicTurret extends SubsystemBase {
 
             // lookaheadDistance = Math.hypot(xDistance, yDistance);
             lookaheadDistance = targetPose.getTranslation().getDistance(lookaheadTurretPose.getTranslation());
+            if (Math.abs(prevDistance - lookaheadDistance) < 0.01){
+                break;
+            }
+            prevDistance = lookaheadDistance;
         }
 
         double xDistance = lookaheadTurretPose.getX() - targetPose.getX();

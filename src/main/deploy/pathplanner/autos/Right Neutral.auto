@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "IntakeDown"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -17,13 +23,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "Auto Decap True"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeDown"
+                  "name": "Intake"
                 }
               }
             ]
@@ -42,15 +48,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Auto Decap False"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Spindexer"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Spindexer"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -64,6 +76,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Spindexer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
           }
         },
         {
@@ -79,13 +103,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "IntakeDown"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeDown"
+                  "name": "Auto Decap True"
                 }
               }
             ]
@@ -98,15 +122,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Auto Decap False"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Spindexer"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Spindexer"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -120,6 +150,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Spindexer"
           }
         }
       ]

@@ -12,7 +12,7 @@ public class RunIntake extends Command {
     public RunIntake(RobotContainer rob, int speed) {
         intake = rob.intake;
         speeeeed = speed;
-
+        addRequirements(rob.intake);
         // SmartDashboard.putNumber("Intake RPM", 0);
     }
 

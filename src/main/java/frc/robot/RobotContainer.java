@@ -95,13 +95,13 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
-                double cappedMaxSpeed = MaxSpeed;
+                // double cappedMaxSpeed = MaxSpeed;
 
-                if (operatorController.rightTrigger().getAsBoolean()) {
+                // if (operatorController.rightTrigger().getAsBoolean()) {
                     // TODO: don't instantly change from 2m/s to 5m/s
-                    cappedMaxSpeed = 2;
+                   // cappedMaxSpeed = 2;
                     // shootRecovery = true;
-                } //else if (shootAccelTimer.get() <= 1 && shootRecovery) {
+                //} else if (shootAccelTimer.get() <= 1 && shootRecovery) {
                 //     maxSpeed = 3;
                 // } else if (shootAccelTimer.get() <= 2 && shootRecovery) {
                 //     maxSpeed = 4;
@@ -111,7 +111,7 @@ public class RobotContainer {
                 //     shootRecovery = false;
                 // }
 
-                SmartDashboard.putNumber("Capped Max Speed", cappedMaxSpeed);
+                // SmartDashboard.putNumber("Capped Max Speed", cappedMaxSpeed);
                 // SmartDashboard.putNumber("Shoot Accel Timer", shootAccelTimer.get());
                 // SmartDashboard.putBoolean("Shoot Recovery", shootRecovery);
 
@@ -136,13 +136,13 @@ public class RobotContainer {
 
         /* longer commands */
         operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
-        operatorController.rightTrigger().onFalse(new InstantCommand(shootAccelTimer::restart));
         operatorController.rightBumper().whileTrue(new RunSpindexer(this));
+        // operatorController.leftBumper().onTrue(new IntakeUnjam(this));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
 
         driverController.leftTrigger().whileTrue(new RunIntake(this, 3200));
-        driverController.leftBumper().whileTrue(new IntakeUnjam(this));
+       // driverController.leftBumper().whileTrue(new IntakeUnjam(this));
         driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); // TODO: UNCOMMENT 

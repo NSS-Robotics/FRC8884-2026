@@ -12,6 +12,7 @@ public class RunSpindexer extends Command {
     public RunSpindexer(RobotContainer rob) {
         feeder = rob.feeder;
         spindexer = rob.spindexer;
+        addRequirements(rob.spindexer, rob.feeder);
     }
 
     @Override

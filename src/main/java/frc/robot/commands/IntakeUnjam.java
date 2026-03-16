@@ -12,19 +12,21 @@ public class IntakeUnjam extends Command {
     public IntakeUnjam(RobotContainer rob) {
         intake = rob.intake;
         intakePivot = rob.intakePivot;
+
+        addRequirements(rob.intake, rob.intakePivot);
     }
 
     @Override
     public void execute() {
         intake.setVelocity(2500);
         intakePivot.setPosition(8);
-        Timer.delay(0.35);
-        intakePivot.setPosition(15.5);
-        Timer.delay(0.35);
+        // Timer.delay(0.35);
+        // intakePivot.setPosition(15.5);
     }
 
     @Override
     public void end(boolean interrupted) {
         intake.stopIntake();
+        intakePivot.setPosition(15.5);
     }
 }

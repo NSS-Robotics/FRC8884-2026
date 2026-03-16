@@ -9,6 +9,7 @@ public class AutoRunIntake extends Command {
 
     public AutoRunIntake(RobotContainer rob) {
         intake = rob.intake;
+        addRequirements(rob.intake);
     }
 
     @Override

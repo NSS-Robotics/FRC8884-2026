@@ -16,7 +16,7 @@ public class Unjam extends Command {
         spindexer = rob.spindexer;
         flywheels = rob.flywheels;
 
-        addRequirements(feeder, spindexer, flywheels);
+        addRequirements(rob.feeder, rob.spindexer, rob.flywheels);
     }
 
     @Override

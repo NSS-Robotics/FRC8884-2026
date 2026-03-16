@@ -12,6 +12,7 @@ public class AutoRunSpindexer extends Command {
     public AutoRunSpindexer(RobotContainer rob) {
         feeder = rob.feeder;
         spindexer = rob.spindexer;
+        addRequirements(rob.feeder, rob.spindexer);
     }
 
     @Override
