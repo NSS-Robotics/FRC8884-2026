@@ -74,15 +74,24 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoHub(double distance) {
-        // NEW CALI (as of march 16)
         double angle;
         double d = Math.min(distance, 9);
-        if (d < 5) {
-            angle = 0.26 * Math.pow(distance, 3) - 3.04 * Math.pow(distance, 2) + 12.85 * distance - 11.46;
+
+        // NEW CALI (as of March 17)
+        if (d < 5.0) {
+            angle = 0.31 * Math.pow(d, 3) - 3.50 * Math.pow(d, 2) + 14.05 * d - 12.41;
         } else {
             // copied from old cali
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
         }
+
+        // BAD CALI (as of March 16)
+        // if (d < 5) {
+        //     angle = 0.26 * Math.pow(distance, 3) - 3.04 * Math.pow(distance, 2) + 12.85 * distance - 11.46;
+        // } else {
+        //     // copied from old cali
+        //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
+        // }
 
         // OLD CALI
         // // double angle = 0.06 * Math.pow(distance, 3) - 0.54 * Math.pow(distance, 2) +
@@ -200,7 +209,7 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Current", getCurrent());
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
-        //degrees = SmartDashboard.getNumber("Set Angles", 0);
+        // degrees = SmartDashboard.getNumber("Set Angles", 0);
         // double future[] = rob.mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmV[] = rob.mmturret.sotmPredictVelocity(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
@@ -215,15 +224,6 @@ public class ShooterHood extends SubsystemBase {
                 rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
         double sotmVILobLeft[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
                 rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
-
-        
-        // if (rob.mmturret.isInAllianceZone()) {
-        //     // alignHoodtoHub(rob.mmturret.getDistanceToTarget());
-        //     alignHoodtoHub(sotmVI[0]);
-        // } else {
-        //     // alignHoodtoLob(rob.mmturret.getDistanceToTarget());
-        //     alignHoodtoLob(sotmVI[0]);
-        // }
 
         if (!rob.mmturret.isInAllianceZone()) { 
             if (swerve.getPoseMeters().getY() > 4){

@@ -204,7 +204,7 @@ public class RobotContainer {
         );
 
         NamedCommands.registerCommand("Intake",
-            new InstantCommand(() -> intake.setVelocity(4500))
+            new InstantCommand(() -> intake.setVelocity(4750))
         );
 
         NamedCommands.registerCommand("Unjam Intake",

@@ -56,11 +56,10 @@ public class Constants {
 
     public static class Turret {
         public static final double currentLimit = 40;
-        // public static final double kP = 4; // 6
-        public static final double kP = 4;
-        public static final double kI = 0;
-        public static final double kD = 0.05;
-        public static final double kS = 0.35;
+        public static final double kP = 250.0;
+        public static final double kI = 0.0;
+        public static final double kD = 7.0;
+        public static final double kS = 0.0;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
 
@@ -74,7 +73,7 @@ public class Constants {
         public static final Translation2d offsetFromCenter = new Translation2d(0.22, 0.15);
 
         public static final double rotationLimit1 = -180.0;
-        public static final double rotationLimit2 = 210.0;
+        public static final double rotationLimit2 = 200.0;
     }
 
     public static class Hood {

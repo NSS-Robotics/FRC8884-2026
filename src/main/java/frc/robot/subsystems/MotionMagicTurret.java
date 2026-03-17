@@ -27,9 +27,11 @@ import java.util.ArrayList;
 public class MotionMagicTurret extends SubsystemBase {
     private final TalonFX turretMotor = new TalonFX(Constants.CanIDs.turretMotorID, new CANBus("Jeff"));
     private final CANcoder turretEncoder = new CANcoder(Constants.CanIDs.turretEncoderID, new CANBus("Jeff"));
+
+    private final Slot0Configs pidConfigs = new Slot0Configs();
     
-    private MotionMagicDutyCycle mmdc = new MotionMagicDutyCycle(0).withSlot(0);
-    // private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
+    // private MotionMagicDutyCycle mmdc = new MotionMagicDutyCycle(0).withSlot(0);
+    private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
 
     private final RobotContainer rob;
     private final CommandSwerveDrivetrain swerve;
@@ -73,27 +75,28 @@ public class MotionMagicTurret extends SubsystemBase {
         turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 20;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
 
-        Slot0Configs slot0Configs = turretMotorConfig.Slot0;
-        slot0Configs.kP = Constants.Turret.kP;
-        slot0Configs.kI = Constants.Turret.kI;
-        slot0Configs.kD = Constants.Turret.kD;
-        slot0Configs.kS = Constants.Turret.kS;
-        slot0Configs.kV = Constants.Turret.kV;
-        slot0Configs.kA = Constants.Turret.kA;
+        Slot0Configs pidConfigs = turretMotorConfig.Slot0;
+        pidConfigs.kP = Constants.Turret.kP;
+        pidConfigs.kI = Constants.Turret.kI;
+        pidConfigs.kD = Constants.Turret.kD;
+        pidConfigs.kS = Constants.Turret.kS;
+        pidConfigs.kV = Constants.Turret.kV;
+        pidConfigs.kA = Constants.Turret.kA;
 
-        MotionMagicConfigs motionMagicConfigs = turretMotorConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 30; // maximum for an x60 is 100rps
-        motionMagicConfigs.MotionMagicAcceleration = 30*3; // 0.5s to reach, *5 to take 0.2 sec, allegedy
+        // MotionMagicConfigs motionMagicConfigs = turretMotorConfig.MotionMagic;
+        // motionMagicConfigs.MotionMagicCruiseVelocity = 30; // maximum for an x60 is 100rps
+        // motionMagicConfigs.MotionMagicAcceleration = 30*3; // 0.5s to reach, *5 to take 0.2 sec, allegedy
         // motionMagicConfigs.MotionMagicJerk = 9999.0; // TODO: figure out if this is a good value
 
         SmartDashboard.putBoolean("Target Red Hub", true);
 
         turretMotor.clearStickyFaults();
+        //turretMotorConfig.Slot0 = pidConfigs; // TODO: REMOVE
         turretMotor.getConfigurator().apply(turretMotorConfig);
+        // turretMotor.getConfigurator().apply(pidConfigs);
 
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
 
-
         // vQueue.add(0.0);
         // vQueue.add(0.0);
         // vQueue.add(0.0);
@@ -101,10 +104,17 @@ public class MotionMagicTurret extends SubsystemBase {
         // tQueue.add(0.0);
         // tQueue.add(0.0);
 
+        SmartDashboard.putNumber("turret p", 0);
+        SmartDashboard.putNumber("turret i", 0);
+        SmartDashboard.putNumber("turret d", 0);
+        SmartDashboard.putNumber("turret s", 0);
+        SmartDashboard.putNumber("turret v", 0);
+        SmartDashboard.putNumber("turret a", 0);
+        SmartDashboard.putNumber("turret setpoint", 0);
     }
 
     public void setRotations(double rotations) {
-        turretMotor.setControl(mmdc.withPosition(rotations));
+        turretMotor.setControl(pv.withPosition(rotations)); // TODO(maybe): mmdc
         SmartDashboard.putNumber("MM Turret target rotation", rotations);
     }
 
@@ -615,11 +625,10 @@ public class MotionMagicTurret extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
-        if(!intakePivot.isIntakeUp()){
+        // TODO: uncomment once tuning is good
+        if (!intakePivot.isIntakeUp()) {
             if (!isInAllianceZone()) { 
                 if (rob.isRed()){
                     if (swerve.getPoseMeters().getY() > 4){
@@ -650,9 +659,6 @@ public class MotionMagicTurret extends SubsystemBase {
         //     isdocking = false;
         // }
 
-        // pointAtTarget(Constants.targetPositionBlue);
-        
-
         // double future[] = aLookIntoTheFuture(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
         double sotmV[] = sotmPredictVelocity(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
         double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
@@ -676,6 +682,33 @@ public class MotionMagicTurret extends SubsystemBase {
         SmartDashboard.putNumber("MMT PREDICTED DISTANCE", futureDistance);
         SmartDashboard.putNumber("MMT PREDICTED ANGLE", futureAngle); 
         SmartDashboard.putBoolean("ALLIANCEZONE", isInAllianceZone());
+
+        // for pid tuning
+        // double p = SmartDashboard.getNumber("turret p", 0);
+        // double i = SmartDashboard.getNumber("turret i", 0);
+        // double d = SmartDashboard.getNumber("turret d", 0);
+        // double s = SmartDashboard.getNumber("turret s", 0);
+        // double v = SmartDashboard.getNumber("turret v", 0);
+        // double a = SmartDashboard.getNumber("turret a", 0);
+
+        // boolean isChanged = (
+        //     p != pidConfigs.kP ||
+        //     i != pidConfigs.kI ||
+        //     d != pidConfigs.kD ||
+        //     s != pidConfigs.kS ||
+        //     v != pidConfigs.kV ||
+        //     a != pidConfigs.kA);
+        
+        // if (isChanged) {
+        //     pidConfigs.kP = p;
+        //     pidConfigs.kI = i;
+        //     pidConfigs.kD = d;
+        //     pidConfigs.kS = s;
+        //     pidConfigs.kV = v;
+        //     pidConfigs.kA = a;
+        //     turretMotor.getConfigurator().apply(pidConfigs);
+        // }
+
+        // setDegrees(SmartDashboard.getNumber("turret setpoint", 0));
     }
 }
- 
