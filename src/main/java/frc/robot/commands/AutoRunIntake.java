@@ -14,6 +14,6 @@ public class AutoRunIntake extends Command {
 
     @Override
     public void execute() {
-        intake.setVelocity(3000);
+        intake.setVelocity(4000);
     }
 }

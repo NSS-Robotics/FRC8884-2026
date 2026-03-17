@@ -69,7 +69,7 @@
   "folder": "Right Neutral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 100.0
   },
   "useDefaultConstraints": false
 }
