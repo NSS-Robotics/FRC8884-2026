@@ -5,15 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Auto Decap True"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeDown"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Decap True"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeDown"
+                }
+              }
+            ]
           }
         },
         {
@@ -116,15 +123,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Auto Decap False"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Spindexer"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -134,7 +141,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Decap False"
+                  "name": "Spindexer"
                 }
               },
               {
