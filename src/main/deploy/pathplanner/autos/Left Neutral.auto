@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Auto Decap True"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeDown"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Decap True"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeDown"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Flywheels"
+                }
+              }
+            ]
           }
         },
         {
@@ -33,12 +46,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Flywheels"
           }
         },
         {

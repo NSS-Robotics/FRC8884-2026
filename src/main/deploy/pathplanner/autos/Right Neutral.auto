@@ -19,6 +19,12 @@
                 "data": {
                   "name": "IntakeDown"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Flywheels"
+                }
               }
             ]
           }
@@ -40,12 +46,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Flywheels"
           }
         },
         {
