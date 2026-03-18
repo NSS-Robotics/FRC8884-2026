@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.spindexer.stop();
     m_robotContainer.feeder.stop();
     m_robotContainer.intake.stopIntake();
-    m_robotContainer.mmturret.autoShoot = false;
+    m_robotContainer.turret.autoShoot = false;
     m_robotContainer.shooterHood.disableAutoDecap();
   }
 
@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
     else if (timer.get() < 85)  shift = Shift.ALLIANCEA;
     else if (timer.get() < 110) shift = Shift.ALLIANCEB;
     else                        shift = Shift.ENDGAME;
-    double prefire = m_robotContainer.mmturret.distanceToTime(m_robotContainer.mmturret.getDegrees());
+    double prefire = m_robotContainer.turret.distanceToTime(m_robotContainer.turret.getDegrees());
     // NOTE: Rumble does not work in simulation
     if (
       ((time >= (10 - prefire)) && (time < 10)) ||

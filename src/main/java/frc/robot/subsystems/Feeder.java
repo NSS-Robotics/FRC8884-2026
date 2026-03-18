@@ -22,14 +22,14 @@ public class Feeder extends SubsystemBase {
     private final double minPower = 0.6;
 
     private boolean canMove = true;
-    private final MotionMagicTurret mmturret;
+    private final Turret turret;
 
     private Slot0Configs pidConfigs = new Slot0Configs();
 
     private VelocityVoltage feederVelocity = new VelocityVoltage(0).withSlot(0);
 
     public Feeder(RobotContainer rob) {
-        this.mmturret = rob.mmturret;
+        this.turret = rob.turret;
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Feeder.currentLimit;
         currentLimitConfig.StatorCurrentLimitEnable = true;
@@ -52,7 +52,7 @@ public class Feeder extends SubsystemBase {
 
     public void setSpeed(double speedRPM) {
         // TODO: should we use the code below to stop if error is big?? idk
-        // if (Math.abs(mmturret.getDegrees()-mmturret.targetDegrees) > 10) {
+        // if (Math.abs(turret.getDegrees()-turret.targetDegrees) > 10) {
         //     speedRPM /= 2.0;
         // }
         targetSpeed = speedRPM/60;
@@ -74,7 +74,7 @@ public class Feeder extends SubsystemBase {
 
     public void canMove() {
         canMove = !(
-            Math.abs(mmturret.targetDegrees-mmturret.getDegrees()) > Constants.Turret.tolerance
+            Math.abs(turret.targetDegrees-turret.getDegrees()) > Constants.Turret.tolerance
         );
     }
 

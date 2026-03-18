@@ -132,8 +132,8 @@ public class Flywheels extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
         SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
-        // if (mmturret.isInAllianceZone()){
-        //     rpmToHub(rob.mmturret.getDistanceToTarget());
+        // if (turret.isInAllianceZone()){
+        //     rpmToHub(rob.turret.getDistanceToTarget());
         // } // check if its gonna lob
         // else{
         //     rpmToRest();

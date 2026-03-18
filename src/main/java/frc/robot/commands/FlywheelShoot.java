@@ -9,7 +9,7 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Flywheels;
-import frc.robot.subsystems.MotionMagicTurret;
+import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.ShooterHood;
 import frc.robot.subsystems.Feeder;
 
@@ -21,10 +21,10 @@ public class FlywheelShoot extends Command {
     private final CommandSwerveDrivetrain swerve;
     private final Feeder feeder;
 
-    private MotionMagicTurret mmturret;
+    private Turret turret;
 
     public FlywheelShoot(RobotContainer rob) {
-        this.mmturret = rob.mmturret;
+        this.turret = rob.turret;
         this.flywheels = rob.flywheels;
         this.shooterHood = rob.shooterHood;
         this.swerve = rob.drivetrain;
@@ -37,31 +37,31 @@ public class FlywheelShoot extends Command {
     @Override
     public void execute() {
 
-        // double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
+        // double future[] = turret.aLookIntoTheFuture(swerve.getPoseMeters(), turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         
-        // double sotmV[] = mmturret.sotmPredictVelocity(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
+        // double sotmV[] = turret.sotmPredictVelocity(swerve.getPoseMeters(), turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmVA[] = mmturret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
+        // double sotmVA[] = turret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmVAI[] = mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), mmturret.getDistanceToTarget(),
+        // double sotmVAI[] = turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
 
-        double sotmVI[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+        double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVILobRight[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+        double sotmVILobRight[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
-        double sotmVILobLeft[] = rob.mmturret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.mmturret.getDistanceToTarget(),
+        double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
         
-        // double future[] = mmturret.aLookIntoTheFuture(swerve.getPoseMeters(),
-        // mmturret.getDistanceToTarget(), Constants.targetPositionBlue);
+        // double future[] = turret.aLookIntoTheFuture(swerve.getPoseMeters(),
+        // turret.getDistanceToTarget(), Constants.targetPositionBlue);
 
         // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
 
         // flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
 
-        if (!mmturret.isInAllianceZone()) { 
+        if (!turret.isInAllianceZone()) { 
             if (swerve.getPoseMeters().getY() > 4){
                 flywheels.setVelocity(flywheels.rpmToHub(sotmVILobRight[0]));
             } else {
@@ -72,7 +72,7 @@ public class FlywheelShoot extends Command {
             flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
         }
 
-        // flywheels.setVelocity(mmturret.velocityToRpm(mmturret.ans[0],
+        // flywheels.setVelocity(turret.velocityToRpm(turret.ans[0],
         // Constants.Flywheel.flywheelRadiusMeters));
 
         shooterHood.setDegrees();

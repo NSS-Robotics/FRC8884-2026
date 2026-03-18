@@ -8,18 +8,18 @@ import frc.robot.subsystems.*;
 public class IntakeUp extends Command {
     private final Intake intake;
     private final IntakePivot intakePivot;
-    private final MotionMagicTurret mmturret;
+    private final Turret turret;
 
     public IntakeUp(RobotContainer rob) {
         intake = rob.intake;
         intakePivot = rob.intakePivot;
-        mmturret = rob.mmturret;
-        addRequirements(rob.mmturret, rob.intake, rob.intakePivot);
+        turret = rob.turret;
+        addRequirements(rob.turret, rob.intake, rob.intakePivot);
     }
 
     @Override
     public void execute() {
-       mmturret.isdocking = true;
+       turret.isdocking = true;
        intakePivot.setPosition(5);
        Timer.delay(0.35);
        intakePivot.setPosition(-0.5);

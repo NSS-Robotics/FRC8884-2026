@@ -60,7 +60,7 @@ public class RobotContainer {
     public final Intake intake = new Intake();
     public final Spindexer spindexer = new Spindexer();
     public final ShooterHood shooterHood = new ShooterHood(this);
-    public final MotionMagicTurret mmturret = new MotionMagicTurret(this, Constants.Turret.offsetFromCenter);
+    public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
     public final Feeder feeder = new Feeder(this);
     // public final LEDs leds = new LEDs();
 
@@ -125,8 +125,8 @@ public class RobotContainer {
             .onTrue(new InstantCommand(shooterHood::zeroHood));
 
         /*
-        operatorController.povRight().onTrue(new InstantCommand(() -> mmturret.setManualOffset(mmturret.getManualOffset()+5)));
-        operatorController.povLeft().onTrue(new InstantCommand(() -> mmturret.setManualOffset(mmturret.getManualOffset()-5)));
+        operatorController.povRight().onTrue(new InstantCommand(() -> turret.setManualOffset(turret.getManualOffset()+5)));
+        operatorController.povLeft().onTrue(new InstantCommand(() -> turret.setManualOffset(turret.getManualOffset()-5)));
 
         operatorController.povUp().onTrue(new InstantCommand(() -> shooterHood.setManualOffset(shooterHood.getManualOffset()+2)));
         operatorController.povDown().onTrue(new InstantCommand(() -> shooterHood.setManualOffset(shooterHood.getManualOffset()-2)));
@@ -179,10 +179,10 @@ public class RobotContainer {
  
         NamedCommands.registerCommand("Flywheels", 
             new InstantCommand(() -> {
-                // double future[] = mmturret.aLookIntoTheFuture(drivetrain.getPoseMeters(), mmturret.getDistanceToTarget(), isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+                // double future[] = turret.aLookIntoTheFuture(drivetrain.getPoseMeters(), turret.getDistanceToTarget(), isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
                 // flywheels.setVelocity(flywheels.rpmToHub(future[0]));   
                 // shooterHood.setDegrees();
-                mmturret.autoShoot = true;
+                turret.autoShoot = true;
             })
         );
 

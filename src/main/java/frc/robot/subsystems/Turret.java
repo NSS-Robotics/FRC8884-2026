@@ -24,7 +24,7 @@ import frc.robot.RobotContainer;
 
 import java.util.ArrayList;
 
-public class MotionMagicTurret extends SubsystemBase {
+public class Turret extends SubsystemBase {
     private final TalonFX turretMotor = new TalonFX(Constants.CanIDs.turretMotorID, new CANBus("Jeff"));
     private final CANcoder turretEncoder = new CANcoder(Constants.CanIDs.turretEncoderID, new CANBus("Jeff"));
 
@@ -59,7 +59,7 @@ public class MotionMagicTurret extends SubsystemBase {
     public boolean autoShoot = false;
     public boolean isdocking = false;
 
-    public MotionMagicTurret(RobotContainer rob, Translation2d translation) {
+    public Turret(RobotContainer rob, Translation2d translation) {
         this.intakePivot = rob.intakePivot;
         this.swerve = rob.drivetrain;
         this.rob = rob;
