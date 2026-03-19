@@ -48,6 +48,8 @@ public class Intake extends SubsystemBase{
         intakeMotor.setControl(new VoltageOut(0));
     }
 
+
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Intake Velocity", getVelocity());

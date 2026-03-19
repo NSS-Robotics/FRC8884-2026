@@ -24,7 +24,7 @@ public class Constants {
     }
 
     public static class Flywheel {
-        public static final double currentLimit = 80;
+        public static final double currentLimit = 45;
         public static final double kP = 0.25;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -45,7 +45,7 @@ public class Constants {
     }
 
     public static class Spindexer {
-        public static final double currentLimit = 60;
+        public static final double currentLimit = 80;
         public static final double kP = 0.05;
         public static final double kI = 0.0;
         public static final double kD = 0.0;

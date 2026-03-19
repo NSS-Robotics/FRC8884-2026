@@ -64,6 +64,21 @@ public class IntakePivot extends SubsystemBase {
     motor.setControl(new VoltageOut(0));
   }
 
+      public double getCurrent() {
+        return motor.getStatorCurrent().getValueAsDouble();
+    }
+
+    public void zeroIntake() {
+        while (getCurrent() < 15) {
+            setPosition(1);
+        }
+        this.stop();
+
+        // tell the hood that this is the correct zero position
+        motor.setPosition(15.5);
+
+    }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Pivot Position", getPosition());

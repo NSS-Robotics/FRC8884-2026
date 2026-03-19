@@ -120,12 +120,12 @@ public class Flywheels extends SubsystemBase {
         //     // return Math.max(Math.min(-19.11 * Math.pow(d, 3) + 436.3 * Math.pow(d, 2) - 2814.13 * d + 7738.87, 4000), 0);
     }
 
-    public void rpmToLob(double distance){
-        
+    public double rpmToLob(double distance){
+        return 100*distance + 1100;
     }
 
     public void rpmToRest() {
-        setVelocity(0); // TODO: MAKE IT 1000
+        setVelocity(1000); // TODO: MAKE IT 1000
     }
 
     @Override

@@ -39,7 +39,7 @@ public class FlywheelShoot extends Command {
 
         // double future[] = turret.aLookIntoTheFuture(swerve.getPoseMeters(), turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        
+
         // double sotmV[] = turret.sotmPredictVelocity(swerve.getPoseMeters(), turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmVA[] = turret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), turret.getDistanceToTarget(),
@@ -63,9 +63,9 @@ public class FlywheelShoot extends Command {
 
         if (!turret.isInAllianceZone()) { 
             if (swerve.getPoseMeters().getY() > 4){
-                flywheels.setVelocity(flywheels.rpmToHub(sotmVILobRight[0]));
+                flywheels.setVelocity(flywheels.rpmToLob(sotmVILobRight[0]));
             } else {
-                flywheels.setVelocity(flywheels.rpmToHub(sotmVILobLeft[0]));
+                flywheels.setVelocity(flywheels.rpmToLob(sotmVILobLeft[0]));
             } 
         } else {      
             // pointAtTarget(Constants.targetPositionBlue);

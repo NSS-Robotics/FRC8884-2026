@@ -83,17 +83,26 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() -> {
                 double cappedMaxSpeed = MaxSpeed;
+                double cappedMaxAngularVelocity = MaxAngularRate;
 
                 if (driverController.rightTrigger(0.3).getAsBoolean()) {
-                    cappedMaxSpeed = 1.5;
+                    cappedMaxSpeed = 0.75;
+                    cappedMaxAngularVelocity *= 0.5;
                 }
 
-                double xVel = -driverController.getLeftY() * cappedMaxSpeed;
-                double yVel = -driverController.getLeftX() * cappedMaxSpeed;
+            
+                // double xVel = -driverController.getLeftY() * cappedMaxSpeed;
+                // double yVel = -driverController.getLeftX() * cappedMaxSpeed;
+
+                double xVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftY() *MaxSpeed ));
+                double yVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftX() * MaxSpeed ));
+
+
 
                 return drive.withVelocityX(xVel) // Drive forward with negative Y (forward)
                     .withVelocityY(yVel) // Drive left with negative X (left)
-                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate); // Drive counterclockwise with negative X (left)
+                    .withRotationalRate( Math.max(-cappedMaxAngularVelocity, Math.min(cappedMaxAngularVelocity, -driverController.getRightX()* MaxAngularRate)));
+                    //.withRotationalRate(-driverController.getRightX() * cappedMaxAngularVelocity); // Drive counterclockwise with negative X (left)
             })
         );
 
@@ -112,6 +121,7 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(new RunSpindexer(this));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
+        operatorController.povDown().onTrue(new InstantCommand(() -> intakePivot.zeroIntake()));
 
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 3600));
         driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE

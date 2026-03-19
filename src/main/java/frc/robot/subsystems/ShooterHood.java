@@ -117,9 +117,9 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoLob(double distance) {
-        double angle = 0;
-        angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
-        degrees = angle;
+        // double angle = 0;
+        // angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
+        degrees = 18;
         setDegrees();
     }
 
@@ -170,8 +170,14 @@ public class ShooterHood extends SubsystemBase {
     public boolean willGetDecapitated() {
         // If the leftBumper is held down, manual override is triggered, 
         // keeping the hood down until the driver says it's safe to lift.
-        boolean manualOverride = rob.driverController.rightBumper().getAsBoolean();
-        if (manualOverride) {
+        boolean manualOverrideDriver = rob.driverController.rightBumper().getAsBoolean(); 
+        boolean manualOverrideOperator =  rob.operatorController.leftTrigger().getAsBoolean();
+
+        if (manualOverrideDriver) {
+            return true;
+        }
+
+        if (manualOverrideOperator){
             return true;
         }
 
@@ -210,6 +216,7 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
+        // setDegrees();
         // double future[] = rob.turret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmV[] = rob.turret.sotmPredictVelocity(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
@@ -220,16 +227,20 @@ public class ShooterHood extends SubsystemBase {
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVILobRight[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
-        double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
+
+        // removed because we now use a constant hood angle for lobbing
+        // double sotmVILobRight[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
+        //         rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
+        // double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
+        //         rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
 
         if (!rob.turret.isInAllianceZone()) { 
             if (swerve.getPoseMeters().getY() > 4){
-                alignHoodtoHub(sotmVILobLeft[0]);   
+                // alignHoodtoLob(sotmVILobLeft[0]);
+                alignHoodtoLob(0);
             } else {
-                alignHoodtoHub(sotmVILobRight[0]);
+                // alignHoodtoLob(sotmVILobRight[0]);
+                alignHoodtoLob(0);
             } 
         } else {
             alignHoodtoHub(sotmVI[0]);
