@@ -70,7 +70,7 @@ public class IntakePivot extends SubsystemBase {
 
     public void zeroIntake() {
         while (getCurrent() < 15) {
-            setPosition(1);
+            setPosition(getPosition()+1);
         }
         this.stop();
 

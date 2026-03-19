@@ -407,6 +407,8 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("MMT NEW ANGLE", newAimAngle);
         SmartDashboard.putNumber("TIME CALLI", distanceToTime(distance));
 
+        newDistance = newDistance -0.1; //manual offset
+
         return new double[]{newDistance, newAimAngle};
     }
 
