@@ -64,16 +64,16 @@ public class Constants {
         public static final double kA = 0.0;
 
         public static final double gearRatio = 92/10 * 44/14;
-        //public static final double gearRatioWithAbsoluteEncoder = 1.5139751553;
         public static final double gearRatioWithAbsoluteEncoder = 0.6605128205;
 
-        // public static final double gearRatioWithAbsoluteEncoder = 92/25 * 14/78;
         public static final double tolerance = 1.2;
 
         public static final Translation2d offsetFromCenter = new Translation2d(0.22, 0.15);
 
         public static final double rotationLimit1 = -180.0;
         public static final double rotationLimit2 = 200.0;
+
+        public static final double encoderOffset = 0b110; // DO NOT DEPLOY. GET VALUE FROM PHOENIX TUNER X AND SET IT BEFORE DEPLOYING.
     }
 
     public static class Hood {

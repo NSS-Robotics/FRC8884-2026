@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -65,6 +66,11 @@ public class Turret extends SubsystemBase {
         this.flywheels = rob.flywheels;
         this.shooterHood = rob.shooterHood;
 
+        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+        encoderConfig.MagnetSensor.MagnetOffset = Constants.Turret.encoderOffset;
+        // turretEncoder.clearStickyFaults();
+        turretEncoder.getConfigurator().apply(encoderConfig);
+
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
         turretMotorConfig.Feedback.FeedbackRemoteSensorID = turretEncoder.getDeviceID();
         turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
@@ -81,18 +87,10 @@ public class Turret extends SubsystemBase {
         pidConfigs.kV = Constants.Turret.kV;
         pidConfigs.kA = Constants.Turret.kA;
 
-        // MotionMagicConfigs motionMagicConfigs = turretMotorConfig.MotionMagic;
-        // motionMagicConfigs.MotionMagicCruiseVelocity = 30; // maximum for an x60 is 100rps
-        // motionMagicConfigs.MotionMagicAcceleration = 30*3; // 0.5s to reach, *5 to take 0.2 sec, allegedy
-        // motionMagicConfigs.MotionMagicJerk = 9999.0; // TODO: figure out if this is a good value
-
         SmartDashboard.putBoolean("Target Red Hub", true);
 
         turretMotor.clearStickyFaults();
-        //turretMotorConfig.Slot0 = pidConfigs; // TODO: REMOVE
         turretMotor.getConfigurator().apply(turretMotorConfig);
-        // turretMotor.getConfigurator().apply(pidConfigs);
-
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
 
         // vQueue.add(0.0);
@@ -364,8 +362,18 @@ public class Turret extends SubsystemBase {
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
         Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
 
-        double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
-        double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
+        // START NEW SOTM CODE: IF BAD, REMOVE (March 20, 13:41 ET)
+        double tangentalVX = -speeds.omegaRadiansPerSecond * turretOffset.getY();
+        double tangentalVY = speeds.omegaRadiansPerSecond * turretOffset.getX();
+
+        double vx = speeds.vxMetersPerSecond + tangentalVX;
+        double vy = speeds.vyMetersPerSecond + tangentalVY;
+
+        // double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
+        // double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
+        double turretVelocityX = vx * Math.cos(robotRadians) - vy * Math.sin(robotRadians); 
+        double turretVelocityY = vx * Math.sin(robotRadians) + vy * Math.cos(robotRadians);   
+        // END NEW SOTM CODE
 
         // if (!rob.isRed()){
         //     turretVelocityX *= -1.0;
