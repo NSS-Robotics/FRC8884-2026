@@ -121,7 +121,7 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(new RunSpindexer(this));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
-        operatorController.povDown().onTrue(new InstantCommand(() -> intakePivot.zeroIntake()));
+        operatorController.povUp().onTrue(new InstantCommand(() -> intakePivot.zeroIntake()));
 
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 3600));
         driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE

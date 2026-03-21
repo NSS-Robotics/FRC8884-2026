@@ -59,11 +59,13 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        hoodMotor.setControl(pv.withPosition(rotations));
+        // FIXME: negative sign is only for belted hood
+        hoodMotor.setControl(pv.withPosition(-rotations));
     }
 
     public double getRotations() {
-        return hoodMotor.getPosition().getValueAsDouble();
+        // FIXME: negative sign is only for belted hood
+        return -hoodMotor.getPosition().getValueAsDouble();
     }
 
     public void setDegrees() {
@@ -158,7 +160,7 @@ public class ShooterHood extends SubsystemBase {
 
     public void zeroHood() {
         while (getCurrent() < Constants.Hood.currentWhenStalling) {
-            changeDegrees(-1);
+            changeDegrees(-2.5);
         }
         this.stop();
 
@@ -247,7 +249,7 @@ public class ShooterHood extends SubsystemBase {
         }
 
         if (willGetDecapitated()) {
-            degrees = 0.5;
+            degrees = 0.5; 
             setDegrees();
         }
     }

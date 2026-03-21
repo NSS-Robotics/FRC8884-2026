@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -67,8 +68,10 @@ public class Turret extends SubsystemBase {
         this.shooterHood = rob.shooterHood;
 
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+        encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         encoderConfig.MagnetSensor.MagnetOffset = Constants.Turret.encoderOffset;
-        // turretEncoder.clearStickyFaults();
+        encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+        turretEncoder.clearStickyFaults();
         turretEncoder.getConfigurator().apply(encoderConfig);
 
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
@@ -86,8 +89,6 @@ public class Turret extends SubsystemBase {
         pidConfigs.kS = Constants.Turret.kS;
         pidConfigs.kV = Constants.Turret.kV;
         pidConfigs.kA = Constants.Turret.kA;
-
-        SmartDashboard.putBoolean("Target Red Hub", true);
 
         turretMotor.clearStickyFaults();
         turretMotor.getConfigurator().apply(turretMotorConfig);
@@ -110,7 +111,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        turretMotor.setControl(pv.withPosition(rotations)); // TODO(maybe): mmdc
+        turretMotor.setControl(pv.withPosition(rotations));
         SmartDashboard.putNumber("MM Turret target rotation", rotations);
     }
 
@@ -362,17 +363,17 @@ public class Turret extends SubsystemBase {
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
         Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null);
 
-        // START NEW SOTM CODE: IF BAD, REMOVE (March 20, 13:41 ET)
         double tangentalVX = -speeds.omegaRadiansPerSecond * turretOffset.getY();
         double tangentalVY = speeds.omegaRadiansPerSecond * turretOffset.getX();
 
         double vx = speeds.vxMetersPerSecond + tangentalVX;
         double vy = speeds.vyMetersPerSecond + tangentalVY;
 
-        // double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
-        // double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
-        double turretVelocityX = vx * Math.cos(robotRadians) - vy * Math.sin(robotRadians); 
-        double turretVelocityY = vx * Math.sin(robotRadians) + vy * Math.cos(robotRadians);   
+        double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
+        double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
+        // START NEW SOTM CODE: IF BAD, REMOVE (March 20, 13:41 ET)
+        // double turretVelocityX = vx * Math.cos(robotRadians) - vy * Math.sin(robotRadians); 
+        // double turretVelocityY = vx * Math.sin(robotRadians) + vy * Math.cos(robotRadians);   
         // END NEW SOTM CODE
 
         // if (!rob.isRed()){
