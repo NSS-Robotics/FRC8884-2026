@@ -118,7 +118,7 @@ public class ShooterHood extends SubsystemBase {
         setDegrees();
     }
 
-    public void alignHoodtoLob(double distance) {
+    public void alignHoodtoLob() {
         // double angle = 0;
         // angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         degrees = 18;
@@ -213,6 +213,7 @@ public class ShooterHood extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Hood Rotations", getRotations());
         SmartDashboard.putNumber("Hood Degrees", getDegrees());
+        SmartDashboard.putNumber("HOOD SIM ANGLE", degrees);
         SmartDashboard.putNumber("Hood", hoodMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Hood Current", getCurrent());
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
@@ -236,14 +237,20 @@ public class ShooterHood extends SubsystemBase {
         // double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
 
-        if (!rob.turret.isInAllianceZone()) { 
-            if (swerve.getPoseMeters().getY() > 4){
-                // alignHoodtoLob(sotmVILobLeft[0]);
-                alignHoodtoLob(0);
+        if (!rob.turret.isInAllianceZone()) {
+            boolean isFerrying = rob.operatorController.rightTrigger().getAsBoolean();
+            if (isFerrying) {
+                if (swerve.getPoseMeters().getY() > 4){
+                    // alignHoodtoLob(sotmVILobLeft[0]);
+                    alignHoodtoLob();
+                } else {
+                    // alignHoodtoLob(sotmVILobRight[0]);
+                    alignHoodtoLob();
+                }
             } else {
-                // alignHoodtoLob(sotmVILobRight[0]);
-                alignHoodtoLob(0);
-            } 
+                degrees = 0.5;
+                setDegrees();
+            }
         } else {
             alignHoodtoHub(sotmVI[0]);
         }
