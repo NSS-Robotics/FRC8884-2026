@@ -85,6 +85,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Timer", timer.get());
     SmartDashboard.putNumber("Time (Seconds)", time);
+    
 
     if (timer.get() < 10)       shift = Shift.TRANSITION;
     else if (timer.get() < 35)  shift = Shift.ALLIANCEA;

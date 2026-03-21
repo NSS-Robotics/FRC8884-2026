@@ -125,7 +125,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void rpmToRest() {
-        setVelocity(1000); // TODO: MAKE IT 1000
+        setVelocity(1000);
     }
 
     @Override
