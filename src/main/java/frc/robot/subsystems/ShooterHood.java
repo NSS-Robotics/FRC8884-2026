@@ -25,6 +25,7 @@ public class ShooterHood extends SubsystemBase {
 
     private double degrees = 0;
     private double manualOffset = 0;
+    private boolean isShooting = false;
 
     private boolean autoDecap = false;
 
@@ -146,6 +147,14 @@ public class ShooterHood extends SubsystemBase {
         return manualOffset;
     }
 
+    public void setShooting(boolean b) {
+        isShooting = b;
+    }
+
+    public boolean getShooting() {
+        return isShooting;
+    }
+
     public void enableAutoDecap() {
         autoDecap = true;
     }
@@ -237,23 +246,34 @@ public class ShooterHood extends SubsystemBase {
         // double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
 
-        if (!rob.turret.isInAllianceZone()) {
-            boolean isFerrying = rob.operatorController.rightTrigger().getAsBoolean();
-            if (isFerrying) {
-                if (swerve.getPoseMeters().getY() > 4){
-                    // alignHoodtoLob(sotmVILobLeft[0]);
-                    alignHoodtoLob();
-                } else {
-                    // alignHoodtoLob(sotmVILobRight[0]);
-                    alignHoodtoLob();
-                }
+        if (getShooting()) {
+            if (rob.turret.isInAllianceZone()) {
+                alignHoodtoHub(sotmVI[0]);
             } else {
-                degrees = 0.5;
-                setDegrees();
+                alignHoodtoLob();
             }
         } else {
-            alignHoodtoHub(sotmVI[0]);
+            degrees = 0.5;
+            setDegrees();
         }
+
+        // if (!rob.turret.isInAllianceZone()) {
+        //     if (getShooting()) {
+        //         // if (swerve.getPoseMeters().getY() > 4){
+        //         //     // alignHoodtoLob(sotmVILobLeft[0]);
+        //         //     alignHoodtoLob();
+        //         // } else {
+        //         //     // alignHoodtoLob(sotmVILobRight[0]);
+        //         //     alignHoodtoLob();
+        //         // }
+        //         alignHoodtoLob();
+        //     } else {
+        //         degrees = 0.5;
+        //         setDegrees();
+        //     }
+        // } else {
+        //     alignHoodtoHub(sotmVI[0]);
+        // }
 
         if (willGetDecapitated()) {
             degrees = 0.5; 

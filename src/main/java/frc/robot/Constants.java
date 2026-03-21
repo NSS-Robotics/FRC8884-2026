@@ -73,7 +73,7 @@ public class Constants {
         public static final double rotationLimit1 = -180.0;
         public static final double rotationLimit2 = 200.0;
 
-        public static final double encoderOffset = -0.56982421875;
+        public static final double encoderOffset = -0.450439453125;
     }
 
     public static class Hood {

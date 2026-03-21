@@ -78,9 +78,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "Unjam Intake"
+                  "waitTime": 4.0
                 }
               },
               {
@@ -90,9 +90,9 @@
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 4.0
+                  "name": "Unjam Intake"
                 }
               }
             ]
@@ -142,13 +142,13 @@
           }
         },
         {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "Unjam Intake"
+                  "waitTime": 20.0
                 }
               },
               {
@@ -158,9 +158,9 @@
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 20.0
+                  "name": "Unjam Intake"
                 }
               }
             ]

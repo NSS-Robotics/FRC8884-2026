@@ -41,10 +41,11 @@ public class Turret extends SubsystemBase {
 
     public double targetDegrees;
     private double distanceToTarget;
-    public /* static */ double[] ans;
+    public double[] ans;
     public double previousVelocityX = 0;
     public double previousVelocityY = 0;
     public double previousTime = 1;
+    public double manualDistanceOffset = 0.0;
 
     private ArrayList<Double> vQueueX = new ArrayList<Double>();
     private ArrayList<Double> vQueueY = new ArrayList<Double>();
@@ -416,7 +417,7 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("MMT NEW ANGLE", newAimAngle);
         SmartDashboard.putNumber("TIME CALLI", distanceToTime(distance));
 
-        newDistance = newDistance -0.1; //manual offset
+        newDistance += manualDistanceOffset;
 
         return new double[]{newDistance, newAimAngle};
     }
@@ -691,6 +692,8 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("MMT PREDICTED DISTANCE", futureDistance);
         SmartDashboard.putNumber("MMT PREDICTED ANGLE", futureAngle); 
         SmartDashboard.putBoolean("ALLIANCEZONE", isInAllianceZone());
+
+        SmartDashboard.putNumber("Manual Distance Offset", manualDistanceOffset);
 
         // for pid tuning
         // double p = SmartDashboard.getNumber("turret p", 0);

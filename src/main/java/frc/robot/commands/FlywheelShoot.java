@@ -60,6 +60,7 @@ public class FlywheelShoot extends Command {
         // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
 
         // flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
+        shooterHood.setShooting(true);
 
         if (!turret.isInAllianceZone()) { 
             if (swerve.getPoseMeters().getY() > 4){
@@ -81,6 +82,7 @@ public class FlywheelShoot extends Command {
     @Override
     public void end(boolean interrupted) {
         flywheels.stop();
+        shooterHood.setShooting(false);
         feeder.stop();
     }
 }

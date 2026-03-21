@@ -121,7 +121,10 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(new RunSpindexer(this));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
-        operatorController.povUp().onTrue(new InstantCommand(() -> intakePivot.zeroIntake()));
+        operatorController.povDown().onTrue(new InstantCommand(intakePivot::zeroIntake));
+        operatorController.povUp().onTrue(new InstantCommand(shooterHood::zeroHood));
+        operatorController.povRight().onTrue(new InstantCommand(() -> turret.manualDistanceOffset += 0.05));
+        operatorController.povLeft().onTrue(new InstantCommand(() -> turret.manualDistanceOffset -= 0.05));
 
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 3600));
         driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
@@ -131,8 +134,6 @@ public class RobotContainer {
         driverController.b().whileTrue(new RunIntake(this, -3200));
     
         //operator controller, zia can i have my spinning gear thing back plz
-        operatorController.povDown()
-            .onTrue(new InstantCommand(shooterHood::zeroHood));
 
         /*
         operatorController.povRight().onTrue(new InstantCommand(() -> turret.setManualOffset(turret.getManualOffset()+5)));
