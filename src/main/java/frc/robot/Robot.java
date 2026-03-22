@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_robotContainer.shooterHood.zeroHood();
+    // m_robotContainer.shooterHood.zeroHood();
     m_robotContainer.shooterHood.setShooting(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

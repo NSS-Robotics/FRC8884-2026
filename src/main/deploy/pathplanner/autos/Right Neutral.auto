@@ -24,7 +24,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -38,15 +38,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "deadline",
                       "data": {
-                        "name": "IntakeDown"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "IntakeDown"
+                            }
+                          }
+                        ]
                       }
                     },
                     {

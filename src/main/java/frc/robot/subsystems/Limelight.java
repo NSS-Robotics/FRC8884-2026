@@ -5,9 +5,11 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.datalog.IntegerLogEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.LimelightHelpers;
+import frc.robot.RobotContainer;
 
 public class Limelight extends SubsystemBase {
 
@@ -22,13 +24,17 @@ public class Limelight extends SubsystemBase {
     public Pose2d botPose;
     public Pose3d botPoseTagRelative;
 
+    private final IntegerLogEntry tagCountLog; 
+
     public final CommandSwerveDrivetrain swerve;
 
-    public Limelight(String name, CommandSwerveDrivetrain swerve) {
+    public Limelight(RobotContainer rob, String name, CommandSwerveDrivetrain swerve) {
         this.name = "limelight-" + name;
         table = NetworkTableInstance.getDefault().getTable(this.name);
 
         this.swerve = swerve;
+
+        tagCountLog = new IntegerLogEntry(rob.log, "/ll_"+name+"/tagcount");
     }
 
     public void turnLimelightLED(boolean on) {
@@ -51,6 +57,9 @@ public class Limelight extends SubsystemBase {
             if (mt1 == null) {
                 return;
             }
+
+            tagCountLog.append(mt1.tagCount);
+            SmartDashboard.putNumber(this.name + " tagcount", mt1.tagCount);
 
             if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
                 if (mt1.rawFiducials[0].ambiguity > 0.7 || mt1.rawFiducials[0].distToCamera > 3) {

@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -27,8 +28,6 @@ import java.util.ArrayList;
 public class Turret extends SubsystemBase {
     private final TalonFX turretMotor = new TalonFX(Constants.CanIDs.turretMotorID, new CANBus("Jeff"));
     private final CANcoder turretEncoder = new CANcoder(Constants.CanIDs.turretEncoderID, new CANBus("Jeff"));
-
-    private final Slot0Configs pidConfigs = new Slot0Configs();
     
     // private MotionMagicDutyCycle mmdc = new MotionMagicDutyCycle(0).withSlot(0);
     private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
@@ -59,6 +58,9 @@ public class Turret extends SubsystemBase {
 
     public boolean autoShoot = false;
     public boolean isdocking = false;
+
+    private final DoubleLogEntry distanceLog;
+    private final DoubleLogEntry errorLog;
 
     public Turret(RobotContainer rob, Translation2d translation) {
         this.intakePivot = rob.intakePivot;
@@ -109,6 +111,9 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("turret v", 0);
         SmartDashboard.putNumber("turret a", 0);
         SmartDashboard.putNumber("turret setpoint", 0);
+
+        distanceLog = new DoubleLogEntry(rob.log, "/turret/distance");
+        errorLog = new DoubleLogEntry(rob.log, "/turret/errordegrees");
     }
 
     public void setRotations(double rotations) {
@@ -694,6 +699,10 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putBoolean("ALLIANCEZONE", isInAllianceZone());
 
         SmartDashboard.putNumber("Manual Distance Offset", manualDistanceOffset);
+
+        // Log to logs
+        errorLog.append(targetDegrees-getDegrees());
+        distanceLog.append(getDistanceToTarget());
 
         // for pid tuning
         // double p = SmartDashboard.getNumber("turret p", 0);

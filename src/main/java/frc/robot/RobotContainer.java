@@ -17,6 +17,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -52,14 +54,16 @@ public class RobotContainer {
     public Pose2d simulatedPosition = new Pose2d();
     public Pose2d lobTarget = new Pose2d();
 
+    public final DataLog log = DataLogManager.getLog();;
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final Limelight limelightFront = new Limelight("front", drivetrain);
-    public final Limelight limelightSide = new Limelight("side", drivetrain);
-    public final Flywheels flywheels = new Flywheels(this);
+    public final Limelight limelightFront = new Limelight(this, "front", drivetrain);
+    public final Limelight limelightSide = new Limelight(this, "side", drivetrain);
     public final IntakePivot intakePivot = new IntakePivot(this);
     public final Intake intake = new Intake();
     public final Spindexer spindexer = new Spindexer();
     public final ShooterHood shooterHood = new ShooterHood(this);
+    public final Flywheels flywheels = new Flywheels(this);
     public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
     public final Feeder feeder = new Feeder(this);
     // public final LEDs leds = new LEDs();
@@ -69,6 +73,8 @@ public class RobotContainer {
     public RobotContainer() {
         addCommandsToPathplanner();
         CameraServer.startAutomaticCapture();
+        DataLogManager.start();
+        DriverStation.startDataLog(log);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
