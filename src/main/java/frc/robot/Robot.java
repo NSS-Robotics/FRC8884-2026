@@ -19,12 +19,12 @@ public class Robot extends TimedRobot {
 
   private final Timer timer = new Timer();
   private Shift shift = Shift.TRANSITION;
-  private XboxController xbox;
+  private XboxController driverController;
   private XboxController operatorController;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-    xbox = m_robotContainer.driverController.getHID();
+    driverController = m_robotContainer.driverController.getHID();
     operatorController = m_robotContainer.operatorController.getHID();
   }
 
@@ -102,19 +102,19 @@ public class Robot extends TimedRobot {
       ((time >= (85 - prefire)) && (time < 85)) ||
       ((time >= (110 - prefire)) && (time < 110)))
     {
-        xbox.setRumble(RumbleType.kBothRumble, 1);
-        operatorController.setRumble(RumbleType.kBothRumble, 1);
+        driverController.setRumble(RumbleType.kBothRumble, 1);
+        // operatorController.setRumble(RumbleType.kBothRumble, 1);
     } else if (
       ((time >= (10 - switchNotification)) && (time < 10)) ||
       ((time >= (35 - switchNotification)) && (time < 35)) ||
       ((time >= (60 - switchNotification)) && (time < 60)) ||
       ((time >= (85 - switchNotification)) && (time < 85)) ||
       ((time >= (110 - switchNotification)) && (time < 110))) {
-      xbox.setRumble(RumbleType.kBothRumble, 0.5);
-      operatorController.setRumble(RumbleType.kBothRumble, 0.5);
+      driverController.setRumble(RumbleType.kBothRumble, 0.5);
+      // operatorController.setRumble(RumbleType.kBothRumble, 0.5);
     } else {
-      xbox.setRumble(RumbleType.kBothRumble, 0);
-      operatorController.setRumble(RumbleType.kBothRumble, 0);
+      driverController.setRumble(RumbleType.kBothRumble, 0);
+      // operatorController.setRumble(RumbleType.kBothRumble, 0);
     }
 
     SmartDashboard.putString("Shift", shift.toString());
@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopExit() {
     timer.stop();
-    xbox.setRumble(RumbleType.kBothRumble, 0);
+    driverController.setRumble(RumbleType.kBothRumble, 0);
     operatorController.setRumble(RumbleType.kBothRumble, 0);
   }
 

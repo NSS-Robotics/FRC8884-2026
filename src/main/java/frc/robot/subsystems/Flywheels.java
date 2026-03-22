@@ -3,13 +3,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,13 +20,15 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX rightFlywheelMotor = new TalonFX(Constants.CanIDs.rightFlywheelMotorID);
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
+    private final XboxController operatorController;
+    private final ShooterHood hood;
+
     private double targetVelocity = 0;
-    private final double maxPower = 1.0;
-    private final double minPower = 0.1;
+    // private final double maxPower = 1.0;
+    // private final double minPower = 0.1;
 
-    private final DutyCycleOut flywheelOutL = new DutyCycleOut(0);
-    private final DutyCycleOut flywheelOutR = new DutyCycleOut(0);
-
+    // private final DutyCycleOut flywheelOutL = new DutyCycleOut(0);
+    // private final DutyCycleOut flywheelOutR = new DutyCycleOut(0);
 
     Slot0Configs pidConfigs = new Slot0Configs();
 
@@ -63,6 +66,9 @@ public class Flywheels extends SubsystemBase {
         SmartDashboard.putNumber("fly p", 0);
         SmartDashboard.putNumber("fly s", 0);
         SmartDashboard.putNumber("fly v", 0);
+
+        operatorController = rob.operatorController.getHID();
+        hood = rob.shooterHood;
     }
 
     public void setVelocity(double rpm) {
@@ -130,8 +136,14 @@ public class Flywheels extends SubsystemBase {
 
     @Override
     public void periodic() {
+        boolean velocityReached = targetVelocity <= getVelocity() - 3;
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
-        SmartDashboard.putBoolean("Flywheel Velocity Reached", targetVelocity <= getVelocity() - 3);
+        SmartDashboard.putBoolean("Flywheel Velocity Reached", velocityReached);
+        
+        if (velocityReached && hood.getShooting() && !DriverStation.isAutonomous()) {
+            operatorController.setRumble(RumbleType.kBothRumble, 0.5);
+        }
+
         // if (turret.isInAllianceZone()){
         //     rpmToHub(rob.turret.getDistanceToTarget());
         // } // check if its gonna lob
@@ -158,15 +170,15 @@ public class Flywheels extends SubsystemBase {
 
         // SmartDashboard.putNumber("FLYWHEEL RPM", )
 
-        double p = SmartDashboard.getNumber("fly p", 0);
-        double s = SmartDashboard.getNumber("fly s", 0);
-        double v = SmartDashboard.getNumber("fly v", 0);
+        // double p = SmartDashboard.getNumber("fly p", 0);
+        // double s = SmartDashboard.getNumber("fly s", 0);
+        // double v = SmartDashboard.getNumber("fly v", 0);
         
         // pidConfigs.kP = p;
         // pidConfigs.kS = s;
         // pidConfigs.kV = v;
 
-        boolean isChanged = false;
+        // boolean isChanged = false;
 
         // if(p != pidConfigs.kP){
         // pidConfigs.kP = p;
