@@ -35,7 +35,7 @@ public class Constants {
     }
 
     public static class Feeder {
-        public static final double currentLimit = 80;
+        public static final double currentLimit = 60; // i don't love this
         public static final double kP = 0.1;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -55,7 +55,7 @@ public class Constants {
     }
 
     public static class Turret {
-        public static final double currentLimit = 40;
+        public static final double currentLimit = 30;
         public static final double kP = 250.0;
         public static final double kI = 0.0;
         public static final double kD = 7.0;
@@ -99,7 +99,7 @@ public class Constants {
     }
 
     public static class Intake {
-        public static final double currentLimit = 80;
+        public static final double currentLimit = 70;
         public static final double kP = 0.8;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
