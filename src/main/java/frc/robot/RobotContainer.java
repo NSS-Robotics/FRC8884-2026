@@ -44,6 +44,7 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake xLockWheels = new SwerveRequest.SwerveDriveBrake();
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     public final CommandXboxController driverController = new CommandXboxController(0);
@@ -100,8 +101,8 @@ public class RobotContainer {
                 // double xVel = -driverController.getLeftY() * cappedMaxSpeed;
                 // double yVel = -driverController.getLeftX() * cappedMaxSpeed;
 
-                double xVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftY() *MaxSpeed ));
-                double yVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftX() * MaxSpeed ));
+                double xVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftY() * MaxSpeed));
+                double yVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftX() * MaxSpeed));
 
 
 
@@ -138,6 +139,7 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
+        driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels)); // remove later if necessary
     
         //operator controller, zia can i have my spinning gear thing back plz
 
