@@ -82,6 +82,12 @@ public class Flywheels extends SubsystemBase {
         return leftFlywheelMotor.getVelocity().getValueAsDouble();
     }
 
+    public boolean isAtTargetVelocity(double toleranceRPS) {
+        double velocity = getVelocity();
+
+        return targetVelocity >= velocity - toleranceRPS;
+    }
+
     public void stop() {
         // targetVelocity = 500;
         // VoltageOut voltageOut = new VoltageOut(0);

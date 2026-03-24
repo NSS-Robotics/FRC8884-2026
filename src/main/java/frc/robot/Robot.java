@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private final RobotContainer m_robotContainer;
+  private final RobotContainer rob;
 
   private final Timer timer = new Timer();
   private Shift shift = Shift.TRANSITION;
@@ -23,16 +23,16 @@ public class Robot extends TimedRobot {
   private XboxController operatorController;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
-    driverController = m_robotContainer.driverController.getHID();
-    operatorController = m_robotContainer.operatorController.getHID();
+    rob = new RobotContainer();
+    driverController = rob.driverController.getHID();
+    operatorController = rob.operatorController.getHID();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    m_robotContainer.fieldMap.setRobotPose(m_robotContainer.drivetrain.getPoseMeters());
+    rob.fieldMap.setRobotPose(rob.drivetrain.getPoseMeters());
   }
 
   @Override
@@ -47,8 +47,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.shooterHood.zeroHood();
-    m_robotContainer.isShooting = true;
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    rob.isShooting = true;
+    m_autonomousCommand = rob.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -68,24 +68,24 @@ public class Robot extends TimedRobot {
     }
 
     timer.start();
-    m_robotContainer.shooterHood.zeroHood();
-    m_robotContainer.isShooting = false;
-    m_robotContainer.flywheels.stop();
-    m_robotContainer.spindexer.stop();
-    m_robotContainer.feeder.stop();
-    m_robotContainer.intake.stopIntake();
-    m_robotContainer.turret.autoShoot = false;
-    m_robotContainer.shooterHood.disableAutoDecap();
+    rob.shooterHood.zeroHood();
+    rob.isShooting = false;
+    rob.flywheels.stop();
+    rob.spindexer.stop();
+    rob.feeder.stop();
+    rob.intake.stopIntake();
+    rob.turret.autoShoot = false;
+    rob.shooterHood.disableAutoDecap();
   }
 
   @Override
   public void teleopPeriodic() {
+    // driver controller rumble
     double switchNotification = 5;
     int time = (int)timer.get();
 
     SmartDashboard.putNumber("Timer", timer.get());
     SmartDashboard.putNumber("Time (Seconds)", time);
-    
 
     if (timer.get() < 10)       shift = Shift.TRANSITION;
     else if (timer.get() < 35)  shift = Shift.ALLIANCEA;
@@ -93,17 +93,15 @@ public class Robot extends TimedRobot {
     else if (timer.get() < 85)  shift = Shift.ALLIANCEA;
     else if (timer.get() < 110) shift = Shift.ALLIANCEB;
     else                        shift = Shift.ENDGAME;
-    double prefire = m_robotContainer.turret.distanceToTime(m_robotContainer.turret.getDegrees());
+    double prefire = rob.turret.distanceToTime(rob.turret.getDegrees());
     // NOTE: Rumble does not work in simulation
     if (
       ((time >= (10 - prefire)) && (time < 10)) ||
       ((time >= (35 - prefire)) && (time < 35)) ||
       ((time >= (60 - prefire)) && (time < 60)) ||
       ((time >= (85 - prefire)) && (time < 85)) ||
-      ((time >= (110 - prefire)) && (time < 110)))
-    {
+      ((time >= (110 - prefire)) && (time < 110))) {
         driverController.setRumble(RumbleType.kBothRumble, 1);
-        // operatorController.setRumble(RumbleType.kBothRumble, 1);
     } else if (
       ((time >= (10 - switchNotification)) && (time < 10)) ||
       ((time >= (35 - switchNotification)) && (time < 35)) ||
@@ -111,13 +109,16 @@ public class Robot extends TimedRobot {
       ((time >= (85 - switchNotification)) && (time < 85)) ||
       ((time >= (110 - switchNotification)) && (time < 110))) {
       driverController.setRumble(RumbleType.kBothRumble, 0.5);
-      // operatorController.setRumble(RumbleType.kBothRumble, 0.5);
     } else {
       driverController.setRumble(RumbleType.kBothRumble, 0);
-      // operatorController.setRumble(RumbleType.kBothRumble, 0);
     }
 
     SmartDashboard.putString("Shift", shift.toString());
+
+    // operator controller rumble
+    if (rob.isShooting && rob.flywheels.isAtTargetVelocity(2)) {
+      operatorController.setRumble(RumbleType.kBothRumble, 0.7);
+    }
   }
 
   @Override
@@ -140,6 +141,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
-    m_robotContainer.fuelSim.updateSim();
+    rob.fuelSim.updateSim();
   }
 }
