@@ -21,7 +21,6 @@ public class IntakePivot extends SubsystemBase {
   // Motor configuration
   private Slot0Configs slot0Configs;
 
-  
   public IntakePivot(RobotContainer rob) {
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     currentLimitsConfigs.StatorCurrentLimit = Constants.IntakePivot.currentLimit;
@@ -35,11 +34,6 @@ public class IntakePivot extends SubsystemBase {
     slot0Configs.kV = Constants.IntakePivot.kV;
     slot0Configs.kA = Constants.IntakePivot.kA;
 
-    // motorConfig = new TalonFXConfiguration();
-    // motorConfig.Feedback.FeedbackRemoteSensorID = encoder.getDeviceID();
-    // motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-
-    // motor.getConfigurator().apply(motorConfig);
     motor.getConfigurator().apply(slot0Configs);
     motor.getConfigurator().apply(currentLimitsConfigs);
     motor.setNeutralMode(NeutralModeValue.Brake);
@@ -74,7 +68,7 @@ public class IntakePivot extends SubsystemBase {
         }
         this.stop();
 
-        // tell the hood that this is the correct zero position
+        // tell the intake pivot that this is the correct zero position
         motor.setPosition(15.5);
 
     }

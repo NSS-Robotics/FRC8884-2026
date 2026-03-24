@@ -1,11 +1,7 @@
 package frc.robot.commands;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Flywheels;
@@ -60,7 +56,7 @@ public class FlywheelShoot extends Command {
         // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
 
         // flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
-        shooterHood.setShooting(true);
+        rob.isShooting = true;
 
         if (!turret.isInAllianceZone()) { 
             if (swerve.getPoseMeters().getY() > 4){
@@ -82,7 +78,7 @@ public class FlywheelShoot extends Command {
     @Override
     public void end(boolean interrupted) {
         flywheels.stop();
-        shooterHood.setShooting(false);
+        rob.isShooting = false;
         feeder.stop();
     }
 }

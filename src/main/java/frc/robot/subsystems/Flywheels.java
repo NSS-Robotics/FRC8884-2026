@@ -21,7 +21,7 @@ public class Flywheels extends SubsystemBase {
     private final TalonFX leftFlywheelMotor = new TalonFX(Constants.CanIDs.leftFlywheelMotorID);
 
     private final XboxController operatorController;
-    private final ShooterHood hood;
+    private final RobotContainer rob;
 
     private double targetVelocity = 0;
     // private final double maxPower = 1.0;
@@ -68,7 +68,7 @@ public class Flywheels extends SubsystemBase {
         SmartDashboard.putNumber("fly v", 0);
 
         operatorController = rob.operatorController.getHID();
-        hood = rob.shooterHood;
+        this.rob = rob;
     }
 
     public void setVelocity(double rpm) {
@@ -140,7 +140,7 @@ public class Flywheels extends SubsystemBase {
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
         SmartDashboard.putBoolean("Flywheel Velocity Reached", velocityReached);
         
-        if (velocityReached && hood.getShooting() && !DriverStation.isAutonomous()) {
+        if (velocityReached && rob.isShooting && !DriverStation.isAutonomous()) {
             operatorController.setRumble(RumbleType.kBothRumble, 0.5);
         }
 

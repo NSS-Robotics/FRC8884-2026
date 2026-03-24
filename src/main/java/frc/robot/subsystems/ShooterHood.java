@@ -25,7 +25,6 @@ public class ShooterHood extends SubsystemBase {
 
     private double degrees = 0;
     private double manualOffset = 0;
-    private boolean isShooting = false;
 
     private boolean autoDecap = false;
 
@@ -60,12 +59,12 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        // FIXME: negative sign is only for belted hood
+        // negative sign is only for belted hood
         hoodMotor.setControl(pv.withPosition(-rotations));
     }
 
     public double getRotations() {
-        // FIXME: negative sign is only for belted hood
+        // negative sign is only for belted hood
         return -hoodMotor.getPosition().getValueAsDouble();
     }
 
@@ -145,14 +144,6 @@ public class ShooterHood extends SubsystemBase {
 
     public double getManualOffset() {
         return manualOffset;
-    }
-
-    public void setShooting(boolean b) {
-        isShooting = b;
-    }
-
-    public boolean getShooting() {
-        return isShooting;
     }
 
     public void enableAutoDecap() {
@@ -246,7 +237,7 @@ public class ShooterHood extends SubsystemBase {
         // double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
 
-        if (getShooting()) {
+        if (rob.isShooting) {
             if (rob.turret.isInAllianceZone()) {
                 alignHoodtoHub(sotmVI[0]);
             } else {
@@ -258,7 +249,7 @@ public class ShooterHood extends SubsystemBase {
         }
 
         // if (!rob.turret.isInAllianceZone()) {
-        //     if (getShooting()) {
+        //     if (rob.isShooting) {
         //         // if (swerve.getPoseMeters().getY() > 4){
         //         //     // alignHoodtoLob(sotmVILobLeft[0]);
         //         //     alignHoodtoLob();

@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.shooterHood.zeroHood();
-    m_robotContainer.shooterHood.setShooting(true);
+    m_robotContainer.isShooting = true;
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
 
     timer.start();
     m_robotContainer.shooterHood.zeroHood();
-    m_robotContainer.shooterHood.setShooting(false);
+    m_robotContainer.isShooting = false;
     m_robotContainer.flywheels.stop();
     m_robotContainer.spindexer.stop();
     m_robotContainer.feeder.stop();
