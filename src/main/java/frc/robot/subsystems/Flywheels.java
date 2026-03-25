@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -37,6 +38,10 @@ public class Flywheels extends SubsystemBase {
         TalonFXConfiguration rightConfig = new TalonFXConfiguration();
 
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+        leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
+        rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
+
 
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Flywheel.currentLimit;
@@ -74,8 +79,8 @@ public class Flywheels extends SubsystemBase {
     public void setVelocity(double rpm) {
         targetVelocity = (rpm)/60; // +25
 
-        rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
-        leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
+        rightFlywheelMotor.setControl(new VelocityTorqueCurrentFOC(-rpm/60));
+        leftFlywheelMotor.setControl(new VelocityTorqueCurrentFOC(rpm/60));
     }
 
     public double getVelocity() {
@@ -177,36 +182,36 @@ public class Flywheels extends SubsystemBase {
         // SmartDashboard.putNumber("FLYWHEEL RPM", )
 
         // double p = SmartDashboard.getNumber("fly p", 0);
-        // double s = SmartDashboard.getNumber("fly s", 0);
-        // double v = SmartDashboard.getNumber("fly v", 0);
+    //     double s = SmartDashboard.getNumber("fly s", 0);
+    //     double v = SmartDashboard.getNumber("fly v", 0);
         
-        // pidConfigs.kP = p;
-        // pidConfigs.kS = s;
-        // pidConfigs.kV = v;
+    //     pidConfigs.kP = p;
+    //     pidConfigs.kS = s;
+    //     pidConfigs.kV = v;
 
-        // boolean isChanged = false;
+    //     boolean isChanged = false;
 
-        // if(p != pidConfigs.kP){
-        // pidConfigs.kP = p;
-        // isChanged = true; 
-        // }
+    //     if(p != pidConfigs.kP){
+    //     pidConfigs.kP = p;
+    //     isChanged = true; 
+    //     }
 
-        // if(s != pidConfigs.kS){
-        // pidConfigs.kS = s;
-        // isChanged = true;
-        // }
+    //     if(s != pidConfigs.kS){
+    //     pidConfigs.kS = s;
+    //     isChanged = true;
+    //     }
 
-        // if(v != pidConfigs.kV){
-        // pidConfigs.kV = v;
-        // isChanged = true;
-        // }
+    //     if(v != pidConfigs.kV){
+    //     pidConfigs.kV = v;
+    //     isChanged = true;
+    //     }
 
-        // if(isChanged){
-        //     leftFlywheelMotor.getConfigurator().apply(pidConfigs);
-        //     rightFlywheelMotor.getConfigurator().apply(pidConfigs);
-        // }
-        // leftFlywheelMotor.getConfigurator().apply(pidConfigs);
-        // rightFlywheelMotor.getConfigurator().apply(pidConfigs);
+    //     if(isChanged){
+    //         leftFlywheelMotor.getConfigurator().apply(pidConfigs);
+    //         rightFlywheelMotor.getConfigurator().apply(pidConfigs);
+    //     }
+    //     leftFlywheelMotor.getConfigurator().apply(pidConfigs);
+    //     rightFlywheelMotor.getConfigurator().apply(pidConfigs);
     }
 
     @Override

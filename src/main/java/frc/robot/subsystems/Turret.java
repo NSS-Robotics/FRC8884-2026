@@ -5,7 +5,9 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -30,7 +32,11 @@ public class Turret extends SubsystemBase {
     private final CANcoder turretEncoder = new CANcoder(Constants.CanIDs.turretEncoderID, new CANBus("Jeff"));
     
     // private MotionMagicDutyCycle mmdc = new MotionMagicDutyCycle(0).withSlot(0);
-    private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
+    //private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
+    private final PositionTorqueCurrentFOC pt = new PositionTorqueCurrentFOC(0).withSlot(0);
+
+    // private Slot0Configs pidConfigs = new Slot0Configs();
+
 
     private final RobotContainer rob;
     private final CommandSwerveDrivetrain swerve;
@@ -77,14 +83,19 @@ public class Turret extends SubsystemBase {
         turretEncoder.clearStickyFaults();
         turretEncoder.getConfigurator().apply(encoderConfig);
 
+        
+
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
         turretMotorConfig.Feedback.FeedbackRemoteSensorID = turretEncoder.getDeviceID();
-        turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        turretMotorConfig.Feedback.RotorToSensorRatio = Constants.Turret.motorToEncoderRatio; 
+        turretMotorConfig.Feedback.SensorToMechanismRatio = Constants.Turret.gearRatioWithAbsoluteEncoder;
+        turretMotorConfig.TorqueCurrent.withPeakForwardTorqueCurrent(20).withPeakReverseTorqueCurrent(-20);
+
 
         CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = turretMotorConfig.CurrentLimits;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 20;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
-
         Slot0Configs pidConfigs = turretMotorConfig.Slot0;
         pidConfigs.kP = Constants.Turret.kP;
         pidConfigs.kI = Constants.Turret.kI;
@@ -117,7 +128,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        turretMotor.setControl(pv.withPosition(rotations));
+        turretMotor.setControl(pt.withPosition(rotations));
         SmartDashboard.putNumber("MM Turret target rotation", rotations);
     }
 
@@ -131,7 +142,8 @@ public class Turret extends SubsystemBase {
 
     public void setDegrees(double degrees) {
         targetDegrees = degrees;
-        double rotations = degrees * Constants.Turret.gearRatioWithAbsoluteEncoder / 360; 
+        //double rotations = degrees * Constants.Turret.gearRatioWithAbsoluteEncoder / 360; 
+        double rotations = degrees / 360; 
 
         SmartDashboard.putNumber("MM Turret Target Degrees", degrees);
 
@@ -139,7 +151,8 @@ public class Turret extends SubsystemBase {
     }
 
     public double getDegrees() {
-        return 360 * getRotations() / Constants.Turret.gearRatioWithAbsoluteEncoder;
+        //return 360 * getRotations() / Constants.Turret.gearRatioWithAbsoluteEncoder;
+        return 360 * getRotations();
     }
 
     private double wrapAngleDegrees(double angle){
