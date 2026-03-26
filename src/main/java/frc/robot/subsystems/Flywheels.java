@@ -39,8 +39,8 @@ public class Flywheels extends SubsystemBase {
 
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
-        rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
+        // leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
+        // rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
 
 
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
@@ -79,8 +79,8 @@ public class Flywheels extends SubsystemBase {
     public void setVelocity(double rpm) {
         targetVelocity = (rpm)/60; // +25
 
-        rightFlywheelMotor.setControl(new VelocityTorqueCurrentFOC(-rpm/60));
-        leftFlywheelMotor.setControl(new VelocityTorqueCurrentFOC(rpm/60));
+        rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
+        leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
     }
 
     public double getVelocity() {
@@ -107,7 +107,8 @@ public class Flywheels extends SubsystemBase {
 
         // NEW CALI (as of March 17)
         if (d <= 5) {
-            double ans = 7.19 * Math.pow(d, 3) - 63.18 * Math.pow(d, 2) + 329.55 * d + 927.81;
+            // double ans = 7.19 * Math.pow(d, 3) - 63.18 * Math.pow(d, 2) + 329.55 * d + 927.81;
+            double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
 
             return Math.max(Math.min(ans, 3700), 0); // Clamp RPM to between 0 and 3700
         } else {
@@ -142,7 +143,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void rpmToRest() {
-        setVelocity(1000);
+        setVelocity(0); //FIXME: 1000
     }
 
     @Override

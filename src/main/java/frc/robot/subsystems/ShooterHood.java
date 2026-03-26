@@ -80,8 +80,8 @@ public class ShooterHood extends SubsystemBase {
         double d = Math.min(distance, 9);
 
         // NEW CALI (as of March 17)
-        if (d < 5.0) {
-            angle = 0.31 * Math.pow(d, 3) - 3.50 * Math.pow(d, 2) + 14.05 * d - 12.41;
+        if (d <= 5.0) {
+            angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91;
         } else {
             // copied from old cali
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
@@ -248,23 +248,23 @@ public class ShooterHood extends SubsystemBase {
             setDegrees();
         }
 
-        // if (!rob.turret.isInAllianceZone()) {
-        //     if (rob.isShooting) {
-        //         // if (swerve.getPoseMeters().getY() > 4){
-        //         //     // alignHoodtoLob(sotmVILobLeft[0]);
-        //         //     alignHoodtoLob();
-        //         // } else {
-        //         //     // alignHoodtoLob(sotmVILobRight[0]);
-        //         //     alignHoodtoLob();
-        //         // }
-        //         alignHoodtoLob();
-        //     } else {
-        //         degrees = 0.5;
-        //         setDegrees();
-        //     }
-        // } else {
-        //     alignHoodtoHub(sotmVI[0]);
-        // }
+        if (!rob.turret.isInAllianceZone()) {
+            if (rob.isShooting) {
+                // if (swerve.getPoseMeters().getY() > 4){
+                //     // alignHoodtoLob(sotmVILobLeft[0]);
+                //     alignHoodtoLob();
+                // } else {
+                //     // alignHoodtoLob(sotmVILobRight[0]);
+                //     alignHoodtoLob();
+                // }
+                alignHoodtoLob();
+            } else {
+                degrees = 0.5;
+                setDegrees();
+            }
+        } else {
+            alignHoodtoHub(sotmVI[0]);
+        }
 
         if (willGetDecapitated()) {
             degrees = 0.5; 

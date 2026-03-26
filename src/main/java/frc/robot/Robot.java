@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -86,14 +87,17 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Timer", timer.get());
     SmartDashboard.putNumber("Time (Seconds)", time);
+    SmartDashboard.putNumber("Time Left in " + shift.toString() + " Shift", rob.timeLeft(DriverStation.getMatchTime()));
+
+    SmartDashboard.putBoolean("HUB ACTIVE", rob.isHubActive());
 
     if (timer.get() < 10)       shift = Shift.TRANSITION;
-    else if (timer.get() < 35)  shift = Shift.ALLIANCEA;
-    else if (timer.get() < 60)  shift = Shift.ALLIANCEB;
-    else if (timer.get() < 85)  shift = Shift.ALLIANCEA;
-    else if (timer.get() < 110) shift = Shift.ALLIANCEB;
+    // else if (timer.get() < 35)  shift = rob.isHubActive() ? Shift.ALLIANCEA : Shift.ALLIANCEB;
+    // else if (timer.get() < 60)  shift = rob.isHubActive() ? Shift.ALLIANCEA : Shift.ALLIANCEB;
+    // else if (timer.get() < 85)  shift = rob.isHubActive() ? Shift.ALLIANCEA : Shift.ALLIANCEB;
+    else if (timer.get() < 110) shift = rob.isHubActive() ? Shift.ALLIANCEA : Shift.ALLIANCEB;
     else                        shift = Shift.ENDGAME;
-    double prefire = rob.turret.distanceToTime(rob.turret.getDegrees());
+    double prefire = rob.turret.distanceToTime(rob.turret.getDistanceToTarget());
     // NOTE: Rumble does not work in simulation
     if (
       ((time >= (10 - prefire)) && (time < 10)) ||

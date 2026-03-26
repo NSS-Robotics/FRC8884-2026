@@ -13,8 +13,8 @@ public class Constants {
     public static final Pose2d rightCornerRed = new Pose2d(16 - 3, 0.05 + 2, Rotation2d.fromDegrees(180));
 
     // Blue positions
-    public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
-    // public static final Pose2d targetPositionBlue = new Pose2d(4.625, 3.90, Rotation2d.fromDegrees(180));
+    //public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
+    public static final Pose2d targetPositionBlue = new Pose2d(4.625, 3.90, Rotation2d.fromDegrees(180));
     public static final Pose2d leftCornerBlue = new Pose2d(0.05 + 3, 8 - 2, Rotation2d.fromDegrees(180)); 
     public static final Pose2d rightCornerBlue = new Pose2d(0.05 + 3, 0.05 + 2, Rotation2d.fromDegrees(180)); 
 
@@ -25,11 +25,11 @@ public class Constants {
 
     public static class Flywheel {
         public static final double currentLimit = 45;
-        public static final double kP = 6;
+        public static final double kP = 0.25;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 10;
-        public static final double kV = 0.15;
+        public static final double kS = 0.25;
+        public static final double kV = 0.123;
         public static final double kA = 0.0;
         public static final double flywheelRadiusMeters = 0.0508;
     }
