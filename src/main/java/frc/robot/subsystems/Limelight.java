@@ -48,7 +48,6 @@ public class Limelight extends SubsystemBase {
     public void updateOdometry() {
         boolean useMegaTag2 = false;
 
-        boolean shouldRejectUpdate = false;
         if (!useMegaTag2) {
             LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.name);
 
@@ -57,12 +56,17 @@ public class Limelight extends SubsystemBase {
             if (mt1 == null) {
                 return;
             }
+            
+            boolean shouldRejectUpdate = false;
 
             tagCountLog.append(mt1.tagCount);
             SmartDashboard.putNumber(this.name + " tagcount", mt1.tagCount);
 
             if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
-                if (mt1.rawFiducials[0].ambiguity > 0.7 || mt1.rawFiducials[0].distToCamera > 3) {
+                boolean isTooFarForComfort = mt1.rawFiducials[0].distToCamera > 6;
+                boolean isTooAmbiguiousForComfort = mt1.rawFiducials[0].ambiguity > 0.7;
+
+                if (isTooAmbiguiousForComfort || isTooFarForComfort) {
                     shouldRejectUpdate = true;
                 }
             }

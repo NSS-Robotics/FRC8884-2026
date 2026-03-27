@@ -87,7 +87,12 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Timer", timer.get());
     SmartDashboard.putNumber("Time (Seconds)", time);
-    SmartDashboard.putNumber("Time Left in " + shift.toString() + " Shift", rob.timeLeft(DriverStation.getMatchTime()));
+    SmartDashboard.putNumber("Time Left in Shift", rob.timeLeft(DriverStation.getMatchTime()));
+
+    // SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+    int minutes = (int)DriverStation.getMatchTime() / 60;
+    int seconds = (int)DriverStation.getMatchTime() % 60;
+    SmartDashboard.putString("Match Time", minutes+":"+seconds);
 
     SmartDashboard.putBoolean("HUB ACTIVE", rob.isHubActive());
 

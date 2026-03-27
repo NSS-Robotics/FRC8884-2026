@@ -80,8 +80,9 @@ public class ShooterHood extends SubsystemBase {
         double d = Math.min(distance, 9);
 
         // NEW CALI (as of March 17)
-        if (d <= 5.0) {
-            angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91;
+        if (d <= 5.5) {
+            // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91;
+            angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
         } else {
             // copied from old cali
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
@@ -219,7 +220,7 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
-        // setDegrees();
+        setDegrees();
         // double future[] = rob.turret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmV[] = rob.turret.sotmPredictVelocity(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
@@ -248,27 +249,28 @@ public class ShooterHood extends SubsystemBase {
             setDegrees();
         }
 
-        if (!rob.turret.isInAllianceZone()) {
-            if (rob.isShooting) {
-                // if (swerve.getPoseMeters().getY() > 4){
-                //     // alignHoodtoLob(sotmVILobLeft[0]);
-                //     alignHoodtoLob();
-                // } else {
-                //     // alignHoodtoLob(sotmVILobRight[0]);
-                //     alignHoodtoLob();
-                // }
-                alignHoodtoLob();
-            } else {
-                degrees = 0.5;
-                setDegrees();
-            }
-        } else {
-            alignHoodtoHub(sotmVI[0]);
-        }
+        // ??? - Mar 26
+        // if (!rob.turret.isInAllianceZone()) {
+        //     if (rob.isShooting) {
+        //         // if (swerve.getPoseMeters().getY() > 4){
+        //         //     // alignHoodtoLob(sotmVILobLeft[0]);
+        //         //     alignHoodtoLob();
+        //         // } else {
+        //         //     // alignHoodtoLob(sotmVILobRight[0]);
+        //         //     alignHoodtoLob();
+        //         // }
+        //         alignHoodtoLob();
+        //     } else {
+        //         degrees = 0.5;
+        //         setDegrees();
+        //     }
+        // } else {
+        //     alignHoodtoHub(sotmVI[0]);
+        // }
 
-        if (willGetDecapitated()) {
-            degrees = 0.5; 
-            setDegrees();
-        }
+        // if (willGetDecapitated()) {
+        //     degrees = 0.5; 
+        //     setDegrees();
+        // }
     }
 }

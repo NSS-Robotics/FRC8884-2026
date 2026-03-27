@@ -106,9 +106,10 @@ public class Flywheels extends SubsystemBase {
         double d = Math.min(distance, 9);
 
         // NEW CALI (as of March 17)
-        if (d <= 5) {
+        if (d <= 5.5) {
             // double ans = 7.19 * Math.pow(d, 3) - 63.18 * Math.pow(d, 2) + 329.55 * d + 927.81;
-            double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
+            // double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
+            double ans = -1.45 * Math.pow(d, 3) + 27.66 * Math.pow(d, 2) - 22.46 * d + 1240.19;
 
             return Math.max(Math.min(ans, 3700), 0); // Clamp RPM to between 0 and 3700
         } else {
@@ -143,7 +144,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void rpmToRest() {
-        setVelocity(0); //FIXME: 1000
+        setVelocity(1000);
     }
 
     @Override

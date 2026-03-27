@@ -288,7 +288,8 @@ public class Turret extends SubsystemBase {
     }
 
     public double distanceToTime(double distance){
-        return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.03; // phase delay
+        // return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.03; // phase delay
+        return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.07 * distance + 0.99, 1), 2) + 0.03; // phase delay
     }   
 
     public double getAcceleration(double v1, double v2, double t1, double t2){ // TODO TAKE MULITIPLE VELOCITES OVER TIME AND AVERAGE IT 
@@ -388,11 +389,11 @@ public class Turret extends SubsystemBase {
         double vx = speeds.vxMetersPerSecond + tangentalVX;
         double vy = speeds.vyMetersPerSecond + tangentalVY;
 
-        double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
-        double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
+        // double turretVelocityX = speeds.vxMetersPerSecond * Math.cos(robotRadians) - speeds.vyMetersPerSecond * Math.sin(robotRadians); 
+        // double turretVelocityY = speeds.vxMetersPerSecond * Math.sin(robotRadians) + speeds.vyMetersPerSecond * Math.cos(robotRadians);    
         // START NEW SOTM CODE: IF BAD, REMOVE (March 20, 13:41 ET)
-        // double turretVelocityX = vx * Math.cos(robotRadians) - vy * Math.sin(robotRadians); 
-        // double turretVelocityY = vx * Math.sin(robotRadians) + vy * Math.cos(robotRadians);   
+        double turretVelocityX = vx * Math.cos(robotRadians) - vy * Math.sin(robotRadians); 
+        double turretVelocityY = vx * Math.sin(robotRadians) + vy * Math.cos(robotRadians);   
         // END NEW SOTM CODE
 
         // if (!rob.isRed()){
@@ -419,7 +420,7 @@ public class Turret extends SubsystemBase {
 
             // lookaheadDistance = Math.hypot(xDistance, yDistance);
             lookaheadDistance = targetPose.getTranslation().getDistance(lookaheadTurretPose.getTranslation());
-            if (Math.abs(prevDistance - lookaheadDistance) < 0.01){
+            if (Math.abs(prevDistance - lookaheadDistance) < 0.001){
                 break;
             }
             prevDistance = lookaheadDistance;
@@ -715,7 +716,7 @@ public class Turret extends SubsystemBase {
 
         // Log to logs
         errorLog.append(targetDegrees-getDegrees());
-        distanceLog.append(getDistanceToTarget());
+        distanceLog.append(distanceToTarget);
 
         // for pid tuning
         // double p = SmartDashboard.getNumber("turret p", 0);

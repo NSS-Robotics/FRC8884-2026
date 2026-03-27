@@ -7,8 +7,8 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
     // Red positions
-    public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));        
-    // public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));        
+    // public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));
+    public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.13, Rotation2d.fromDegrees(180));
     public static final Pose2d leftCornerRed = new Pose2d(16 - 3, 8 - 2, Rotation2d.fromDegrees(180));
     public static final Pose2d rightCornerRed = new Pose2d(16 - 3, 0.05 + 2, Rotation2d.fromDegrees(180));
 
@@ -58,7 +58,7 @@ public class Constants {
         public static final double currentLimit = 40;
         public static final double kP = 4000.0;
         public static final double kI = 0.0;
-        public static final double kD = 200;
+        public static final double kD = 200.0;
 
         public static final double kS = 0.0;
         public static final double kV = 0.0;

@@ -73,7 +73,7 @@ public class FlywheelShoot extends Command {
         // flywheels.setVelocity(turret.velocityToRpm(turret.ans[0],
         // Constants.Flywheel.flywheelRadiusMeters));
 
-        shooterHood.setDegrees();
+        // shooterHood.setDegrees();
     }
 
     @Override
