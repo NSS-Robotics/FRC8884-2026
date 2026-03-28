@@ -110,11 +110,27 @@ public class Flywheels extends SubsystemBase {
             // double ans = 7.19 * Math.pow(d, 3) - 63.18 * Math.pow(d, 2) + 329.55 * d + 927.81;
             // double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
             double ans = -1.45 * Math.pow(d, 3) + 27.66 * Math.pow(d, 2) - 22.46 * d + 1240.19;
+            // double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
+
 
             return Math.max(Math.min(ans, 3700), 0); // Clamp RPM to between 0 and 3700
         } else {
             return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0);
         }
+
+        // if (d <= 3) {
+        //     // double ans = 7.19 * Math.pow(d, 3) - 63.18 * Math.pow(d, 2) + 329.55 * d + 927.81;
+        //     // double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
+        //     //double ans = -1.45 * Math.pow(d, 3) + 27.66 * Math.pow(d, 2) - 22.46 * d + 1240.19; 
+        //     double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
+
+        //     return Math.max(Math.min(ans, 3700), 0); // Clamp RPM to between 0 and 3700
+        // } else if (d <= 5){
+        //     double ans = 0; // FIXME: MAKE ME SOMETHING NOt 0
+        //     return Math.max(Math.min(ans, 3700), 0);
+        // } else {
+        //     return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0);
+        // }
 
         // BAD CALI (as of March 16 - turned out to be bad)
         // if (d <= 5) {

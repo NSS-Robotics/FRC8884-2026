@@ -81,12 +81,21 @@ public class ShooterHood extends SubsystemBase {
 
         // NEW CALI (as of March 17)
         if (d <= 5.5) {
-            // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91;
+            // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91; // low arc
             angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
         } else {
             // copied from old cali
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
         }
+        // if (d <= 3) {
+        //     // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91; // low arc
+        //     angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
+        // } else if (d <= 5){
+        //     angle = 0; // FIXME: put smth here so we don't shoot vertically
+        // } else {
+        //     // copied from old cali
+        //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
+        // }
 
         // BAD CALI (as of March 16)
         // if (d < 5) {
@@ -220,7 +229,7 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
-        setDegrees();
+        // setDegrees();
         // double future[] = rob.turret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmV[] = rob.turret.sotmPredictVelocity(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
@@ -232,13 +241,7 @@ public class ShooterHood extends SubsystemBase {
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
 
-        // removed because we now use a constant hood angle for lobbing
-        // double sotmVILobRight[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
-        // double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
-
-        if (rob.isShooting) {
+        if (rob.isShooting && !willGetDecapitated()) {
             if (rob.turret.isInAllianceZone()) {
                 alignHoodtoHub(sotmVI[0]);
             } else {

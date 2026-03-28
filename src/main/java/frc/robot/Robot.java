@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // m_robotContainer.shooterHood.zeroHood();
     rob.isShooting = true;
+    rob.flywheels.rpmToRest();
     m_autonomousCommand = rob.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {

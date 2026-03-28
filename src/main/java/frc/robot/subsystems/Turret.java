@@ -32,8 +32,8 @@ public class Turret extends SubsystemBase {
     private final CANcoder turretEncoder = new CANcoder(Constants.CanIDs.turretEncoderID, new CANBus("Jeff"));
     
     // private MotionMagicDutyCycle mmdc = new MotionMagicDutyCycle(0).withSlot(0);
-    //private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
-    private final PositionTorqueCurrentFOC pt = new PositionTorqueCurrentFOC(0).withSlot(0);
+    private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
+    //private final PositionTorqueCurrentFOC pt = new PositionTorqueCurrentFOC(0).withSlot(0);
 
     // private Slot0Configs pidConfigs = new Slot0Configs();
 
@@ -50,7 +50,7 @@ public class Turret extends SubsystemBase {
     public double previousVelocityX = 0;
     public double previousVelocityY = 0;
     public double previousTime = 1;
-    public double manualDistanceOffset = 0.0;
+    public double manualDistanceOffset = 0.1;
 
     private ArrayList<Double> vQueueX = new ArrayList<Double>();
     private ArrayList<Double> vQueueY = new ArrayList<Double>();
@@ -128,7 +128,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        turretMotor.setControl(pt.withPosition(rotations));
+        turretMotor.setControl(pv.withPosition(rotations));
         SmartDashboard.putNumber("MM Turret target rotation", rotations);
     }
 
@@ -289,7 +289,8 @@ public class Turret extends SubsystemBase {
 
     public double distanceToTime(double distance){
         // return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.03; // phase delay
-        return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.07 * distance + 0.99, 1), 2) + 0.03; // phase delay
+        return Math.min(Math.max(0.07 * distance + 0.99, 1), 2) + 0.03 + 0.1; // phase delay
+        // -0.01 * Math.pow(distance, 2) 
     }   
 
     public double getAcceleration(double v1, double v2, double t1, double t2){ // TODO TAKE MULITIPLE VELOCITES OVER TIME AND AVERAGE IT 

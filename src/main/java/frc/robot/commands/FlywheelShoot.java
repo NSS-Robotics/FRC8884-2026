@@ -65,7 +65,7 @@ public class FlywheelShoot extends Command {
             } else {
                 flywheels.setVelocity(flywheels.rpmToLob(sotmVILobLeft[0]));
             } 
-        } else {      
+        } else {
             // pointAtTarget(Constants.targetPositionBlue);
             flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
         }
