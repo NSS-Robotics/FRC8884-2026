@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Neutral 1"
+                  "pathName": "Left Neutral 1.1"
                 }
               },
               {
@@ -71,13 +71,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Neutral 2"
+            "pathName": "Left Neutral 2.1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Auto Decap False"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.4
           }
         },
         {
@@ -222,6 +228,12 @@
           "type": "named",
           "data": {
             "name": "Auto Decap False"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.4
           }
         },
         {
