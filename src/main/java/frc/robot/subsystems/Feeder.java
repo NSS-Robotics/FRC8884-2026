@@ -51,10 +51,6 @@ public class Feeder extends SubsystemBase {
     }
 
     public void setSpeed(double speedRPM) {
-        // TODO: should we use the code below to stop if error is big?? idk
-        // if (Math.abs(turret.getDegrees()-turret.targetDegrees) > 10) {
-        //     speedRPM /= 2.0;
-        // }
         targetSpeed = speedRPM/60;
         feederMotor.setControl(feederVelocity.withVelocity(speedRPM / 60));
     }

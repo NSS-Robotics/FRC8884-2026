@@ -51,7 +51,6 @@ public class Limelight extends SubsystemBase {
         if (!useMegaTag2) {
             LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.name);
 
-            // FIXME: Only for simulation
             // if limelight can't read any data, ignore
             if (mt1 == null) {
                 return;

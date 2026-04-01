@@ -97,28 +97,19 @@ public class RobotContainer {
                     cappedMaxAngularVelocity *= 0.5;
                 }
 
-            
-                // double xVel = -driverController.getLeftY() * cappedMaxSpeed;
-                // double yVel = -driverController.getLeftX() * cappedMaxSpeed;
-
                 double xVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftY() * MaxSpeed));
                 double yVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftX() * MaxSpeed));
+                double rotVel = Math.max(-cappedMaxAngularVelocity, Math.min(cappedMaxAngularVelocity, -driverController.getRightX() * MaxAngularRate));
 
-
-
-                return drive.withVelocityX(xVel) // Drive forward with negative Y (forward)
-                    .withVelocityY(yVel) // Drive left with negative X (left)
-                    .withRotationalRate( Math.max(-cappedMaxAngularVelocity, Math.min(cappedMaxAngularVelocity, -driverController.getRightX()* MaxAngularRate)));
-                    //.withRotationalRate(-driverController.getRightX() * cappedMaxAngularVelocity); // Drive counterclockwise with negative X (left)
+                return drive.withVelocityX(xVel)
+                    .withVelocityY(yVel)
+                    .withRotationalRate(rotVel);
             })
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
         /* instant commands */
-        // driverController.povDown().onTrue(new InstantCommand(shooterHood::zeroHood)); // zero hood
-        // driverController.povUp().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(1)));
-        // driverController.povDown().onTrue(new InstantCommand (() -> shooterHood.changeDegrees(-1)));
         driverController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric)); // zero gyro
         driverController.x().onTrue(new InstantCommand(() -> intakePivot.setPosition(-0.5)));
         driverController.a().onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
@@ -134,22 +125,12 @@ public class RobotContainer {
         operatorController.povLeft().onTrue(new InstantCommand(() -> turret.manualDistanceOffset -= 0.05));
 
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 3600));
-        driverController.povUp().whileTrue(new Snap(this, 5, 179)); // TODO: when limelight works, and MAYBE HAS TO DO WITH ALLIANCE AS WELL RED BLUE
+        driverController.povUp().whileTrue(new Snap(this, 5, 179));
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
         driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels)); // remove later if necessary
-    
-        //operator controller, zia can i have my spinning gear thing back plz
-
-        /*
-        operatorController.povRight().onTrue(new InstantCommand(() -> turret.setManualOffset(turret.getManualOffset()+5)));
-        operatorController.povLeft().onTrue(new InstantCommand(() -> turret.setManualOffset(turret.getManualOffset()-5)));
-
-        operatorController.povUp().onTrue(new InstantCommand(() -> shooterHood.setManualOffset(shooterHood.getManualOffset()+2)));
-        operatorController.povDown().onTrue(new InstantCommand(() -> shooterHood.setManualOffset(shooterHood.getManualOffset()-2)));
-        */
     }
 
     private void configureFuelSim() {
@@ -268,24 +249,11 @@ public class RobotContainer {
         }
     }
 
-    private void addCommandsToPathplanner() {
-        // NamedCommands.registerCommand("Shoot", 
-        //     new SequentialCommandGroup(
-        //         new InstantCommand(() -> new AutoFlywheelShoot(this)),
-        //         new InstantCommand(() -> new AutoRunSpindexer(this))
-        //     )
-        // );  
- 
+    private void addCommandsToPathplanner() { 
         NamedCommands.registerCommand("Flywheels", 
-            new InstantCommand(() -> {
-                // double future[] = turret.aLookIntoTheFuture(drivetrain.getPoseMeters(), turret.getDistanceToTarget(), isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
-                // flywheels.setVelocity(flywheels.rpmToHub(future[0]));   
-                // shooterHood.setDegrees();
-                turret.autoShoot = true;
-            })
+            new InstantCommand(() -> turret.autoShoot = true)
         );
 
-        // TODO: auto decap on rightside auto
         NamedCommands.registerCommand("Auto Decap True",
             new InstantCommand(shooterHood::enableAutoDecap)
         );
