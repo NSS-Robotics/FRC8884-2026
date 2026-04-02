@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.Autoes;
 import frc.lib.FuelSim;
 import frc.robot.commands.*;
 import frc.robot.generated.TunerConstants;
@@ -93,7 +94,7 @@ public class RobotContainer {
                 double cappedMaxAngularVelocity = MaxAngularRate;
 
                 if (driverController.rightTrigger(0.3).getAsBoolean()) {
-                    cappedMaxSpeed = 0.75;
+                    cappedMaxSpeed = 0.5;
                     cappedMaxAngularVelocity *= 0.5;
                 }
 
@@ -130,7 +131,8 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
-        driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels)); // remove later if necessary
+        // driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels)); // remove later if necessary
+        driverController.leftBumper().onTrue(new InstantCommand(() -> shooterHood.setDegrees()));
     }
 
     private void configureFuelSim() {
@@ -271,7 +273,7 @@ public class RobotContainer {
         );
 
         NamedCommands.registerCommand("Intake",
-            new InstantCommand(() -> intake.setVelocity(5000)) // was 4750, this was a change at comp
+            new InstantCommand(() -> intake.setVelocity(5000))
         );
 
         NamedCommands.registerCommand("Unjam Intake",
@@ -281,5 +283,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
+        // return Autoes.runAuto(this);
     }
 }

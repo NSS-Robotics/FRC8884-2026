@@ -64,9 +64,9 @@ public class Constants {
         // public static final double kV = 0.0;
         // public static final double kA = 0.0;
         public static final double currentLimit = 40;
-        public static final double kP = 250.0;
+        public static final double kP = 500.0;
         public static final double kI = 0.0;
-        public static final double kD = 7.0;
+        public static final double kD = 27.0;
         public static final double kS = 0.0;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
@@ -87,7 +87,7 @@ public class Constants {
     }
 
     public static class Hood {
-        public static final double currentLimit = 15;
+        public static final double currentLimit = 30;
         public static final double kP = 8.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;

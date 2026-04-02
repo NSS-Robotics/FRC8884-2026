@@ -28,6 +28,8 @@ public class ShooterHood extends SubsystemBase {
 
     private boolean autoDecap = false;
 
+    private Slot0Configs pidConfigs = new Slot0Configs();
+
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
         this.swerve = rob.drivetrain;
@@ -36,21 +38,28 @@ public class ShooterHood extends SubsystemBase {
         hoodCurrentLimits.StatorCurrentLimit = 15;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
 
-        Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.kP = Constants.Hood.kP;
-        slot0Configs.kI = Constants.Hood.kI;
-        slot0Configs.kD = Constants.Hood.kD;
-        slot0Configs.kS = Constants.Hood.kS;
-        slot0Configs.kV = Constants.Hood.kV;
-        slot0Configs.kA = Constants.Hood.kA;
+        // pidConfigs.kP = Constants.Hood.kP;
+        // pidConfigs.kI = Constants.Hood.kI;
+        // pidConfigs.kD = Constants.Hood.kD;
+        // pidConfigs.kS = Constants.Hood.kS;
+        // pidConfigs.kV = Constants.Hood.kV;
+        // pidConfigs.kA = Constants.Hood.kA;
 
-        MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
-        mmConfigs.MotionMagicCruiseVelocity = 5;
-        mmConfigs.MotionMagicAcceleration = 10;
+        SmartDashboard.putNumber("hood p", 0);
+        SmartDashboard.putNumber("hood i", 0);
+        SmartDashboard.putNumber("hood d", 0);
+        SmartDashboard.putNumber("hood s", 0);
+        SmartDashboard.putNumber("hood v", 0);
+        SmartDashboard.putNumber("hood a", 0);
+        SmartDashboard.putNumber("hood setpoint", 0);
+
+        // MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
+        // mmConfigs.MotionMagicCruiseVelocity = 5;
+        // mmConfigs.MotionMagicAcceleration = 10;
 
         hoodMotor.clearStickyFaults();
-        hoodMotor.getConfigurator().apply(mmConfigs);
-        hoodMotor.getConfigurator().apply(slot0Configs);
+        // hoodMotor.getConfigurator().apply(mmConfigs);
+        hoodMotor.getConfigurator().apply(pidConfigs);
         hoodMotor.getConfigurator().apply(hoodCurrentLimits);
 
         hoodMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -203,8 +212,34 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Current", getCurrent());
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
-        // degrees = SmartDashboard.getNumber("Set Angles", 0);
-        // setDegrees();
+         // for pid tuning
+        double p = SmartDashboard.getNumber("hood p", 0);
+        double i = SmartDashboard.getNumber("hood i", 0);
+        double d = SmartDashboard.getNumber("hood d", 0);
+        double s = SmartDashboard.getNumber("hood s", 0);
+        double v = SmartDashboard.getNumber("hood v", 0);
+        double a = SmartDashboard.getNumber("hood a", 0);
+
+        boolean isChanged = (
+            p != pidConfigs.kP ||
+            i != pidConfigs.kI ||
+            d != pidConfigs.kD ||
+            s != pidConfigs.kS ||
+            v != pidConfigs.kV ||
+            a != pidConfigs.kA);
+        
+        if (isChanged) {
+            pidConfigs.kP = p;
+            pidConfigs.kI = i;
+            pidConfigs.kD = d;
+            pidConfigs.kS = s;
+            pidConfigs.kV = v;
+            pidConfigs.kA = a;
+            hoodMotor.getConfigurator().apply(pidConfigs);
+        }
+
+        degrees = SmartDashboard.getNumber("Set Angles", 0);
+        setDegrees();
         // double future[] = rob.turret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmV[] = rob.turret.sotmPredictVelocity(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
@@ -216,38 +251,14 @@ public class ShooterHood extends SubsystemBase {
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
 
-        if (rob.isShooting && !willGetDecapitated()) {
-            if (rob.turret.isInAllianceZone()) {
-                alignHoodtoHub(sotmVI[0]);
-            } else {
-                alignHoodtoLob();
-            }
-        } else {
-            degrees = 0.5;
-            setDegrees();
-        }
-
-        // ??? - Mar 26
-        // if (!rob.turret.isInAllianceZone()) {
-        //     if (rob.isShooting) {
-        //         // if (swerve.getPoseMeters().getY() > 4){
-        //         //     // alignHoodtoLob(sotmVILobLeft[0]);
-        //         //     alignHoodtoLob();
-        //         // } else {
-        //         //     // alignHoodtoLob(sotmVILobRight[0]);
-        //         //     alignHoodtoLob();
-        //         // }
-        //         alignHoodtoLob();
+        // if (rob.isShooting && !willGetDecapitated()) {
+        //     if (rob.turret.isInAllianceZone()) {
+        //         alignHoodtoHub(sotmVI[0]);
         //     } else {
-        //         degrees = 0.5;
-        //         setDegrees();
+        //         alignHoodtoLob();
         //     }
         // } else {
-        //     alignHoodtoHub(sotmVI[0]);
-        // }
-
-        // if (willGetDecapitated()) {
-        //     degrees = 0.5; 
+        //     degrees = 0.5;
         //     setDegrees();
         // }
     }

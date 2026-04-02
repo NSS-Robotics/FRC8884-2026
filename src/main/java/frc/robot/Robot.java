@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
     }
 
     timer.start();
-    rob.shooterHood.zeroHood();
+    //rob.shooterHood.zeroHood();
     rob.isShooting = false;
     rob.flywheels.stop();
     rob.spindexer.stop();

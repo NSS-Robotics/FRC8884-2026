@@ -73,7 +73,8 @@ public class Align extends Command {
                 .withVelocityX(xVelocity)
                 .withVelocityY(yVelocity)
                 .withDeadband(deadZone)
-                .withHeadingPID(5, 0, 0.1)
+                // .withHeadingPID(5, 0, 0.1)
+                .withHeadingPID(1, 0, 0)
                 .withTargetDirection(targetPos.getRotation())
         );
     }

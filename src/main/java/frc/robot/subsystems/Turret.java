@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -23,18 +24,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-import java.util.ArrayList;
-
 public class Turret extends SubsystemBase {
     private final TalonFX turretMotor = new TalonFX(Constants.CanIDs.turretMotorID, new CANBus("Jeff"));
     private final CANcoder turretEncoder = new CANcoder(Constants.CanIDs.turretEncoderID, new CANBus("Jeff"));
     
     // private MotionMagicDutyCycle mmdc = new MotionMagicDutyCycle(0).withSlot(0);
-    private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
-    //private final PositionTorqueCurrentFOC pt = new PositionTorqueCurrentFOC(0).withSlot(0);
+    // private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
+    private final PositionTorqueCurrentFOC pt = new PositionTorqueCurrentFOC(0).withSlot(0);
 
-    // private Slot0Configs pidConfigs = new Slot0Configs();
-
+    private Slot0Configs pidConfigs = new Slot0Configs();
 
     private final RobotContainer rob;
     private final CommandSwerveDrivetrain swerve;
@@ -77,20 +75,17 @@ public class Turret extends SubsystemBase {
         turretEncoder.clearStickyFaults();
         turretEncoder.getConfigurator().apply(encoderConfig);
 
-        
-
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
         turretMotorConfig.Feedback.FeedbackRemoteSensorID = turretEncoder.getDeviceID();
         turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         turretMotorConfig.Feedback.RotorToSensorRatio = Constants.Turret.motorToEncoderRatio; 
         turretMotorConfig.Feedback.SensorToMechanismRatio = Constants.Turret.gearRatioWithAbsoluteEncoder;
-        turretMotorConfig.TorqueCurrent.withPeakForwardTorqueCurrent(20).withPeakReverseTorqueCurrent(-20);
-
+        turretMotorConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40); // TODO: needed?
 
         CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = turretMotorConfig.CurrentLimits;
-        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 20;
+        turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 40;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
-        Slot0Configs pidConfigs = turretMotorConfig.Slot0;
+        pidConfigs = turretMotorConfig.Slot0;
         pidConfigs.kP = Constants.Turret.kP;
         pidConfigs.kI = Constants.Turret.kI;
         pidConfigs.kD = Constants.Turret.kD;
@@ -101,13 +96,6 @@ public class Turret extends SubsystemBase {
         turretMotor.clearStickyFaults();
         turretMotor.getConfigurator().apply(turretMotorConfig);
         turretMotor.setNeutralMode(NeutralModeValue.Brake);
-
-        // vQueue.add(0.0);
-        // vQueue.add(0.0);
-        // vQueue.add(0.0);
-        // tQueue.add(0.0);
-        // tQueue.add(0.0);
-        // tQueue.add(0.0);
 
         SmartDashboard.putNumber("turret p", 0);
         SmartDashboard.putNumber("turret i", 0);
@@ -122,7 +110,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        turretMotor.setControl(pv.withPosition(rotations));
+        turretMotor.setControl(pt.withPosition(rotations));
         SmartDashboard.putNumber("MM Turret target rotation", rotations);
     }
 
@@ -395,7 +383,9 @@ public class Turret extends SubsystemBase {
 
                 }
             }
-        } //else {
+        }
+        
+        //else {
         //     setDegrees(90);
         //     isdocking = false;
         // }
@@ -403,7 +393,7 @@ public class Turret extends SubsystemBase {
         double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
 
         if (autoShoot) {
-            flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
+            // flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0])); // FIXME: comment back in after tuning
             shooterHood.setDegrees();
         }
 
@@ -423,7 +413,7 @@ public class Turret extends SubsystemBase {
         errorLog.append(targetDegrees-getDegrees());
         distanceLog.append(distanceToTarget);
 
-        // for pid tuning
+        // // for pid tuning
         // double p = SmartDashboard.getNumber("turret p", 0);
         // double i = SmartDashboard.getNumber("turret i", 0);
         // double d = SmartDashboard.getNumber("turret d", 0);
