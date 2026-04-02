@@ -88,19 +88,25 @@ public class Constants {
 
     public static class Hood {
         public static final double currentLimit = 30;
-        public static final double kP = 8.0;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
-        public static final double kS = 0.0;
-        public static final double kV = 0.0;
-        public static final double kA = 0.0;
-        // public static final double gearRatio = 64.0/14.0 * 172.0/10.0; // Geared hood (pre-comp)
-        public static final double gearRatio = 16.0/14.0 * 172.0/10.0; // Belted hood (North Bay day 1)
+        public static final double upKP = 40.0;
+        public static final double upKI = 0.0;
+        public static final double upKD = 0.0;
+        public static final double upKS = 0.0;
+        public static final double upKV = 0.0;
+        public static final double upKA = 0.0;
+
+        public static final double downKP = 8.884;
+        public static final double downKI = 0.0;
+        public static final double downKD = 0.0;
+        public static final double downKS = 0.0;
+        public static final double downKV = 0.0;
+        public static final double downKA = 0.0;
+
+        public static final double gearRatio = 16.0/14.0 * 172.0/10.0;
         public static final double minHoodAngle = 0.5;
         public static final double maxHoodAngle = 25;
         public static final double currentWhenStalling = 14.7;
         public static final double maxHubHoodAlign = 22;
-        // public static final double minHubHoodAlign = 1;
         public static final double irlHoodDegrees = 12.5;
 
         public static final double trenchRedX = 11.915394; // decapitation

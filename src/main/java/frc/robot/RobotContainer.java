@@ -131,8 +131,7 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
-        // driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels)); // remove later if necessary
-        driverController.leftBumper().onTrue(new InstantCommand(() -> shooterHood.setDegrees()));
+        driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
     }
 
     private void configureFuelSim() {

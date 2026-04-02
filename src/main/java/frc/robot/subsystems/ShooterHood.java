@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -28,22 +29,31 @@ public class ShooterHood extends SubsystemBase {
 
     private boolean autoDecap = false;
 
-    private Slot0Configs pidConfigs = new Slot0Configs();
+    private Slot0Configs tuningPIDConfigs = new Slot0Configs();
+    private Slot1Configs upPIDConfigs = new Slot1Configs();
+    private Slot2Configs downPIDConfigs = new Slot2Configs();
 
     public ShooterHood(RobotContainer rob) {
         this.rob = rob;
         this.swerve = rob.drivetrain;
 
         CurrentLimitsConfigs hoodCurrentLimits = new CurrentLimitsConfigs();
-        hoodCurrentLimits.StatorCurrentLimit = 15;
+        hoodCurrentLimits.StatorCurrentLimit = 21;
         hoodCurrentLimits.StatorCurrentLimitEnable = true;
 
-        // pidConfigs.kP = Constants.Hood.kP;
-        // pidConfigs.kI = Constants.Hood.kI;
-        // pidConfigs.kD = Constants.Hood.kD;
-        // pidConfigs.kS = Constants.Hood.kS;
-        // pidConfigs.kV = Constants.Hood.kV;
-        // pidConfigs.kA = Constants.Hood.kA;
+        upPIDConfigs.kP = Constants.Hood.upKP;
+        upPIDConfigs.kI = Constants.Hood.upKI;
+        upPIDConfigs.kD = Constants.Hood.upKD;
+        upPIDConfigs.kS = Constants.Hood.upKS;
+        upPIDConfigs.kV = Constants.Hood.upKV;
+        upPIDConfigs.kA = Constants.Hood.upKA;
+
+        downPIDConfigs.kP = Constants.Hood.downKP;
+        downPIDConfigs.kI = Constants.Hood.downKI;
+        downPIDConfigs.kD = Constants.Hood.downKD;
+        downPIDConfigs.kS = Constants.Hood.downKS;
+        downPIDConfigs.kV = Constants.Hood.downKV;
+        downPIDConfigs.kA = Constants.Hood.downKA;
 
         SmartDashboard.putNumber("hood p", 0);
         SmartDashboard.putNumber("hood i", 0);
@@ -53,13 +63,10 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("hood a", 0);
         SmartDashboard.putNumber("hood setpoint", 0);
 
-        // MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
-        // mmConfigs.MotionMagicCruiseVelocity = 5;
-        // mmConfigs.MotionMagicAcceleration = 10;
-
         hoodMotor.clearStickyFaults();
-        // hoodMotor.getConfigurator().apply(mmConfigs);
-        hoodMotor.getConfigurator().apply(pidConfigs);
+        hoodMotor.getConfigurator().apply(tuningPIDConfigs);
+        hoodMotor.getConfigurator().apply(upPIDConfigs);
+        hoodMotor.getConfigurator().apply(downPIDConfigs);
         hoodMotor.getConfigurator().apply(hoodCurrentLimits);
 
         hoodMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -68,12 +75,10 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        // negative sign is only for belted hood
         hoodMotor.setControl(pv.withPosition(-rotations));
     }
 
     public double getRotations() {
-        // negative sign is only for belted hood
         return -hoodMotor.getPosition().getValueAsDouble();
     }
 
@@ -113,8 +118,6 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoLob() {
-        // double angle = 0;
-        // angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), 0);
         degrees = 18;
         setDegrees();
     }
@@ -169,15 +172,7 @@ public class ShooterHood extends SubsystemBase {
         boolean manualOverrideDriver = rob.driverController.rightBumper().getAsBoolean(); 
         boolean manualOverrideOperator =  rob.operatorController.leftTrigger().getAsBoolean();
 
-        if (manualOverrideDriver) {
-            return true;
-        }
-
-        if (manualOverrideOperator){
-            return true;
-        }
-
-        if (autoDecap) {
+        if (manualOverrideDriver || manualOverrideOperator || autoDecap) {
             return true;
         }
 
@@ -221,21 +216,21 @@ public class ShooterHood extends SubsystemBase {
         double a = SmartDashboard.getNumber("hood a", 0);
 
         boolean isChanged = (
-            p != pidConfigs.kP ||
-            i != pidConfigs.kI ||
-            d != pidConfigs.kD ||
-            s != pidConfigs.kS ||
-            v != pidConfigs.kV ||
-            a != pidConfigs.kA);
+            p != tuningPIDConfigs.kP ||
+            i != tuningPIDConfigs.kI ||
+            d != tuningPIDConfigs.kD ||
+            s != tuningPIDConfigs.kS ||
+            v != tuningPIDConfigs.kV ||
+            a != tuningPIDConfigs.kA);
         
         if (isChanged) {
-            pidConfigs.kP = p;
-            pidConfigs.kI = i;
-            pidConfigs.kD = d;
-            pidConfigs.kS = s;
-            pidConfigs.kV = v;
-            pidConfigs.kA = a;
-            hoodMotor.getConfigurator().apply(pidConfigs);
+            tuningPIDConfigs.kP = p;
+            tuningPIDConfigs.kI = i;
+            tuningPIDConfigs.kD = d;
+            tuningPIDConfigs.kS = s;
+            tuningPIDConfigs.kV = v;
+            tuningPIDConfigs.kA = a;
+            hoodMotor.getConfigurator().apply(tuningPIDConfigs);
         }
 
         degrees = SmartDashboard.getNumber("Set Angles", 0);
