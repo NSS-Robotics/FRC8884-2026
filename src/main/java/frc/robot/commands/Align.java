@@ -59,6 +59,9 @@ public class Align extends Command {
         } else if ((targetPos.getY() - deadZone) < currentPos.getY()) {
             yVelocity = mapDistanceToVelocity(currentPos.getY() - targetPos.getY());
         }
+        SmartDashboard.putNumber("xVelocity", xVelocity);
+        SmartDashboard.putNumber("yVelocity", yVelocity);
+
 
         // TODO: do we need thsi??? (pt 2)
         // // Get rotation rate
@@ -73,7 +76,7 @@ public class Align extends Command {
                 .withVelocityX(xVelocity)
                 .withVelocityY(yVelocity)
                 .withDeadband(deadZone)
-                // .withHeadingPID(5, 0, 0.1)
+                //.withHeadingPID(5, 0, 0.1)
                 .withHeadingPID(1, 0, 0)
                 .withTargetDirection(targetPos.getRotation())
         );

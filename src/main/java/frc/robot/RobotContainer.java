@@ -131,7 +131,8 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
-        driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
+        // driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
+        driverController.leftBumper().onTrue(new Align(this, Autoes.Waypoints.leftNeutralShootPos, 0.1));
     }
 
     private void configureFuelSim() {
@@ -281,7 +282,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-        // return Autoes.runAuto(this);
+        // return autoChooser.getSelected();
+        return Autoes.runAuto(this);
     }
 }

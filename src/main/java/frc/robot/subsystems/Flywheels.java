@@ -123,6 +123,7 @@ public class Flywheels extends SubsystemBase {
             return Math.max(Math.min(ans, 3700), 0);
         } else {
             // Copied from the thing abandoned on april 2
+            // The only time this curve is really used is when we are projecting motion over 5.5 metres from targets
             return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0);
         }
 

@@ -16,6 +16,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -386,5 +387,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    PIDController xyVelController = new PIDController(4, 0, 0.15);
+    PIDController rotController = new PIDController(4, 0, 0.15);
+    public Command driveToPoint(Pose2d targetPose) {
+        xyVelController.calculate(Double.MAX_VALUE, 0);
+        rotController.calculate(Double.MAX_VALUE, 0);
+        rotController.enableContinuousInput(0, 2*Math.PI);
+        xyVelController.setTolerance(3, 0);
+
+        SwerveRequest.FieldCentric alignRequest = new SwerveRequest.FieldCentric();
+
+        return applyRequest(() -> {
+            double distanceError = targetPose.getTranslation().getDistance(getPoseMeters().getTranslation());
+            double velocity = xyVelController.calculate(distanceError, 0);
+            double angle = (targetPose.getTranslation().minus(getPoseMeters().getTranslation())).getAngle().getRadians();
+            double angleVel = rotController.calculate(getPoseMeters().getRotation().getRadians(), targetPose.getRotation().getRadians());
+
+            double clampedVel = Math.max(Math.min(2.5, velocity), -2.5);
+
+            return alignRequest
+                .withVelocityX(Math.cos(angle)*clampedVel)
+                .withVelocityY(Math.sin(angle)*clampedVel)
+                .withRotationalRate(angleVel);
+        }).withName("DriveToPoint");
     }
 }
