@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -39,9 +41,11 @@ public class Flywheels extends SubsystemBase {
 
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
+        leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(80).withPeakReverseTorqueCurrent(-20);
+        rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(80).withPeakReverseTorqueCurrent(-20);
+
         // leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
         // rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
-
 
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Flywheel.currentLimit;
@@ -69,18 +73,27 @@ public class Flywheels extends SubsystemBase {
         leftFlywheelMotor.setNeutralMode(NeutralModeValue.Coast);
 
         SmartDashboard.putNumber("fly p", 0);
+        SmartDashboard.putNumber("fly i", 0);
+        SmartDashboard.putNumber("fly d", 0);
         SmartDashboard.putNumber("fly s", 0);
         SmartDashboard.putNumber("fly v", 0);
+        SmartDashboard.putNumber("fly a", 0);
+        
+        Follower rightFollower = new Follower(leftFlywheelMotor.getDeviceID(), MotorAlignmentValue.Opposed);
+        rightFlywheelMotor.setControl(rightFollower);
 
         operatorController = rob.operatorController.getHID();
         this.rob = rob;
     }
 
     public void setVelocity(double rpm) {
-        targetVelocity = (rpm)/60; // +25
+        targetVelocity = (rpm)/60;
 
-        rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
-        leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
+        // rightFlywheelMotor.setControl(new VelocityVoltage(-rpm/60));
+        // leftFlywheelMotor.setControl(new VelocityVoltage(rpm/60));
+
+        //rightFlywheelMotor.setControl(new VelocityTorqueCurrentFOC(-rpm/60).withSlot(0));
+        leftFlywheelMotor.setControl(new VelocityTorqueCurrentFOC(rpm/60).withSlot(0));
     }
 
     public double getVelocity() {
@@ -105,17 +118,22 @@ public class Flywheels extends SubsystemBase {
     public double rpmToHub(double distance) {
         double d = Math.min(distance, 9);
 
-        // NEW CALI (as of March 17)
         if (d <= 5.5) {
-            double ans = -1.45 * Math.pow(d, 3) + 27.66 * Math.pow(d, 2) - 22.46 * d + 1240.19;
-            // double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
-
-
-            return Math.max(Math.min(ans, 3700), 0); // Clamp RPM to between 0 and 3700
+            double ans = -4.19*Math.pow(d, 4) + 58.7*Math.pow(d,3) - 290*Math.pow(d, 2) + 721*d + 906;
+            return Math.max(Math.min(ans, 3700), 0);
         } else {
+            // Copied from the thing abandoned on april 2
             return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0);
         }
 
+        // OLD CALI (abandoned April 2)
+        // if (d <= 5.5) {
+        //     double ans = -1.45 * Math.pow(d, 3) + 27.66 * Math.pow(d, 2) - 22.46 * d + 1240.19;
+        //     // double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
+        //     return Math.max(Math.min(ans, 3700), 0); // Clamp RPM to between 0 and 3700
+        // } else {
+        //     return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0);
+        // }
         // if (d <= 3) {
         //     // double ans = 7.19 * Math.pow(d, 3) - 63.18 * Math.pow(d, 2) + 329.55 * d + 927.81;
         //     // double ans = 2.36 * Math.pow(d, 3) - 5.98 * Math.pow(d, 2) + 68.29 * d + 1166.73;
@@ -136,13 +154,13 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void rpmToRest() {
-        setVelocity(1000);
+        setVelocity(0); // TODO: 1000
     }
 
     @Override
     public void periodic() {
         boolean velocityReached = targetVelocity <= getVelocity() - 3;
-        SmartDashboard.putNumber("Flywheel Velocity", getVelocity());
+        SmartDashboard.putNumber("Flywheel Velocity", getVelocity()*60);
         SmartDashboard.putBoolean("Flywheel Velocity Reached", velocityReached);
         
         if (velocityReached && rob.isShooting && !DriverStation.isAutonomous()) {
@@ -173,39 +191,31 @@ public class Flywheels extends SubsystemBase {
         //     rightFlywheelMotor.setControl(flywheelOutR.withOutput(-power));
         // }
 
-        // SmartDashboard.putNumber("FLYWHEEL RPM", )
-
         // double p = SmartDashboard.getNumber("fly p", 0);
-    //     double s = SmartDashboard.getNumber("fly s", 0);
-    //     double v = SmartDashboard.getNumber("fly v", 0);
+        // double i = SmartDashboard.getNumber("fly i", 0);
+        // double d = SmartDashboard.getNumber("fly d", 0);
+        // double s = SmartDashboard.getNumber("fly s", 0);
+        // double v = SmartDashboard.getNumber("fly v", 0);
+        // double a = SmartDashboard.getNumber("fly a", 0);
+
+        // boolean isChanged = (
+        //     p != pidConfigs.kP ||
+        //     i != pidConfigs.kI ||
+        //     d != pidConfigs.kD ||
+        //     s != pidConfigs.kS ||
+        //     v != pidConfigs.kV ||
+        //     a != pidConfigs.kA);
         
-    //     pidConfigs.kP = p;
-    //     pidConfigs.kS = s;
-    //     pidConfigs.kV = v;
-
-    //     boolean isChanged = false;
-
-    //     if(p != pidConfigs.kP){
-    //     pidConfigs.kP = p;
-    //     isChanged = true; 
-    //     }
-
-    //     if(s != pidConfigs.kS){
-    //     pidConfigs.kS = s;
-    //     isChanged = true;
-    //     }
-
-    //     if(v != pidConfigs.kV){
-    //     pidConfigs.kV = v;
-    //     isChanged = true;
-    //     }
-
-    //     if(isChanged){
-    //         leftFlywheelMotor.getConfigurator().apply(pidConfigs);
-    //         rightFlywheelMotor.getConfigurator().apply(pidConfigs);
-    //     }
-    //     leftFlywheelMotor.getConfigurator().apply(pidConfigs);
-    //     rightFlywheelMotor.getConfigurator().apply(pidConfigs);
+        // if (isChanged) {
+        //     pidConfigs.kP = p;
+        //     pidConfigs.kI = i;
+        //     pidConfigs.kD = d;
+        //     pidConfigs.kS = s;
+        //     pidConfigs.kV = v;
+        //     pidConfigs.kA = a;
+        //     leftFlywheelMotor.getConfigurator().apply(pidConfigs);
+        //     rightFlywheelMotor.getConfigurator().apply(pidConfigs);
+        // }
     }
 
     @Override

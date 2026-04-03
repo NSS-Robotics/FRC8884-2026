@@ -29,7 +29,7 @@ public class ShooterHood extends SubsystemBase {
 
     private boolean autoDecap = false;
 
-    private Slot0Configs tuningPIDConfigs = new Slot0Configs();
+    // private Slot0Configs tuningPIDConfigs = new Slot0Configs();
     private Slot1Configs upPIDConfigs = new Slot1Configs();
     private Slot2Configs downPIDConfigs = new Slot2Configs();
 
@@ -64,7 +64,7 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("hood setpoint", 0);
 
         hoodMotor.clearStickyFaults();
-        hoodMotor.getConfigurator().apply(tuningPIDConfigs);
+        // hoodMotor.getConfigurator().apply(tuningPIDConfigs);
         hoodMotor.getConfigurator().apply(upPIDConfigs);
         hoodMotor.getConfigurator().apply(downPIDConfigs);
         hoodMotor.getConfigurator().apply(hoodCurrentLimits);
@@ -75,7 +75,11 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void setRotations(double rotations) {
-        hoodMotor.setControl(pv.withPosition(-rotations));
+        int slot = 1;
+        if (rotations < getRotations()) {
+            slot = 2;
+        }
+        hoodMotor.setControl(pv.withPosition(-rotations).withSlot(slot));
     }
 
     public double getRotations() {
@@ -93,14 +97,20 @@ public class ShooterHood extends SubsystemBase {
         double angle;
         double d = Math.min(distance, 9);
 
-        // NEW CALI (as of March 17)
         if (d <= 5.5) {
-            // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91; // low arc
-            angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
+            angle = 0.138*Math.pow(d, 4) - 1.89*Math.pow(d, 3) + 8.48*Math.pow(d, 2) - 11.1*d + 4.53;
         } else {
-            // copied from old cali
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
         }
+
+        // Abandoned CALI (as of April 2)
+        // if (d <= 5.5) {
+        //     // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91; // low arc
+        //     angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
+        // } else {
+        //     // copied from old cali
+        //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
+        // }
         // if (d <= 3) {
         //     // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91; // low arc
         //     angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
@@ -207,34 +217,34 @@ public class ShooterHood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Current", getCurrent());
         SmartDashboard.putBoolean("Will get decapitated", willGetDecapitated());
 
-         // for pid tuning
-        double p = SmartDashboard.getNumber("hood p", 0);
-        double i = SmartDashboard.getNumber("hood i", 0);
-        double d = SmartDashboard.getNumber("hood d", 0);
-        double s = SmartDashboard.getNumber("hood s", 0);
-        double v = SmartDashboard.getNumber("hood v", 0);
-        double a = SmartDashboard.getNumber("hood a", 0);
+        // for pid tuning
+        // double p = SmartDashboard.getNumber("hood p", 0);
+        // double i = SmartDashboard.getNumber("hood i", 0);
+        // double d = SmartDashboard.getNumber("hood d", 0);
+        // double s = SmartDashboard.getNumber("hood s", 0);
+        // double v = SmartDashboard.getNumber("hood v", 0);
+        // double a = SmartDashboard.getNumber("hood a", 0);
 
-        boolean isChanged = (
-            p != tuningPIDConfigs.kP ||
-            i != tuningPIDConfigs.kI ||
-            d != tuningPIDConfigs.kD ||
-            s != tuningPIDConfigs.kS ||
-            v != tuningPIDConfigs.kV ||
-            a != tuningPIDConfigs.kA);
+        // boolean isChanged = (
+        //     p != tuningPIDConfigs.kP ||
+        //     i != tuningPIDConfigs.kI ||
+        //     d != tuningPIDConfigs.kD ||
+        //     s != tuningPIDConfigs.kS ||
+        //     v != tuningPIDConfigs.kV ||
+        //     a != tuningPIDConfigs.kA);
         
-        if (isChanged) {
-            tuningPIDConfigs.kP = p;
-            tuningPIDConfigs.kI = i;
-            tuningPIDConfigs.kD = d;
-            tuningPIDConfigs.kS = s;
-            tuningPIDConfigs.kV = v;
-            tuningPIDConfigs.kA = a;
-            hoodMotor.getConfigurator().apply(tuningPIDConfigs);
-        }
+        // if (isChanged) {
+        //     tuningPIDConfigs.kP = p;
+        //     tuningPIDConfigs.kI = i;
+        //     tuningPIDConfigs.kD = d;
+        //     tuningPIDConfigs.kS = s;
+        //     tuningPIDConfigs.kV = v;
+        //     tuningPIDConfigs.kA = a;
+        //     hoodMotor.getConfigurator().apply(tuningPIDConfigs);
+        // }
 
-        degrees = SmartDashboard.getNumber("Set Angles", 0);
-        setDegrees();
+        // degrees = SmartDashboard.getNumber("Set Angles", 0);
+        // setDegrees();
         // double future[] = rob.turret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmV[] = rob.turret.sotmPredictVelocity(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
@@ -246,15 +256,15 @@ public class ShooterHood extends SubsystemBase {
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
 
-        // if (rob.isShooting && !willGetDecapitated()) {
-        //     if (rob.turret.isInAllianceZone()) {
-        //         alignHoodtoHub(sotmVI[0]);
-        //     } else {
-        //         alignHoodtoLob();
-        //     }
-        // } else {
-        //     degrees = 0.5;
-        //     setDegrees();
-        // }
+        if (rob.isShooting && !willGetDecapitated()) {
+            if (rob.turret.isInAllianceZone()) {
+                alignHoodtoHub(sotmVI[0]);
+            } else {
+                alignHoodtoLob();
+            }
+        } else {
+            degrees = 0.5;
+            setDegrees();
+        }
     }
 }

@@ -7,14 +7,11 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Flywheels;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.ShooterHood;
 import frc.robot.subsystems.Feeder;
 
 public class FlywheelShoot extends Command {
-
     private final RobotContainer rob;
     private final Flywheels flywheels;
-    private final ShooterHood shooterHood;
     private final CommandSwerveDrivetrain swerve;
     private final Feeder feeder;
 
@@ -23,7 +20,6 @@ public class FlywheelShoot extends Command {
     public FlywheelShoot(RobotContainer rob) {
         this.turret = rob.turret;
         this.flywheels = rob.flywheels;
-        this.shooterHood = rob.shooterHood;
         this.swerve = rob.drivetrain;
         this.feeder = rob.feeder;
         this.rob = rob;
@@ -66,7 +62,6 @@ public class FlywheelShoot extends Command {
                 flywheels.setVelocity(flywheels.rpmToLob(sotmVILobLeft[0]));
             } 
         } else {
-            // pointAtTarget(Constants.targetPositionBlue);
             flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
         }
 

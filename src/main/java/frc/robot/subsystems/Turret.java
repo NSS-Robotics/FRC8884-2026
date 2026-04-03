@@ -46,7 +46,7 @@ public class Turret extends SubsystemBase {
     public double previousVelocityX = 0;
     public double previousVelocityY = 0;
     public double previousTime = 1;
-    public double manualDistanceOffset = 0.1;
+    public double manualDistanceOffset = 0;
 
     private final Translation2d offsetFromRobotCenter;
 
@@ -393,7 +393,7 @@ public class Turret extends SubsystemBase {
         double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
 
         if (autoShoot) {
-            // flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0])); // FIXME: comment back in after tuning
+            flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0])); // FIXME: comment back in after tuning
             shooterHood.setDegrees();
         }
 

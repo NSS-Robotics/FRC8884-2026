@@ -24,12 +24,12 @@ public class Constants {
     }
 
     public static class Flywheel {
-        public static final double currentLimit = 45;
-        public static final double kP = 0.25;
+        public static final double currentLimit = 80;
+        public static final double kP = 10.2;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 0.25;
-        public static final double kV = 0.123;
+        public static final double kS = 15.0;
+        public static final double kV = 0.5;
         public static final double kA = 0.0;
         public static final double flywheelRadiusMeters = 0.0508;
     }
@@ -55,14 +55,6 @@ public class Constants {
     }
 
     public static class Turret {
-        // public static final double currentLimit = 40;
-        // public static final double kP = 4000.0;
-        // public static final double kI = 0.0;
-        // public static final double kD = 200.0;
-
-        // public static final double kS = 0.0;
-        // public static final double kV = 0.0;
-        // public static final double kA = 0.0;
         public static final double currentLimit = 40;
         public static final double kP = 500.0;
         public static final double kI = 0.0;
@@ -70,7 +62,6 @@ public class Constants {
         public static final double kS = 0.0;
         public static final double kV = 0.0;
         public static final double kA = 0.0;
-
 
         public static final double gearRatio = 92/10 * 44/14;
         public static final double gearRatioWithAbsoluteEncoder = 0.6605128205;

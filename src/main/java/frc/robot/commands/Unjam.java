@@ -21,7 +21,7 @@ public class Unjam extends Command {
 
     @Override
     public void execute() {
-        flywheels.setVelocity(-1000);
+        flywheels.setVelocity(-2000);
         feeder.setSpeed(1500);
         spindexer.setSpeed(2000);
     }
