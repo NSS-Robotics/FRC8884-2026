@@ -391,7 +391,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     PIDController xyVelController = new PIDController(4, 0, 0.15);
     PIDController rotController = new PIDController(4, 0, 0.15);
-    public Command driveToPoint(Pose2d targetPose) {
+    public Command driveToPoint(Pose2d targetPose, double maxvel) {
         xyVelController.calculate(Double.MAX_VALUE, 0);
         rotController.calculate(Double.MAX_VALUE, 0);
         rotController.enableContinuousInput(0, 2*Math.PI);
@@ -405,7 +405,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double angle = (targetPose.getTranslation().minus(getPoseMeters().getTranslation())).getAngle().getRadians();
             double angleVel = rotController.calculate(getPoseMeters().getRotation().getRadians(), targetPose.getRotation().getRadians());
 
-            double clampedVel = Math.max(Math.min(2.5, velocity), -2.5);
+            double clampedVel = Math.max(Math.min(maxvel, velocity), -maxvel);
 
             return alignRequest
                 .withVelocityX(Math.cos(angle)*clampedVel)

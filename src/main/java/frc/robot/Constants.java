@@ -18,6 +18,9 @@ public class Constants {
     public static final Pose2d leftCornerBlue = new Pose2d(0.05 + 3, 8 - 2, Rotation2d.fromDegrees(180)); 
     public static final Pose2d rightCornerBlue = new Pose2d(0.05 + 3, 0.05 + 2, Rotation2d.fromDegrees(180)); 
 
+    public static final double fieldXMeter = 16.540988;
+    public static final double fieldYMeter = 8.142656;
+
     public static class Dimensions {
         public static final double robotWidth = Units.inchesToMeters(30);
         public static final double robotLength = Units.inchesToMeters(25);

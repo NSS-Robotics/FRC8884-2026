@@ -67,6 +67,7 @@ public class RobotContainer {
     public final Turret turret = new Turret(this, Constants.Turret.offsetFromCenter);
     public final Feeder feeder = new Feeder(this);
     // public final LEDs leds = new LEDs();
+    public final Autoes autoeRunner = new Autoes(this);
 
     public final Field2d fieldMap = new Field2d();
 
@@ -131,8 +132,8 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
         driverController.b().whileTrue(new RunIntake(this, -3200));
-        // driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
-        driverController.leftBumper().onTrue(new Align(this, Autoes.Waypoints.leftNeutralShootPos, 0.1));
+        driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
+        // driverController.leftBumper().onTrue(new Align(this, Autoes.Waypoints.leftNeutralShootPos, 0.1));
     }
 
     private void configureFuelSim() {
@@ -283,6 +284,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return autoChooser.getSelected();
-        return Autoes.runAuto(this);
+        return autoeRunner.runAuto(this);
     }
 }
