@@ -129,7 +129,7 @@ public class RobotContainer {
         operatorController.button(7).onTrue(new InstantCommand(intakePivot::zeroIntake));
         operatorController.button(8).onTrue(new InstantCommand(shooterHood::zeroHood));
 
-        driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 3600));
+        driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 4500));
         driverController.povUp().whileTrue(new Snap(this, 5, 179));
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 

@@ -15,11 +15,18 @@ import frc.robot.Constants;
 public class Spindexer extends SubsystemBase {
     private final TalonFX spindexerMotor = new TalonFX(Constants.CanIDs.spindexerMotorID, new CANBus("Jeff"));
     private final DutyCycleOut spinOut = new DutyCycleOut(0);
-    private final double maxPower = 0.5;
+    private final double maxPower = 0.7;
     // private final double maxPower = 0.8;
     private double targetSpeed = 0.0;
 
     public Spindexer() {
+        CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
+        currentLimitConfig.StatorCurrentLimit = Constants.Spindexer.currentLimit;
+        currentLimitConfig.SupplyCurrentLimit = Constants.Spindexer.supplyLimit;
+        currentLimitConfig.SupplyCurrentLowerLimit = Constants.Spindexer.supplyLimit;
+
+        currentLimitConfig.StatorCurrentLimitEnable = true;
+
         Slot0Configs slot0Configs = new Slot0Configs();
         slot0Configs.kP = Constants.Spindexer.kP;
         slot0Configs.kI = Constants.Spindexer.kI;
@@ -28,6 +35,8 @@ public class Spindexer extends SubsystemBase {
         slot0Configs.kV = Constants.Spindexer.kV;
         slot0Configs.kA = Constants.Spindexer.kA;
         //spindexerMotor.getConfigurator().apply(slot0Configs);
+        spindexerMotor.getConfigurator().apply(currentLimitConfig);
+
 
         spindexerMotor.setNeutralMode(NeutralModeValue.Brake);
     }
@@ -56,8 +65,14 @@ public class Spindexer extends SubsystemBase {
     public void periodic() {
         double ts = Math.abs(targetSpeed);
         double speed = Math.abs(getSpeed());
-        double power = (ts - speed)/ts * maxPower;
+        //double power = (ts - speed)/ts * maxPower;
+        double power = maxPower;
+
         if (speed > ts) {
+            power = 0;
+        }
+
+        if (targetSpeed == 0 ){
             power = 0;
         }
 

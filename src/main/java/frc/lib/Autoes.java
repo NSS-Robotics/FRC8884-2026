@@ -27,6 +27,12 @@ public class Autoes {
         public static final Pose2d leftNeutralShootPos = new Pose2d(12.929, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralPreSwipe2 = new Pose2d(10.133, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralSwipe2 = new Pose2d(10.433, 3.657, Rotation2d.fromDegrees(-90));
+        public static final Pose2d leftNeutralSwipe3 = new Pose2d(8.0, 3.657, Rotation2d.fromDegrees(0));
+        public static final Pose2d leftNeutralSwipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
+
+        public static final Pose2d leftNeutralPostBump = new Pose2d(13.0, 2.5, Rotation2d.fromDegrees(0));
+
+
     }
 
     private final RobotContainer rob;
@@ -56,12 +62,12 @@ public class Autoes {
                 )
             ),
             alignTo(rob, Waypoints.leftNeutralSwipe1, 0.1, 2.5),
-            alignTo(rob, Waypoints.leftNeutralPastTrench, 0.5, 2.5),
-            alignTo(rob, Waypoints.leftNeutralShootPos, 0.1, 2.5),
+            alignTo(rob, Waypoints.leftNeutralPastTrench, 0.2, 4),
+            alignTo(rob, Waypoints.leftNeutralShootPos, 0.1, 4),
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new ParallelRaceGroup(
-                new WaitCommand(4),
+                new WaitCommand(3.5),
                 new RunSpindexer(rob),
                 new SequentialCommandGroup(
                     new WaitCommand(1),
@@ -86,13 +92,16 @@ public class Autoes {
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
                     alignTo(rob, Waypoints.leftNeutralPreSwipe2, 0.5, 4.0),
-                    alignTo(rob, Waypoints.leftNeutralSwipe2, 0.1, 2.5)
+                    alignTo(rob, Waypoints.leftNeutralSwipe2, 0.1, 3)
                 ),
                 new InstantCommand(() -> rob.intakePivot.setPosition(15.9)),
                 new InstantCommand(() -> rob.intake.setVelocity(5000))
             ),
-            alignTo(rob, Waypoints.leftNeutralPastTrench, 0.5, 2.5),
-            alignTo(rob, Waypoints.leftNeutralShootPos, 0.1, 2.5),
+            alignTo(rob, Waypoints.leftNeutralSwipe4, 0.2, 5),
+            alignTo(rob, Waypoints.leftNeutralPostBump, 0.3, 5), 
+          
+            // alignTo(rob, Waypoints.leftNeutralPastTrench, 0.2, 4),
+            // alignTo(rob, Waypoints.leftNeutralShootPos, 0.1, 4),
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new ParallelRaceGroup(
