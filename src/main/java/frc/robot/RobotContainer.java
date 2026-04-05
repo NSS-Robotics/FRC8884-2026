@@ -95,7 +95,7 @@ public class RobotContainer {
                 double cappedMaxAngularVelocity = MaxAngularRate;
 
                 if (driverController.rightTrigger(0.3).getAsBoolean()) {
-                    cappedMaxSpeed = 0.5;
+                    cappedMaxSpeed = 0.7;
                     cappedMaxAngularVelocity *= 0.5;
                 }
 
@@ -121,10 +121,13 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(new RunSpindexer(this));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
-        operatorController.povDown().onTrue(new InstantCommand(intakePivot::zeroIntake));
-        operatorController.povUp().onTrue(new InstantCommand(shooterHood::zeroHood));
-        operatorController.povRight().onTrue(new InstantCommand(() -> turret.manualDistanceOffset += 0.05));
-        operatorController.povLeft().onTrue(new InstantCommand(() -> turret.manualDistanceOffset -= 0.05));
+        
+        operatorController.povDown().onTrue(new InstantCommand(() -> turret.manualOffsetX += 0.05));
+        operatorController.povUp().onTrue(new InstantCommand(() -> turret.manualOffsetX -= 0.05));
+        operatorController.povRight().onTrue(new InstantCommand(() -> turret.manualOffsetY += 0.05));
+        operatorController.povLeft().onTrue(new InstantCommand(() -> turret.manualOffsetY -= 0.05));
+        operatorController.button(7).onTrue(new InstantCommand(intakePivot::zeroIntake));
+        operatorController.button(8).onTrue(new InstantCommand(shooterHood::zeroHood));
 
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 3600));
         driverController.povUp().whileTrue(new Snap(this, 5, 179));

@@ -18,7 +18,7 @@ public class Feeder extends SubsystemBase {
     private final TalonFX feederMotor = new TalonFX(Constants.CanIDs.feederMotorID, new CANBus("Jeff"));
     private final DutyCycleOut feedOut = new DutyCycleOut(0);
     private double targetSpeed = 0;
-    private final double maxPower = 0.9;
+    private final double maxPower = 1.0;
     private final double minPower = 0.6;
 
     private boolean canMove = true;
@@ -80,6 +80,7 @@ public class Feeder extends SubsystemBase {
         // double speed = Math.abs(getSpeed());
         // double power = (ts - speed)/ts * maxPower;
         // power = Math.min(Math.max(power, minPower), maxPower);
+        // double power = maxPower;
         // if (speed > ts) {
         //     power = 0;
         // }
@@ -93,6 +94,7 @@ public class Feeder extends SubsystemBase {
         //     feederMotor.setControl(feedOut.withOutput(power));
         // }
 
+        SmartDashboard.putNumber("Feeder Target", targetSpeed);
         SmartDashboard.putNumber("Feeder Speed", getSpeed());
         SmartDashboard.putBoolean("canMove", canMove);
         canMove();

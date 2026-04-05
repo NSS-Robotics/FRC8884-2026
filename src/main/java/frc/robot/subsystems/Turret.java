@@ -50,7 +50,8 @@ public class Turret extends SubsystemBase {
 
     private final Translation2d offsetFromRobotCenter;
 
-    private double manualOffset = 0;
+    public double manualOffsetX = -0.40;
+    public double manualOffsetY = 0.15;
 
     public Pose2d turretLocation = new Pose2d();
 
@@ -224,36 +225,45 @@ public class Turret extends SubsystemBase {
         
         double robotRadians = currentPos.getRotation().getRadians(); 
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
+        Pose2d manualOffset;
+        if (rob.isRed()){
+
+            manualOffset = new Pose2d(targetPos.getX() + manualOffsetX, targetPos.getY() + manualOffsetY, targetPos.getRotation());
+        } else {
+            manualOffset = new Pose2d(targetPos.getX() - manualOffsetX, targetPos.getY() - manualOffsetY, targetPos.getRotation());
+
+        }
 
         turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
 
-        double xDistance = currentPos.getX() + turretOffset.getX() - targetPos.getX();
-        double yDistance = currentPos.getY() + turretOffset.getY() - targetPos.getY();  
+        double xDistance = currentPos.getX() + turretOffset.getX() - manualOffset.getX();
+        double yDistance = currentPos.getY() + turretOffset.getY() - manualOffset.getY();  
 
         setDistanceToTarget(Math.hypot(xDistance, yDistance));
 
-        double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, targetPos);
+        double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, manualOffset);
 
         double futureDegrees = sotmVI[1];
 
         double degreesToTarget = wrapAngleDegrees(futureDegrees
-                                                  - (currentPos.getRotation().getDegrees() - targetPos.getRotation().getDegrees()) 
+                                                  - (currentPos.getRotation().getDegrees() - manualOffset.getRotation().getDegrees()) 
                                                   ); 
         
         SmartDashboard.putNumber("MM Turret degrees to target", degreesToTarget);
         SmartDashboard.putNumber("MM Turret Offset x", turretOffset.getX());
         SmartDashboard.putNumber("MM Turret Offset y", turretOffset.getY());
 
-        setDegrees(degreesToTarget+manualOffset);
+        setDegrees(degreesToTarget);
     }
 
     public double distanceToTime(double distance){
         // return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.03; // phase delay
-        return Math.min(Math.max(0.07 * distance + 0.99, 1), 2) + 0.03 + 0.1; // phase delay
+        // return Math.min(Math.max(0.07 * distance + 0.99, 1), 2) + 0.03 + 0.1; // phase delay
         // -0.01 * Math.pow(distance, 2) 
+        return Math.min(Math.max(0.03 * Math.pow(distance, 3) - 0.37 * Math.pow(distance, 2) + 1.33 * distance - 0.43, 1), 2) + 0.03;
     }   
 
-    public double getAcceleration(double v1, double v2, double t1, double t2) { // TODO TAKE MULITIPLE VELOCITES OVER TIME AND AVERAGE IT 
+    public double getAcceleration(double v1, double v2, double t1, double t2) {
         if (t1 == t2){
             return 0;
         }
@@ -333,14 +343,20 @@ public class Turret extends SubsystemBase {
         return distanceToTarget;
     }
 
-    public void setManualOffset(double newManualOffset) {
-        manualOffset = newManualOffset;
+    public void setManualOffsetX(double newManualOffset) {
+        manualOffsetX = newManualOffset;
     }
 
-    public double getManualOffset() {
-        return manualOffset;
+    public double getManualOffsetX() {
+        return manualOffsetX;
+    }
+    public void setManualOffsetY(double newManualOffset) {
+        manualOffsetY = newManualOffset;
     }
 
+    public double getManualOffsetY() {
+        return manualOffsetY;
+    }
     public boolean canMove(){
         return !intakePivot.isIntakeUp();
     }
@@ -404,7 +420,9 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());
         SmartDashboard.putNumber("MM Turret Error Degrees", targetDegrees-getDegrees());
         SmartDashboard.putNumber("Distance to Target", getDistanceToTarget());
-        SmartDashboard.putNumber("MMT manual offset", manualOffset);
+        SmartDashboard.putNumber("MMT manual offset X", manualOffsetX);
+        SmartDashboard.putNumber("MMT manual offset Y", manualOffsetY);
+
         SmartDashboard.putBoolean("ALLIANCEZONE", isInAllianceZone());
 
         SmartDashboard.putNumber("Manual Distance Offset", manualDistanceOffset);

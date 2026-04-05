@@ -151,7 +151,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public double rpmToLob(double distance){
-        return 100*distance + 1100;
+        return 100*distance + 1100 + 200;
     }
 
     public void rpmToRest() {

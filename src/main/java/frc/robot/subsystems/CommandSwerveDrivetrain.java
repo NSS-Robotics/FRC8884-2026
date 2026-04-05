@@ -413,4 +413,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 .withRotationalRate(angleVel);
         }).withName("DriveToPoint");
     }
+
+    public void stopSwerve(){
+        SwerveRequest.Idle stopRequest = new SwerveRequest.Idle();
+        this.setControl(stopRequest);
+    }
 }

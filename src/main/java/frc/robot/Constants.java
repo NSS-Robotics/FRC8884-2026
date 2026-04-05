@@ -7,8 +7,10 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
     // Red positions
-    // public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));
-    public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.13, Rotation2d.fromDegrees(180));
+    public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));
+    //public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.20, Rotation2d.fromDegrees(180));
+    //public static final Pose2d targetPositionRed = new Pose2d(11.515, 4.20, Rotation2d.fromDegrees(180));
+
     public static final Pose2d leftCornerRed = new Pose2d(16 - 3, 8 - 2, Rotation2d.fromDegrees(180));
     public static final Pose2d rightCornerRed = new Pose2d(16 - 3, 0.05 + 2, Rotation2d.fromDegrees(180));
 
@@ -18,7 +20,7 @@ public class Constants {
     public static final Pose2d leftCornerBlue = new Pose2d(0.05 + 3, 8 - 2, Rotation2d.fromDegrees(180)); 
     public static final Pose2d rightCornerBlue = new Pose2d(0.05 + 3, 0.05 + 2, Rotation2d.fromDegrees(180)); 
 
-    public static final double fieldXMeter = 16.540988;
+    public static final double fieldXMeter = 16.540988; // FIXME: ADJUST WHEN TESTING AUTOE FOR BLUE
     public static final double fieldYMeter = 8.142656;
 
     public static class Dimensions {

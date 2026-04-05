@@ -75,6 +75,5 @@ public class FlywheelShoot extends Command {
     public void end(boolean interrupted) {
         flywheels.stop();
         rob.isShooting = false;
-        feeder.stop();
     }
 }
