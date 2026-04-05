@@ -31,7 +31,7 @@ public class Autoes {
 
     private final RobotContainer rob;
 
-    public boolean isRightFlipped = false; // blue left, red right is true
+    public boolean isRightFlipped = true; // blue left, red right is true
     public boolean isAllianceFlipped = false;
     public boolean isCloser = false; // closer swipe1 is true
 
@@ -46,7 +46,7 @@ public class Autoes {
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new InstantCommand(rob.shooterHood::enableAutoDecap),
             new ParallelCommandGroup(
-                alignTo(rob, Waypoints.leftNeutralPreSwipe1, 0.5, 5.0),
+                alignTo(rob, Waypoints.leftNeutralPreSwipe1, 0.5, 6.0),
                 new SequentialCommandGroup(
                     new ParallelDeadlineGroup(
                         new WaitCommand(1),

@@ -32,6 +32,9 @@ public class Feeder extends SubsystemBase {
         this.turret = rob.turret;
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Feeder.currentLimit;
+        currentLimitConfig.SupplyCurrentLimit = Constants.Feeder.supplyLimit;
+        currentLimitConfig.SupplyCurrentLowerLimit = Constants.Feeder.supplyLimit;
+
         currentLimitConfig.StatorCurrentLimitEnable = true;
 
         pidConfigs.kP = Constants.Feeder.kP;

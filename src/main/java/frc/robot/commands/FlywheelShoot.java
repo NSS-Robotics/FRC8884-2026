@@ -41,11 +41,11 @@ public class FlywheelShoot extends Command {
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
 
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true);
         double sotmVILobRight[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue);
+                rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue, false);
         double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue);
+                rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue, false);
         
         // double future[] = turret.aLookIntoTheFuture(swerve.getPoseMeters(),
         // turret.getDistanceToTarget(), Constants.targetPositionBlue);

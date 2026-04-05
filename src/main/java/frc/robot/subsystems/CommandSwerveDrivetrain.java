@@ -390,7 +390,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     PIDController xyVelController = new PIDController(4, 0, 0.15);
-    PIDController rotController = new PIDController(4, 0, 0.15);
+    PIDController rotController = new PIDController(2, 0, 0.15);
     public Command driveToPoint(Pose2d targetPose, double maxvel) {
         xyVelController.calculate(Double.MAX_VALUE, 0);
         rotController.calculate(Double.MAX_VALUE, 0);

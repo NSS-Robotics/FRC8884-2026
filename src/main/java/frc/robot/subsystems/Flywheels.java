@@ -41,14 +41,16 @@ public class Flywheels extends SubsystemBase {
 
         leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(80).withPeakReverseTorqueCurrent(-20);
-        rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(80).withPeakReverseTorqueCurrent(-20);
+        leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(100).withPeakReverseTorqueCurrent(-20);
+        rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(100).withPeakReverseTorqueCurrent(-20);
 
         // leftConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
         // rightConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
 
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Flywheel.currentLimit;
+        currentLimitConfig.SupplyCurrentLimit = Constants.Flywheel.supplyLimit;
+        currentLimitConfig.SupplyCurrentLowerLimit = Constants.Flywheel.supplyLimit;
         currentLimitConfig.StatorCurrentLimitEnable = true;
 
         pidConfigs.kP = Constants.Flywheel.kP;
@@ -65,6 +67,7 @@ public class Flywheels extends SubsystemBase {
 
         rightFlywheelMotor.getConfigurator().apply(currentLimitConfig);
         leftFlywheelMotor.getConfigurator().apply(currentLimitConfig);
+
 
         rightFlywheelMotor.getConfigurator().apply(pidConfigs);
         leftFlywheelMotor.getConfigurator().apply(pidConfigs);
@@ -119,7 +122,9 @@ public class Flywheels extends SubsystemBase {
         double d = Math.min(distance, 9);
 
         if (d <= 5.5) {
-            double ans = -4.19*Math.pow(d, 4) + 58.7*Math.pow(d,3) - 290*Math.pow(d, 2) + 721*d + 906;
+            // double ans = -4.19*Math.pow(d, 4) + 58.7*Math.pow(d,3) - 290*Math.pow(d, 2) + 721*d + 906;
+            double ans = -4.6*Math.pow(d, 4) + 67.3*Math.pow(d,3) - 333*Math.pow(d, 2) + 811*d + 695;
+
             return Math.max(Math.min(ans, 3700), 0);
         } else {
             // Copied from the thing abandoned on april 2
@@ -162,6 +167,8 @@ public class Flywheels extends SubsystemBase {
     public void periodic() {
         boolean velocityReached = targetVelocity <= getVelocity() - 3;
         SmartDashboard.putNumber("Flywheel Velocity", getVelocity()*60);
+        SmartDashboard.putNumber("Flywheel Target Velocity", targetVelocity*60);
+
         SmartDashboard.putBoolean("Flywheel Velocity Reached", velocityReached);
         
         if (velocityReached && rob.isShooting && !DriverStation.isAutonomous()) {

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
@@ -32,7 +33,8 @@ public class Turret extends SubsystemBase {
     // private PositionVoltage pv = new PositionVoltage(0).withSlot(0);
     private final PositionTorqueCurrentFOC pt = new PositionTorqueCurrentFOC(0).withSlot(0);
 
-    private Slot0Configs pidConfigs = new Slot0Configs();
+    private Slot0Configs pidConfigs_0 = new Slot0Configs();
+    private Slot1Configs pidConfigs_1 = new Slot1Configs();
 
     private final RobotContainer rob;
     private final CommandSwerveDrivetrain swerve;
@@ -50,8 +52,8 @@ public class Turret extends SubsystemBase {
 
     private final Translation2d offsetFromRobotCenter;
 
-    public double manualOffsetX = -0.40;
-    public double manualOffsetY = 0.15;
+    public double manualOffsetX = 0.1;
+    public double manualOffsetY = 0.4;
 
     public Pose2d turretLocation = new Pose2d();
 
@@ -86,13 +88,21 @@ public class Turret extends SubsystemBase {
         CurrentLimitsConfigs turretMotorCurrentLimitsConfigs = turretMotorConfig.CurrentLimits;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimit = 40;
         turretMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
-        pidConfigs = turretMotorConfig.Slot0;
-        pidConfigs.kP = Constants.Turret.kP;
-        pidConfigs.kI = Constants.Turret.kI;
-        pidConfigs.kD = Constants.Turret.kD;
-        pidConfigs.kS = Constants.Turret.kS;
-        pidConfigs.kV = Constants.Turret.kV;
-        pidConfigs.kA = Constants.Turret.kA;
+        pidConfigs_0 = turretMotorConfig.Slot0;
+        pidConfigs_0.kP = Constants.Turret.kP_0;
+        pidConfigs_0.kI = Constants.Turret.kI_0;
+        pidConfigs_0.kD = Constants.Turret.kD_0;
+        pidConfigs_0.kS = Constants.Turret.kS_0;
+        pidConfigs_0.kV = Constants.Turret.kV_0;
+        pidConfigs_0.kA = Constants.Turret.kA_0;
+
+        pidConfigs_1 = turretMotorConfig.Slot1;
+        pidConfigs_1.kP = Constants.Turret.kP_1;
+        pidConfigs_1.kI = Constants.Turret.kI_1;
+        pidConfigs_1.kD = Constants.Turret.kD_1;
+        pidConfigs_1.kS = Constants.Turret.kS_1;
+        pidConfigs_1.kV = Constants.Turret.kV_1;
+        pidConfigs_1.kA = Constants.Turret.kA_1;  
 
         turretMotor.clearStickyFaults();
         turretMotor.getConfigurator().apply(turretMotorConfig);
@@ -110,8 +120,9 @@ public class Turret extends SubsystemBase {
         errorLog = new DoubleLogEntry(rob.log, "/turret/errordegrees");
     }
 
-    public void setRotations(double rotations) {
-        turretMotor.setControl(pt.withPosition(rotations));
+    public void setRotations(double rotations, int slot) {
+        
+        turretMotor.setControl(pt.withSlot(slot).withPosition(rotations));
         SmartDashboard.putNumber("MM Turret target rotation", rotations);
     }
 
@@ -129,8 +140,10 @@ public class Turret extends SubsystemBase {
         double rotations = degrees / 360; 
 
         SmartDashboard.putNumber("MM Turret Target Degrees", degrees);
+        double error = degrees - getDegrees();
+        int slot = Math.abs(error) < 45.0  ? 0 : 1;  
 
-        setRotations(rotations);
+        setRotations(rotations, slot);
     }
 
     public double getDegrees() {
@@ -220,7 +233,7 @@ public class Turret extends SubsystemBase {
 
     }
 
-    public void pointAtTarget(Pose2d targetPos) {
+    public void pointAtTarget(Pose2d targetPos, boolean useSTOM) {
         Pose2d currentPos = swerve.getPoseMeters();
         
         double robotRadians = currentPos.getRotation().getRadians(); 
@@ -241,7 +254,7 @@ public class Turret extends SubsystemBase {
 
         setDistanceToTarget(Math.hypot(xDistance, yDistance));
 
-        double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, manualOffset);
+        double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, manualOffset, useSTOM);
 
         double futureDegrees = sotmVI[1];
 
@@ -270,7 +283,7 @@ public class Turret extends SubsystemBase {
         return (v1-v2)/(t1-t2);
     }
 
-    public double[] sotmPredictVelocityIteration(Pose2d currentPose, double distance, Pose2d targetPose){
+    public double[] sotmPredictVelocityIteration(Pose2d currentPose, double distance, Pose2d targetPose, boolean useSTOM){
         ChassisSpeeds speeds = swerve.getState().Speeds;
         double robotRadians = currentPose.getRotation().getRadians(); 
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
@@ -322,7 +335,11 @@ public class Turret extends SubsystemBase {
 
         newDistance += manualDistanceOffset;
 
-        return new double[]{newDistance, newAimAngle};
+        if(useSTOM){
+            return new double[]{newDistance, newAimAngle};
+        }else{
+            return new double[]{distance, degreesToSet(turretPose.getX()- targetPose.getX(), turretPose.getY()- targetPose.getY())};
+        }
     }
 
     public double rpmToVelocity(double rpm, double wheelRadiusMeters){
@@ -377,24 +394,24 @@ public class Turret extends SubsystemBase {
             if (!isInAllianceZone()) { 
                 if (rob.isRed()){
                     if (swerve.getPoseMeters().getY() > 4){
-                        pointAtTarget(Constants.leftCornerRed);
+                        pointAtTarget(Constants.leftCornerRed, false);
                     } else{
-                        pointAtTarget(Constants.rightCornerRed);
+                        pointAtTarget(Constants.rightCornerRed, false);
                     }
                 } else {
                     if (swerve.getPoseMeters().getY() > 4){
-                        pointAtTarget(Constants.leftCornerBlue);
+                        pointAtTarget(Constants.leftCornerBlue, false);
                     } else{
-                        pointAtTarget(Constants.rightCornerBlue);
+                        pointAtTarget(Constants.rightCornerBlue, false);
                     }
                 }
             } else {      
                 if (rob.isRed()){
                     // pointAtTarget(Constants.targetPositionBlue);
 
-                    pointAtTarget(Constants.targetPositionRed);
+                    pointAtTarget(Constants.targetPositionRed, true);
                 } else {
-                    pointAtTarget(Constants.targetPositionBlue);
+                    pointAtTarget(Constants.targetPositionBlue, true);
                     // pointAtTarget(Constants.targetPositionRed);
 
                 }
@@ -406,7 +423,7 @@ public class Turret extends SubsystemBase {
         //     isdocking = false;
         // }
 
-        double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue); 
+        double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true); 
 
         if (autoShoot) {
             flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0])); // FIXME: comment back in after tuning
@@ -431,7 +448,7 @@ public class Turret extends SubsystemBase {
         errorLog.append(targetDegrees-getDegrees());
         distanceLog.append(distanceToTarget);
 
-        // // for pid tuning
+        // for pid tuning
         // double p = SmartDashboard.getNumber("turret p", 0);
         // double i = SmartDashboard.getNumber("turret i", 0);
         // double d = SmartDashboard.getNumber("turret d", 0);
@@ -440,21 +457,21 @@ public class Turret extends SubsystemBase {
         // double a = SmartDashboard.getNumber("turret a", 0);
 
         // boolean isChanged = (
-        //     p != pidConfigs.kP ||
-        //     i != pidConfigs.kI ||
-        //     d != pidConfigs.kD ||
-        //     s != pidConfigs.kS ||
-        //     v != pidConfigs.kV ||
-        //     a != pidConfigs.kA);
+        //     p != pidConfigs_0.kP ||
+        //     i != pidConfigs_0.kI ||
+        //     d != pidConfigs_0.kD ||
+        //     s != pidConfigs_0.kS ||
+        //     v != pidConfigs_0.kV ||
+        //     a != pidConfigs_0.kA);
         
         // if (isChanged) {
-        //     pidConfigs.kP = p;
-        //     pidConfigs.kI = i;
-        //     pidConfigs.kD = d;
-        //     pidConfigs.kS = s;
-        //     pidConfigs.kV = v;
-        //     pidConfigs.kA = a;
-        //     turretMotor.getConfigurator().apply(pidConfigs);
+        //     pidConfigs_0.kP = p;
+        //     pidConfigs_0.kI = i;
+        //     pidConfigs_0.kD = d;
+        //     pidConfigs_0.kS = s;
+        //     pidConfigs_0.kV = v;
+        //     pidConfigs_0.kA = a;
+        //     turretMotor.getConfigurator().apply(pidConfigs_0);
         // }
 
         // setDegrees(SmartDashboard.getNumber("turret setpoint", 0));

@@ -22,6 +22,9 @@ public class Intake extends SubsystemBase{
     public Intake() {
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Intake.currentLimit;
+        currentLimitConfig.SupplyCurrentLimit = Constants.Intake.supplyLimit;
+        currentLimitConfig.SupplyCurrentLowerLimit = Constants.Intake.supplyLimit;
+
         currentLimitConfig.StatorCurrentLimitEnable = true;
 
         intakeSlot0Configs.kP = Constants.Intake.kP;

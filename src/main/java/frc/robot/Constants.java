@@ -15,8 +15,8 @@ public class Constants {
     public static final Pose2d rightCornerRed = new Pose2d(16 - 3, 0.05 + 2, Rotation2d.fromDegrees(180));
 
     // Blue positions
-    // public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
-    public static final Pose2d targetPositionBlue = new Pose2d(4.625, 3.95, Rotation2d.fromDegrees(180));
+    public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
+    //public static final Pose2d targetPositionBlue = new Pose2d(4.625, 3.95, Rotation2d.fromDegrees(180));
     public static final Pose2d leftCornerBlue = new Pose2d(0.05 + 3, 8 - 2, Rotation2d.fromDegrees(180)); 
     public static final Pose2d rightCornerBlue = new Pose2d(0.05 + 3, 0.05 + 2, Rotation2d.fromDegrees(180)); 
 
@@ -29,18 +29,21 @@ public class Constants {
     }
 
     public static class Flywheel {
-        public static final double currentLimit = 80;
-        public static final double kP = 10.2;
+        public static final double currentLimit = 100;
+        public static final double supplyLimit = 60;
+
+        public static final double kP = 12;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 15.0;
-        public static final double kV = 0.5;
+        public static final double kS = 4.0;
+        public static final double kV = 0.3;
         public static final double kA = 0.0;
         public static final double flywheelRadiusMeters = 0.0508;
     }
 
     public static class Feeder {
-        public static final double currentLimit = 80; // i don't love this
+        public static final double currentLimit = 60; // i don't love this
+        public static final double supplyLimit = 60;
         public static final double kP = 0.1;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
@@ -61,12 +64,21 @@ public class Constants {
 
     public static class Turret {
         public static final double currentLimit = 40;
-        public static final double kP = 500.0;
-        public static final double kI = 0.0;
-        public static final double kD = 27.0;
-        public static final double kS = 0.0;
-        public static final double kV = 0.0;
-        public static final double kA = 0.0;
+        public static final double kP_0 = 4000.0;
+        public static final double kI_0 = 0.0;
+        public static final double kD_0 = 150.0;
+        public static final double kS_0 = 0.0;
+        public static final double kV_0 = 0.0;
+        public static final double kA_0 = 0.0;
+
+        public static final double kP_1 = 250.0;
+        public static final double kI_1 = 0.0;
+        public static final double kD_1 = 20.0;
+        public static final double kS_1 = 0.0;
+        public static final double kV_1 = 0.0;
+        public static final double kA_1 = 0.0;
+
+
 
         public static final double gearRatio = 92/10 * 44/14;
         public static final double gearRatioWithAbsoluteEncoder = 0.6605128205;
@@ -84,7 +96,7 @@ public class Constants {
 
     public static class Hood {
         public static final double currentLimit = 30;
-        public static final double upKP = 40.0;
+        public static final double upKP = 20.0;
         public static final double upKI = 0.0;
         public static final double upKD = 0.0;
         public static final double upKS = 0.0;
@@ -112,6 +124,7 @@ public class Constants {
 
     public static class Intake {
         public static final double currentLimit = 80;
+        public static final double supplyLimit = 60;
         public static final double kP = 0.8;
         public static final double kI = 0.0;
         public static final double kD = 0.0;

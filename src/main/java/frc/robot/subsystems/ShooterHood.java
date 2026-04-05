@@ -98,7 +98,9 @@ public class ShooterHood extends SubsystemBase {
         double d = Math.min(distance, 9);
 
         if (d <= 5.5) {
-            angle = 0.138*Math.pow(d, 4) - 1.89*Math.pow(d, 3) + 8.48*Math.pow(d, 2) - 11.1*d + 4.53;
+            // angle = 0.138*Math.pow(d, 4) - 1.89*Math.pow(d, 3) + 8.48*Math.pow(d, 2) - 11.1*d + 4.53;
+            angle = 0.0656*Math.pow(d, 4) - 0.862*Math.pow(d, 3) + 3.39*Math.pow(d, 2) - 1.1*d -1.45;
+
         } else {
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
         }
@@ -254,7 +256,7 @@ public class ShooterHood extends SubsystemBase {
         // double sotmVAI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true);
 
         if (rob.isShooting && !willGetDecapitated()) {
             if (rob.turret.isInAllianceZone()) {
