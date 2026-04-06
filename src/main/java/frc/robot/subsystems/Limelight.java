@@ -46,7 +46,7 @@ public class Limelight extends SubsystemBase {
     }
 
     public void updateOdometry() {
-        boolean useMegaTag2 = false;
+        boolean useMegaTag2 = true; // TODO: test this, if bad revert or try other stuff
 
         if (!useMegaTag2) {
             LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.name);
@@ -77,7 +77,34 @@ public class Limelight extends SubsystemBase {
                 swerve.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
             }
         } else {
-            // worry about this later...
+            LimelightHelpers.SetIMUMode(this.name, 4);
+            LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.name);
+
+            // if limelight can't read any data, ignore
+            if (mt2 == null) {
+                return;
+            }
+            
+            boolean shouldRejectUpdate = false;
+
+            tagCountLog.append(mt2.tagCount);
+            SmartDashboard.putNumber(this.name + " tagcount", mt2.tagCount);
+
+            if (mt2.tagCount == 1 && mt2.rawFiducials.length == 1) {
+                boolean isTooFarForComfort = mt2.rawFiducials[0].distToCamera > 4;
+                boolean isTooAmbiguiousForComfort = mt2.rawFiducials[0].ambiguity > 0.4;
+
+                if (isTooAmbiguiousForComfort || isTooFarForComfort) {
+                    shouldRejectUpdate = true;
+                }
+            }
+            if (mt2.tagCount == 0) {
+                shouldRejectUpdate = true;
+            }
+
+            if (!shouldRejectUpdate) {
+                swerve.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+            }
         }
     }
 
