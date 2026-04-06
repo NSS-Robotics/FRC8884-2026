@@ -17,6 +17,8 @@ import frc.robot.commands.RunSpindexer;
 
 public class Autoes {
     public static class Waypoints {
+        // double swipe trench
+        public static final Pose2d leftNeutralStartPos = new Pose2d(12, 0.64, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralPastTrench = new Pose2d(10.622, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralPreSwipe1 = new Pose2d(7.900, 1, Rotation2d.fromDegrees(-110));
         public static final Pose2d leftNeutralPreSwipe1Close = new Pose2d(8.626, 1, Rotation2d.fromDegrees(-110));
@@ -28,7 +30,15 @@ public class Autoes {
         public static final Pose2d leftNeutralSwipe3 = new Pose2d(8.0, 3.657, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralSwipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
         public static final Pose2d leftNeutralPostBump = new Pose2d(13.0, 2.5, Rotation2d.fromDegrees(0));
-    }
+        public static final Pose2d leftNeutralStartPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
+        // 2056 auto: start -> pasttrench -> preswip1 ->swip1 -> pose before bump? -> post bump (pretty sure) -> back to start pos
+
+        // middle: shoot + depot
+        public static final Pose2d middlePreDepot = new Pose2d();
+        public static final Pose2d middleInsideDepot = new Pose2d();
+
+        // delayed bump: wait 5 seconds then go over bump
+    }   
 
     private final RobotContainer rob;
 
@@ -36,9 +46,9 @@ public class Autoes {
     public boolean isAllianceFlipped = false;
     public boolean isCloser = false; // closer swipe1 is true
 
-
     // AUTOES
     public SequentialCommandGroup redLeftNeutral;
+    public SequentialCommandGroup middleDepot;
 
     public Autoes(RobotContainer rob) {
         this.rob = rob;
@@ -124,6 +134,16 @@ public class Autoes {
                 )
             )
         );
+
+        middleDepot = new SequentialCommandGroup(
+            // start facing hub
+            // drive back/lower hopper
+            // shoot
+            // near depot/raise intake
+            // depot/lower intake
+            // intake
+            // shoot
+        );
     }
 
     public Command runAuto(RobotContainer rob, String autoToRun) {
@@ -151,6 +171,16 @@ public class Autoes {
         }
 
         buildAuto();
+        if (autoToRun != "middle") {
+            Pose2d startingPos = Waypoints.leftNeutralStartPos;
+            if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
+            if (isRightFlipped) startingPos = mirrorToRight(startingPos);
+
+            rob.drivetrain.resetPose(startingPos);
+        } else {
+            // FIXME: get middle starting position
+            // rob.drivetrain.resetPose(null);
+        }
 
         SequentialCommandGroup auto = new SequentialCommandGroup();
         auto.addCommands(redLeftNeutral);

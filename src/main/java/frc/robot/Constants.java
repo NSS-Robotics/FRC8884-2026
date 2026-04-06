@@ -80,8 +80,6 @@ public class Constants {
         public static final double kV_1 = 0.0;
         public static final double kA_1 = 0.0;
 
-
-
         public static final double gearRatio = 92/10 * 44/14;
         public static final double gearRatioWithAbsoluteEncoder = 0.6605128205;
         public static final double motorToEncoderRatio = 43.77551020493131;
