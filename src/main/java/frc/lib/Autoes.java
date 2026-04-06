@@ -1,7 +1,5 @@
 package frc.lib;
 
-import static edu.wpi.first.units.Units.Degree;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,11 +38,13 @@ public class Autoes {
 
 
     // AUTOES
-    public final SequentialCommandGroup redLeftNeutral;
+    public SequentialCommandGroup redLeftNeutral;
 
     public Autoes(RobotContainer rob) {
         this.rob = rob;
+    }
 
+    private void buildAuto() {
         redLeftNeutral = new SequentialCommandGroup(
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new InstantCommand(rob.shooterHood::enableAutoDecap),
@@ -126,7 +126,32 @@ public class Autoes {
         );
     }
 
-    public Command runAuto(RobotContainer rob /*, Autos.AUTO_TYPE chosenAuto */) {
+    public Command runAuto(RobotContainer rob, String autoToRun) {
+        switch (autoToRun) {
+        case "blueleft":
+            isAllianceFlipped = true;
+            isRightFlipped = true;
+            break;
+        case "blueright":
+            isAllianceFlipped = true;
+            isRightFlipped = false;
+            break;
+        case "redright":
+            isAllianceFlipped = false;
+            isRightFlipped = true;
+            break;
+        case "redleft":
+            isAllianceFlipped = false;
+            isRightFlipped = false;
+            break;
+        default:
+            isAllianceFlipped = false;
+            isRightFlipped = false;
+            break;
+        }
+
+        buildAuto();
+
         SequentialCommandGroup auto = new SequentialCommandGroup();
         auto.addCommands(redLeftNeutral);
         return auto;
@@ -143,7 +168,7 @@ public class Autoes {
                 new DriveToPoint(rob, pose, deadzone),
                 rob.drivetrain.driveToPoint(pose, maxvel)
             ),
-            new InstantCommand(() -> rob.drivetrain.stopSwerve())
+            new InstantCommand(rob.drivetrain::stopSwerve)
         );
         
         // return new ParallelRaceGroup(

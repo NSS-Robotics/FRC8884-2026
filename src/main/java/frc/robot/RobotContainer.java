@@ -38,7 +38,8 @@ public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(1).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    private final SendableChooser<Command> autoChooser;
+    // private final SendableChooser<Command> ppAutoChooser;
+    private final SendableChooser<String> autoChooser;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -79,7 +80,13 @@ public class RobotContainer {
         DataLogManager.start();
         DriverStation.startDataLog(log);
 
-        autoChooser = AutoBuilder.buildAutoChooser();
+        // ppAutoChooser = AutoBuilder.buildAutoChooser();
+        // SmartDashboard.putData("PP Auto Chooser", ppAutoChooser);
+        autoChooser = new SendableChooser<>();
+        autoChooser.setDefaultOption("Blue Left", "blueleft");
+        autoChooser.addOption("Blue Right", "blueright");
+        autoChooser.addOption("Red Left", "redleft");
+        autoChooser.addOption("Red Right", "redright");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         configureBindings();
@@ -286,7 +293,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // return autoChooser.getSelected();
-        return autoeRunner.runAuto(this);
+        // return ppAutoChooser.getSelected();
+        return autoeRunner.runAuto(this, autoChooser.getSelected());
     }
 }

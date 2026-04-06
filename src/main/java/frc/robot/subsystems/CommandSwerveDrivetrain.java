@@ -414,7 +414,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }).withName("DriveToPoint");
     }
 
-    public void stopSwerve(){
+    public void stopSwerve() {
         SwerveRequest.Idle stopRequest = new SwerveRequest.Idle();
         this.setControl(stopRequest);
     }
