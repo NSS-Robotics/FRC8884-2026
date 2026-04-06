@@ -77,8 +77,17 @@ public class Limelight extends SubsystemBase {
                 swerve.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
             }
         } else {
-            LimelightHelpers.SetIMUMode(this.name, 4);
+            LimelightHelpers.SetIMUMode(name, 4);
             LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.name);
+            LimelightHelpers.SetRobotOrientation(
+                name,
+                swerve.getPigeon2().getYaw().getValueAsDouble(),
+                0,
+                0,
+                0,
+                0,
+                0
+            );
 
             // if limelight can't read any data, ignore
             if (mt2 == null) {
