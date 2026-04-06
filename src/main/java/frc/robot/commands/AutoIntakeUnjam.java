@@ -17,8 +17,8 @@ public class AutoIntakeUnjam extends Command {
 
     @Override
     public void execute() {
-        intake.setVelocity(2500); // can't run intake because it eats fabric
-        intakePivot.setPosition(8); // used to be 8
+        intake.setVelocity(2500);
+        intakePivot.setPosition(8);
     }
 
     @Override

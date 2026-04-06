@@ -29,10 +29,7 @@ public class Autoes {
         public static final Pose2d leftNeutralSwipe2 = new Pose2d(10.433, 3.657, Rotation2d.fromDegrees(-90));
         public static final Pose2d leftNeutralSwipe3 = new Pose2d(8.0, 3.657, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralSwipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
-
         public static final Pose2d leftNeutralPostBump = new Pose2d(13.0, 2.5, Rotation2d.fromDegrees(0));
-
-
     }
 
     private final RobotContainer rob;
