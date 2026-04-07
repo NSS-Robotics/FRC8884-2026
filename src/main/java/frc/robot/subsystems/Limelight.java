@@ -46,7 +46,7 @@ public class Limelight extends SubsystemBase {
     }
 
     public void updateOdometry() {
-        boolean useMegaTag2 = false; 
+        boolean useMegaTag2 = true;
 
         if (!useMegaTag2) {
             LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.name);
@@ -77,7 +77,6 @@ public class Limelight extends SubsystemBase {
                 swerve.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
             }
         } else {
-            LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.name);
             LimelightHelpers.SetRobotOrientation(
                 name,
                 swerve.getPoseMeters().getRotation().getDegrees(),
@@ -88,6 +87,7 @@ public class Limelight extends SubsystemBase {
                 0,
                 0
             );
+            LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.name);
 
             // if limelight can't read any data, ignore
             if (mt2 == null) {

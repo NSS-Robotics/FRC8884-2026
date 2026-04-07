@@ -140,8 +140,8 @@ public class RobotContainer {
         operatorController.povUp().onTrue(new InstantCommand(() -> turret.manualOffsetX -= 0.05));
         operatorController.povRight().onTrue(new InstantCommand(() -> turret.manualOffsetY += 0.05));
         operatorController.povLeft().onTrue(new InstantCommand(() -> turret.manualOffsetY -= 0.05));
-        operatorController.button(7).onTrue(new InstantCommand(intakePivot::zeroIntake));
-        operatorController.button(8).onTrue(new InstantCommand(shooterHood::zeroHood));
+        operatorController.back().onTrue(new InstantCommand(intakePivot::zeroIntake));
+        operatorController.start().onTrue(new InstantCommand(shooterHood::zeroHood));
 
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 4500));
         driverController.povUp().whileTrue(new Snap(this, 5, 179));
