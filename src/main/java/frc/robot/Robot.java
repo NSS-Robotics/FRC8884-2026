@@ -88,8 +88,8 @@ public class Robot extends TimedRobot {
     rob.turret.autoShoot = false;
     rob.shooterHood.disableAutoDecap();
 
-    LimelightHelpers.SetIMUMode("limelight-front", 3);
-    LimelightHelpers.SetIMUMode("limelight-side", 3);
+    LimelightHelpers.SetIMUMode("limelight-front", 0);
+    LimelightHelpers.SetIMUMode("limelight-side", 0);
   }
 
   @Override

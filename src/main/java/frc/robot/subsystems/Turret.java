@@ -52,8 +52,8 @@ public class Turret extends SubsystemBase {
 
     private final Translation2d offsetFromRobotCenter;
 
-    public double manualOffsetX = 0.1;
-    public double manualOffsetY = 0.4;
+    public double manualOffsetX = 0.0;
+    public double manualOffsetY = 0.0;
 
     public Pose2d turretLocation = new Pose2d();
 
