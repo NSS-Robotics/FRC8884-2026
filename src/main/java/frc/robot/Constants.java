@@ -91,7 +91,13 @@ public class Constants {
         public static final double rotationLimit1 = -180.0;
         public static final double rotationLimit2 = 200.0;
 
-        public static final double encoderOffset = 0.3057451923017578;
+        // to zero turret encoder:
+        // - point turret forward
+        // - set magnet offset to 0 in tuner
+        // - get value from elastic
+        // - multiply by gearRatioWithAbsoluteEncoder
+        // - set it here
+        public static final double encoderOffset = 0.5948907162657471;
     }
 
     public static class Hood {

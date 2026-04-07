@@ -200,11 +200,6 @@ public class Autoes {
             ),
             new InstantCommand(rob.drivetrain::stopSwerve)
         );
-        
-        // return new ParallelRaceGroup(
-        //     new DriveToPoint(rob, pose, deadzone),
-        //     rob.drivetrain.driveToPoint(pose, maxvel)
-        // );
     }
     
     private static Pose2d mirrorToRight(Pose2d pose) {

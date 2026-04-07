@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.LimelightHelpers;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -27,6 +28,9 @@ public class Robot extends TimedRobot {
     rob = new RobotContainer();
     driverController = rob.driverController.getHID();
     operatorController = rob.operatorController.getHID();
+
+    LimelightHelpers.SetIMUMode("limelight-front", 1);
+    LimelightHelpers.SetIMUMode("limelight-side", 1);
   }
 
   @Override
@@ -40,14 +44,19 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    LimelightHelpers.SetIMUMode("limelight-front", 1);
+    LimelightHelpers.SetIMUMode("limelight-side", 1);
+  }
 
   @Override
   public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
-    // m_robotContainer.shooterHood.zeroHood();
+    LimelightHelpers.SetIMUMode("limelight-front", 4);
+    LimelightHelpers.SetIMUMode("limelight-side", 4);
+
     rob.isShooting = true;
     rob.flywheels.rpmToRest();
     m_autonomousCommand = rob.getAutonomousCommand();
@@ -78,6 +87,9 @@ public class Robot extends TimedRobot {
     rob.intake.stopIntake();
     rob.turret.autoShoot = false;
     rob.shooterHood.disableAutoDecap();
+
+    LimelightHelpers.SetIMUMode("limelight-front", 4);
+    LimelightHelpers.SetIMUMode("limelight-side", 4);
   }
 
   @Override

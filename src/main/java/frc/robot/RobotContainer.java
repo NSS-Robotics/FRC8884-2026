@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.Autoes;
 import frc.lib.FuelSim;
@@ -124,8 +125,14 @@ public class RobotContainer {
         driverController.a().onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
 
         /* longer commands */
-        operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
-        operatorController.rightBumper().whileTrue(new RunSpindexer(this));
+        // operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
+        // operatorController.rightBumper().whileTrue(new RunSpindexer(this));
+        operatorController.rightTrigger().whileTrue(
+            new ParallelCommandGroup(
+                new FlywheelShoot(this),
+                new RunSpindexer(this)
+            )
+        );
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
         

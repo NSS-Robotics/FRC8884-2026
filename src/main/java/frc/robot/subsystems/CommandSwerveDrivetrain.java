@@ -254,6 +254,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        SmartDashboard.putNumber("Robot Degrees", getPoseMeters().getRotation().getDegrees());
     }
 
     private void startSimThread() {
