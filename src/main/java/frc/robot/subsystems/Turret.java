@@ -230,36 +230,36 @@ public class Turret extends SubsystemBase {
         }
 
         return offset-aimAngle;
-
     }
 
-    public void pointAtTarget(Pose2d targetPos, boolean useSTOM) {
+    public Pose2d calculateOffsetTarget(Pose2d targetPos) {
+        if (rob.isRed()) {
+            return new Pose2d(targetPos.getX() + manualOffsetX, targetPos.getY() + manualOffsetY, targetPos.getRotation());
+        }
+
+        return new Pose2d(targetPos.getX() - manualOffsetX, targetPos.getY() - manualOffsetY, targetPos.getRotation());
+    }
+
+    public void pointAtTarget(Pose2d targetPos, boolean useSOTM) {
         Pose2d currentPos = swerve.getPoseMeters();
         
         double robotRadians = currentPos.getRotation().getRadians(); 
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
-        Pose2d manualOffset;
-        if (rob.isRed()){
-
-            manualOffset = new Pose2d(targetPos.getX() + manualOffsetX, targetPos.getY() + manualOffsetY, targetPos.getRotation());
-        } else {
-            manualOffset = new Pose2d(targetPos.getX() - manualOffsetX, targetPos.getY() - manualOffsetY, targetPos.getRotation());
-
-        }
+        Pose2d offsettedTarget = calculateOffsetTarget(targetPos);
 
         turretLocation = new Pose2d(currentPos.getX() + turretOffset.getX(), currentPos.getY() + turretOffset.getY(), Rotation2d.fromDegrees(0));
 
-        double xDistance = currentPos.getX() + turretOffset.getX() - manualOffset.getX();
-        double yDistance = currentPos.getY() + turretOffset.getY() - manualOffset.getY();  
+        double xDistance = currentPos.getX() + turretOffset.getX() - offsettedTarget.getX();
+        double yDistance = currentPos.getY() + turretOffset.getY() - offsettedTarget.getY();  
 
         setDistanceToTarget(Math.hypot(xDistance, yDistance));
 
-        double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, manualOffset, useSTOM);
+        double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, targetPos, useSOTM);
 
         double futureDegrees = sotmVI[1];
 
         double degreesToTarget = wrapAngleDegrees(futureDegrees
-                                                  - (currentPos.getRotation().getDegrees() - manualOffset.getRotation().getDegrees()) 
+                                                  - (currentPos.getRotation().getDegrees() - offsettedTarget.getRotation().getDegrees()) 
                                                   ); 
         
         SmartDashboard.putNumber("MM Turret degrees to target", degreesToTarget);
@@ -270,9 +270,6 @@ public class Turret extends SubsystemBase {
     }
 
     public double distanceToTime(double distance){
-        // return Math.min(Math.max(-0.01 * Math.pow(distance, 3) + 0.09 * Math.pow(distance, 2) -0.08 * distance + 1.00, 1), 2) + 0.03; // phase delay
-        // return Math.min(Math.max(0.07 * distance + 0.99, 1), 2) + 0.03 + 0.1; // phase delay
-        // -0.01 * Math.pow(distance, 2) 
         return Math.min(Math.max(0.03 * Math.pow(distance, 3) - 0.37 * Math.pow(distance, 2) + 1.33 * distance - 0.43, 1), 2) + 0.03;
     }   
 
@@ -283,7 +280,8 @@ public class Turret extends SubsystemBase {
         return (v1-v2)/(t1-t2);
     }
 
-    public double[] sotmPredictVelocityIteration(Pose2d currentPose, double distance, Pose2d targetPose, boolean useSTOM){
+    public double[] sotmPredictVelocityIteration(Pose2d currentPose, double distance, Pose2d targetPose, boolean useSOTM) {
+        targetPose = calculateOffsetTarget(targetPose);
         ChassisSpeeds speeds = swerve.getState().Speeds;
         double robotRadians = currentPose.getRotation().getRadians(); 
         Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians);
@@ -335,7 +333,7 @@ public class Turret extends SubsystemBase {
 
         newDistance += manualDistanceOffset;
 
-        if(useSTOM){
+        if(useSOTM){
             return new double[]{newDistance, newAimAngle};
         }else{
             return new double[]{distance, degreesToSet(turretPose.getX()- targetPose.getX(), turretPose.getY()- targetPose.getY())};

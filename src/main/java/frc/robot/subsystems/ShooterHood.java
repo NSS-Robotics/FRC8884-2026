@@ -105,24 +105,6 @@ public class ShooterHood extends SubsystemBase {
             angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
         }
 
-        // Abandoned CALI (as of April 2)
-        // if (d <= 5.5) {
-        //     // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91; // low arc
-        //     angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
-        // } else {
-        //     // copied from old cali
-        //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
-        // }
-        // if (d <= 3) {
-        //     // angle = 0.21 * Math.pow(d, 3) - 2.56 * Math.pow(d, 2) + 13.35 * d - 12.91; // low arc
-        //     angle = 0.06 * Math.pow(d, 3) - 1.25 * Math.pow(d, 2) + 9.82 * d - 10.07;
-        // } else if (d <= 5){
-        //     angle = 0; // FIXME: put smth here so we don't shoot vertically
-        // } else {
-        //     // copied from old cali
-        //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
-        // } 
-
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
         degrees = angle;

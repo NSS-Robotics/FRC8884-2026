@@ -27,17 +27,20 @@ public class Autoes {
         public static final Pose2d leftNeutralShootPos = new Pose2d(12.929, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralPreSwipe2 = new Pose2d(10.133, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralSwipe2 = new Pose2d(10.433, 3.657, Rotation2d.fromDegrees(-90));
-        public static final Pose2d leftNeutralSwipe3 = new Pose2d(8.0, 3.657, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralSwipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
         public static final Pose2d leftNeutralPostBump = new Pose2d(13.0, 2.5, Rotation2d.fromDegrees(0));
         public static final Pose2d leftNeutralStartPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
         // 2056 auto: start -> pasttrench -> preswip1 ->swip1 -> pose before bump? -> post bump (pretty sure) -> back to start pos
 
+        // double swipe coming back over bump
+        // trench -> swipe -> bump -> shoot while moving to trench -> trench -> swipe -> bump -> shoot
+
         // middle: shoot + depot
+        public static final Pose2d middleStart = new Pose2d();
         public static final Pose2d middlePreDepot = new Pose2d();
         public static final Pose2d middleInsideDepot = new Pose2d();
 
-        // delayed bump: wait 5 seconds then go over bump
+        // delayed bump: wait 5 seconds then go over bump (low priority)
     }   
 
     private final RobotContainer rob;
