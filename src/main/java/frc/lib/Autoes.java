@@ -18,22 +18,26 @@ import frc.robot.commands.RunSpindexer;
 public class Autoes {
     public static class Waypoints {
         // double swipe trench
-        public static final Pose2d leftNeutralStartPos = new Pose2d(12, 0.64, Rotation2d.fromDegrees(0));
-        public static final Pose2d leftNeutralPastTrench = new Pose2d(10.622, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d leftNeutralPreSwipe1 = new Pose2d(7.900, 1, Rotation2d.fromDegrees(-110));
-        public static final Pose2d leftNeutralPreSwipe1Close = new Pose2d(8.626, 1, Rotation2d.fromDegrees(-110));
-        public static final Pose2d leftNeutralSwipe1 = new Pose2d(8.200, 3.672, Rotation2d.fromDegrees(-110));
-        public static final Pose2d leftNeutralSwipe1Close = new Pose2d(8.626, 3.65, Rotation2d.fromDegrees(-110));
-        public static final Pose2d leftNeutralShootPos = new Pose2d(12.929, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d leftNeutralPreSwipe2 = new Pose2d(10.133, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d leftNeutralSwipe2 = new Pose2d(10.433, 3.657, Rotation2d.fromDegrees(-90));
-        public static final Pose2d leftNeutralSwipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
-        public static final Pose2d leftNeutralPostBump = new Pose2d(13.0, 2.5, Rotation2d.fromDegrees(0));
-        public static final Pose2d leftNeutralStartPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
-        // 2056 auto: start -> pasttrench -> preswip1 ->swip1 -> pose before bump? -> post bump (pretty sure) -> back to start pos
 
-        // double swipe coming back over bump
-        // trench -> swipe -> bump -> shoot while moving to trench -> trench -> swipe -> bump -> shoot
+        // ALWAYS IN THE POSITION OF LEFT RED, methods to flip sides and alliances
+        public static final Pose2d startPos = new Pose2d(12, 0.64, Rotation2d.fromDegrees(0));
+        public static final Pose2d pastTrench = new Pose2d(10.622, 0.712, Rotation2d.fromDegrees(0));
+        public static final Pose2d preSwipe1 = new Pose2d(7.900, 1, Rotation2d.fromDegrees(-110));
+        public static final Pose2d preSwipe1Close = new Pose2d(8.626, 1, Rotation2d.fromDegrees(-110));
+        public static final Pose2d swipe1 = new Pose2d(8.200, 3.672, Rotation2d.fromDegrees(-110));
+        public static final Pose2d swipe1Close = new Pose2d(8.626, 3.65, Rotation2d.fromDegrees(-110));
+        public static final Pose2d shootPos = new Pose2d(12.929, 0.712, Rotation2d.fromDegrees(0));
+        public static final Pose2d preSwipe2 = new Pose2d(10.133, 0.712, Rotation2d.fromDegrees(0));
+        public static final Pose2d swipe2 = new Pose2d(10.433, 3.657, Rotation2d.fromDegrees(-90));
+        public static final Pose2d swipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
+        public static final Pose2d postBump = new Pose2d(13.0, 2.5, Rotation2d.fromDegrees(0));
+        public static final Pose2d startPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
+    
+        // double swipe bump
+        public static final Pose2d startPosRotated = new Pose2d(12.167, 0.463, Rotation2d.fromDegrees(-90)); // not in auto
+        public static final Pose2d postBumpIntake = new Pose2d(13.0, 2.4, Rotation2d.fromDegrees(180));
+        public static final Pose2d preBump = new Pose2d(12.943, 2.4, Rotation2d.fromDegrees(180));
+        public static final Pose2d bumpToTrenchTransition = new Pose2d(13.753, 1.696, Rotation2d.fromDegrees(90));
 
         // middle: shoot + depot
         public static final Pose2d middleStart = new Pose2d();
@@ -50,19 +54,20 @@ public class Autoes {
     public boolean isCloser = false; // closer swipe1 is true
 
     // AUTOES
-    public SequentialCommandGroup redLeftNeutral;
+    public SequentialCommandGroup redLeftDoubleSwipe;
     public SequentialCommandGroup middleDepot;
+    public SequentialCommandGroup redLeftDoubleSwipeBump;
 
     public Autoes(RobotContainer rob) {
         this.rob = rob;
     }
 
     private void buildAuto() {
-        redLeftNeutral = new SequentialCommandGroup(
+        redLeftDoubleSwipe = new SequentialCommandGroup(
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new InstantCommand(rob.shooterHood::enableAutoDecap),
             new ParallelCommandGroup(
-                alignTo(rob, Waypoints.leftNeutralPreSwipe1, 0.5, 6.0),
+                alignTo(rob, Waypoints.preSwipe1, 0.5, 6.0),
                 new SequentialCommandGroup(
                     new ParallelDeadlineGroup(
                         new WaitCommand(1),
@@ -71,9 +76,9 @@ public class Autoes {
                     new InstantCommand(() -> rob.intake.setVelocity(5000))
                 )
             ),
-            alignTo(rob, Waypoints.leftNeutralSwipe1, 0.1, 2.5),
-            alignTo(rob, Waypoints.leftNeutralPastTrench, 0.2, 4),
-            alignTo(rob, Waypoints.leftNeutralShootPos, 0.1, 4),
+            alignTo(rob, Waypoints.swipe1, 0.1, 2.5),
+            alignTo(rob, Waypoints.pastTrench, 0.2, 4),
+            alignTo(rob, Waypoints.shootPos, 0.1, 4),
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new ParallelRaceGroup(
@@ -101,17 +106,17 @@ public class Autoes {
             new InstantCommand(rob.shooterHood::enableAutoDecap),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
-                    alignTo(rob, Waypoints.leftNeutralPreSwipe2, 0.5, 4.0),
-                    alignTo(rob, Waypoints.leftNeutralSwipe2, 0.1, 3)
+                    alignTo(rob, Waypoints.preSwipe2, 0.5, 4.0),
+                    alignTo(rob, Waypoints.swipe2, 0.1, 3)
                 ),
                 new InstantCommand(() -> rob.intakePivot.setPosition(15.9)),
                 new InstantCommand(() -> rob.intake.setVelocity(5000))
             ),
-            alignTo(rob, Waypoints.leftNeutralSwipe4, 0.2, 5),
-            alignTo(rob, Waypoints.leftNeutralPostBump, 0.3, 5), 
+            alignTo(rob, Waypoints.swipe4, 0.2, 5),
+            alignTo(rob, Waypoints.postBump, 0.3, 5), 
           
-            // alignTo(rob, Waypoints.leftNeutralPastTrench, 0.2, 4),
-            // alignTo(rob, Waypoints.leftNeutralShootPos, 0.1, 4),
+            // alignTo(rob, Waypoints.PastTrench, 0.2, 4),
+            // alignTo(rob, Waypoints.ShootPos, 0.1, 4),
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new ParallelRaceGroup(
@@ -147,6 +152,24 @@ public class Autoes {
             // intake
             // shoot
         );
+
+        redLeftDoubleSwipeBump = new SequentialCommandGroup(
+            // FIXME: these deadzones are only for sim, change for irl
+            alignTo(rob, Waypoints.startPosRotated, 0.1, 2.5),
+            alignTo(rob, Waypoints.preSwipe1, 0.1, 2.5),
+            alignTo(rob, Waypoints.swipe1, 0.1, 2.5),
+            alignTo(rob, Waypoints.postBumpIntake, 0.1, 2.5),
+            alignTo(rob, Waypoints.preBump, 0.1, 2.5),
+            alignTo(rob, Waypoints.bumpToTrenchTransition, 0.1, 0.7), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.startPos, 0.1, 0.7),
+            alignTo(rob, Waypoints.preSwipe2, 0.1, 2.5),
+            alignTo(rob, Waypoints.swipe2, 0.1, 2.5),
+            alignTo(rob, Waypoints.postBumpIntake, 0.1, 2.5), // clips a bit
+            alignTo(rob, Waypoints.preBump, 0.1, 2.5),
+            alignTo(rob, Waypoints.bumpToTrenchTransition, 0.1, 0.7), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.startPos, 0.1, 0.7)
+            // add more
+        );
     }
 
     public Command runAuto(RobotContainer rob, String autoToRun) {
@@ -175,7 +198,7 @@ public class Autoes {
 
         buildAuto();
         if (autoToRun != "middle") {
-            Pose2d startingPos = Waypoints.leftNeutralStartPos;
+            Pose2d startingPos = Waypoints.startPos;
             if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
             if (isRightFlipped) startingPos = mirrorToRight(startingPos);
 
@@ -186,15 +209,16 @@ public class Autoes {
         }
 
         SequentialCommandGroup auto = new SequentialCommandGroup();
-        auto.addCommands(redLeftNeutral);
+        auto.addCommands(redLeftDoubleSwipe);
+        // auto.addCommands(redLeftDoubleSwipeBump);
         return auto;
     }
 
     private Command alignTo(RobotContainer rob, Pose2d pose, double deadzone, double maxvel) {
         if (isRightFlipped) pose = mirrorToRight(pose);
         if (isAllianceFlipped) pose = mirrorAlliance(pose);
-        if (isCloser && pose == Waypoints.leftNeutralSwipe1) pose = Waypoints.leftNeutralSwipe1Close;
-        if (isCloser && pose == Waypoints.leftNeutralPreSwipe1) pose = Waypoints.leftNeutralPreSwipe1Close;
+        if (isCloser && pose == Waypoints.swipe1) pose = Waypoints.swipe1Close;
+        if (isCloser && pose == Waypoints.preSwipe1) pose = Waypoints.preSwipe1Close;
 
         return new SequentialCommandGroup(
             new ParallelRaceGroup(
