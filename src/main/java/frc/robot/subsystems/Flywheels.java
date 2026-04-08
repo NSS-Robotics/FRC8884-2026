@@ -121,10 +121,14 @@ public class Flywheels extends SubsystemBase {
     public double rpmToHub(double distance) {
         double d = Math.min(distance, 9);
 
+        if (d > 3.0) {
+            d -= 0.1;
+        }
+
         if (d <= 5.5) {
             // double ans = -4.19*Math.pow(d, 4) + 58.7*Math.pow(d,3) - 290*Math.pow(d, 2) + 721*d + 906;
             double ans = -4.6*Math.pow(d, 4) + 67.3*Math.pow(d,3) - 333*Math.pow(d, 2) + 811*d + 695;
-
+            ans *= (22.0/18.0) / (2.0/3.0);
             return Math.max(Math.min(ans, 3700), 0);
         } else {
             // Copied from the thing abandoned on april 2

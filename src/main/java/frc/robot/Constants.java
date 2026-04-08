@@ -21,7 +21,7 @@ public class Constants {
     public static final Pose2d rightCornerBlue = new Pose2d(0.05 + 3, 0.05 + 2, Rotation2d.fromDegrees(180)); 
 
     // public static final double fieldXMeter = 16.540988; // FIXME: ADJUST WHEN TESTING AUTOE FOR BLUE
-    public static final double fieldXMeter = 17.1; // we shall see...
+    public static final double fieldXMeter = 16.1; // we shall see...
     public static final double fieldYMeter = 8.142656;
 
     public static class Dimensions {
@@ -43,7 +43,7 @@ public class Constants {
     }
 
     public static class Feeder {
-        public static final double currentLimit = 60; // i don't love this
+        public static final double currentLimit = 60; 
         public static final double supplyLimit = 60;
         public static final double kP = 0.1;
         public static final double kI = 0.0;

@@ -36,10 +36,11 @@ public class Autoes {
         // double swipe bump
         public static final Pose2d startPosRotated = new Pose2d(12.167, 0.463, Rotation2d.fromDegrees(-90)); // not in auto
         public static final Pose2d postBumpIntake = new Pose2d(11, 2.4, Rotation2d.fromDegrees(180));
+        public static final Pose2d postBumpIntakeRot = new Pose2d(9.933, 2.4, Rotation2d.fromDegrees(-90));
         public static final Pose2d preBump = new Pose2d(12.943, 2.4, Rotation2d.fromDegrees(180));
-        public static final Pose2d bumpToTrenchTransition1 = new Pose2d(13.2, 2.262, Rotation2d.fromDegrees(120));
-        public static final Pose2d bumpToTrenchTransition2 = new Pose2d(13.753, 1.696, Rotation2d.fromDegrees(60));
-        public static final Pose2d bumpToTrenchTransition3 = new Pose2d(13.2, 0.8, Rotation2d.fromDegrees(0));
+        public static final Pose2d bumpToTrenchTransition1 = new Pose2d(12.75, 2.262, Rotation2d.fromDegrees(120));
+        public static final Pose2d bumpToTrenchTransition2 = new Pose2d(13.303, 1.6, Rotation2d.fromDegrees(60));
+        public static final Pose2d bumpToTrenchTransition3 = new Pose2d(12.75, 0.75, Rotation2d.fromDegrees(0));
 
         // middle: shoot + depot
         public static final Pose2d middleStart = new Pose2d();
@@ -156,25 +157,28 @@ public class Autoes {
         );
 
         redLeftDoubleSwipeBump = new SequentialCommandGroup(
+            new InstantCommand(rob.shooterHood::enableAutoDecap),
             // FIXME: these deadzones are only for sim, change for irl
-            alignTo(rob, Waypoints.startPosRotated, 0.1, 2.5),
-            alignTo(rob, Waypoints.preSwipe1, 0.1, 2.5),
-            alignTo(rob, Waypoints.swipe1, 0.1, 2.5),
-            alignTo(rob, Waypoints.postBumpIntake, 0.1, 2.5),
-            alignTo(rob, Waypoints.preBump, 0.1, 2.5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.1, 2.5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.1, 2.5), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.1, 2.5),
-            alignTo(rob, Waypoints.startPos, 0.1, 2.5),
-            alignTo(rob, Waypoints.preSwipe2, 0.1, 2.5),
-            alignTo(rob, Waypoints.swipe2, 0.1, 2.5),
-            alignTo(rob, Waypoints.postBumpIntake, 0.1, 2.5), // clips a bit
-            alignTo(rob, Waypoints.preBump, 0.1, 2.5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.1, 2.5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.1, 2.5), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.1, 2.5),
-            alignTo(rob, Waypoints.startPos, 0.1, 2.5)
+            // alignTo(rob, Waypoints.startPosRotated, 0.1, 2.5),
+            alignTo(rob, Waypoints.preSwipe1, 0.5, 4),
+            alignTo(rob, Waypoints.swipe1, 0.1, 4),
+            alignTo(rob, Waypoints.postBumpIntake, 0.1, 4),
+            alignTo(rob, Waypoints.preBump, 0.1, 5),
+            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7),
+            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7),
+            alignTo(rob, Waypoints.startPos, 0.1, 0.7),
+            alignTo(rob, Waypoints.preSwipe2, 0.5, 4),
+            alignTo(rob, Waypoints.swipe2, 0.1, 4),
+            alignTo(rob, Waypoints.postBumpIntakeRot, 0.1, 4),
+            alignTo(rob, Waypoints.postBumpIntake, 0.2, 4),
+            alignTo(rob, Waypoints.preBump, 0.1, 5),
+            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7),
+            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7),
+            alignTo(rob, Waypoints.startPos, 0.1, 0.7),
             // add more
+            new InstantCommand(rob.shooterHood::disableAutoDecap)
         );
     }
 
@@ -204,7 +208,7 @@ public class Autoes {
 
         buildAuto();
         if (autoToRun != "middle") {
-            Pose2d startingPos = Waypoints.startPos;
+            Pose2d startingPos = Waypoints.startPosRotated;
             if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
             if (isRightFlipped) startingPos = mirrorToRight(startingPos);
 
