@@ -127,7 +127,7 @@ public class RobotContainer {
         /* longer commands */
         // operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
         // operatorController.rightBumper().whileTrue(new RunSpindexer(this));
-        operatorController.rightTrigger().whileTrue(
+        operatorController.rightBumper().whileTrue(
             new ParallelCommandGroup(
                 new FlywheelShoot(this),
                 new RunSpindexer(this)

@@ -46,7 +46,7 @@ public class Limelight extends SubsystemBase {
     }
 
     public void updateOdometry() {
-        boolean useMegaTag2 = true;
+        boolean useMegaTag2 = false;
 
         if (!useMegaTag2) {
             LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(this.name);
