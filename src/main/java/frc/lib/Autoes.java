@@ -27,17 +27,19 @@ public class Autoes {
         public static final Pose2d swipe1 = new Pose2d(8.200, 3.672, Rotation2d.fromDegrees(-110));
         public static final Pose2d swipe1Close = new Pose2d(8.626, 3.65, Rotation2d.fromDegrees(-110));
         public static final Pose2d shootPos = new Pose2d(12.929, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d preSwipe2 = new Pose2d(10.133, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d swipe2 = new Pose2d(10.433, 3.657, Rotation2d.fromDegrees(-90));
+        public static final Pose2d preSwipe2 = new Pose2d(9.633, 0.712, Rotation2d.fromDegrees(0));
+        public static final Pose2d swipe2 = new Pose2d(9.933, 3.657, Rotation2d.fromDegrees(-90));
         public static final Pose2d swipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
         public static final Pose2d postBump = new Pose2d(13.0, 2.5, Rotation2d.fromDegrees(0));
         public static final Pose2d startPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
     
         // double swipe bump
         public static final Pose2d startPosRotated = new Pose2d(12.167, 0.463, Rotation2d.fromDegrees(-90)); // not in auto
-        public static final Pose2d postBumpIntake = new Pose2d(13.0, 2.4, Rotation2d.fromDegrees(180));
+        public static final Pose2d postBumpIntake = new Pose2d(11, 2.4, Rotation2d.fromDegrees(180));
         public static final Pose2d preBump = new Pose2d(12.943, 2.4, Rotation2d.fromDegrees(180));
-        public static final Pose2d bumpToTrenchTransition = new Pose2d(13.753, 1.696, Rotation2d.fromDegrees(90));
+        public static final Pose2d bumpToTrenchTransition1 = new Pose2d(13.2, 2.262, Rotation2d.fromDegrees(120));
+        public static final Pose2d bumpToTrenchTransition2 = new Pose2d(13.753, 1.696, Rotation2d.fromDegrees(60));
+        public static final Pose2d bumpToTrenchTransition3 = new Pose2d(13.2, 0.8, Rotation2d.fromDegrees(0));
 
         // middle: shoot + depot
         public static final Pose2d middleStart = new Pose2d();
@@ -160,14 +162,18 @@ public class Autoes {
             alignTo(rob, Waypoints.swipe1, 0.1, 2.5),
             alignTo(rob, Waypoints.postBumpIntake, 0.1, 2.5),
             alignTo(rob, Waypoints.preBump, 0.1, 2.5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition, 0.1, 0.7), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.startPos, 0.1, 0.7),
+            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.1, 2.5),
+            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.1, 2.5), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.1, 2.5),
+            alignTo(rob, Waypoints.startPos, 0.1, 2.5),
             alignTo(rob, Waypoints.preSwipe2, 0.1, 2.5),
             alignTo(rob, Waypoints.swipe2, 0.1, 2.5),
             alignTo(rob, Waypoints.postBumpIntake, 0.1, 2.5), // clips a bit
             alignTo(rob, Waypoints.preBump, 0.1, 2.5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition, 0.1, 0.7), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.startPos, 0.1, 0.7)
+            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.1, 2.5),
+            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.1, 2.5), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.1, 2.5),
+            alignTo(rob, Waypoints.startPos, 0.1, 2.5)
             // add more
         );
     }
@@ -209,8 +215,8 @@ public class Autoes {
         }
 
         SequentialCommandGroup auto = new SequentialCommandGroup();
-        auto.addCommands(redLeftDoubleSwipe);
-        // auto.addCommands(redLeftDoubleSwipeBump);
+        // auto.addCommands(redLeftDoubleSwipe);
+        auto.addCommands(redLeftDoubleSwipeBump);
         return auto;
     }
 
@@ -219,6 +225,7 @@ public class Autoes {
         if (isAllianceFlipped) pose = mirrorAlliance(pose);
         if (isCloser && pose == Waypoints.swipe1) pose = Waypoints.swipe1Close;
         if (isCloser && pose == Waypoints.preSwipe1) pose = Waypoints.preSwipe1Close;
+        if (!rob.isRed()) maxvel *= -1;
 
         return new SequentialCommandGroup(
             new ParallelRaceGroup(
