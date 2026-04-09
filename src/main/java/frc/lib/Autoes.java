@@ -35,9 +35,9 @@ public class Autoes {
     
         // double swipe bump
         public static final Pose2d startPosRotated = new Pose2d(12.167, 0.463, Rotation2d.fromDegrees(-90)); // not in auto
-        public static final Pose2d postBumpIntake = new Pose2d(11, 2.4, Rotation2d.fromDegrees(180));
-        public static final Pose2d postBumpIntakeRot = new Pose2d(9.933, 2.4, Rotation2d.fromDegrees(-90));
-        public static final Pose2d preBump = new Pose2d(12.943, 2.4, Rotation2d.fromDegrees(180));
+        public static final Pose2d postBumpIntake = new Pose2d(11, 2.6, Rotation2d.fromDegrees(180));
+        public static final Pose2d postBumpIntakeRot = new Pose2d(9.933, 2.7, Rotation2d.fromDegrees(-90));
+        public static final Pose2d preBump = new Pose2d(12.943, 2.6, Rotation2d.fromDegrees(180));
         public static final Pose2d bumpToTrenchTransition1 = new Pose2d(12.75, 2.262, Rotation2d.fromDegrees(120));
         public static final Pose2d bumpToTrenchTransition2 = new Pose2d(13.303, 1.6, Rotation2d.fromDegrees(60));
         public static final Pose2d bumpToTrenchTransition3 = new Pose2d(12.75, 0.75, Rotation2d.fromDegrees(0));
@@ -164,18 +164,18 @@ public class Autoes {
             alignTo(rob, Waypoints.swipe1, 0.1, 4),
             alignTo(rob, Waypoints.postBumpIntake, 0.1, 4),
             alignTo(rob, Waypoints.preBump, 0.1, 5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7),
-            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7),
+            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7, 50),
+            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7, 50), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7, 50),
             alignTo(rob, Waypoints.startPos, 0.1, 0.7),
             alignTo(rob, Waypoints.preSwipe2, 0.5, 4),
             alignTo(rob, Waypoints.swipe2, 0.1, 4),
             alignTo(rob, Waypoints.postBumpIntakeRot, 0.1, 4),
             alignTo(rob, Waypoints.postBumpIntake, 0.2, 4),
             alignTo(rob, Waypoints.preBump, 0.1, 5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7),
-            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7),
+            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7, 50),
+            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7, 50), // FIXME: make more transition points to make it better? big deadzone 
+            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7, 50),
             alignTo(rob, Waypoints.startPos, 0.1, 0.7),
             // add more
             new InstantCommand(rob.shooterHood::disableAutoDecap)
@@ -235,6 +235,23 @@ public class Autoes {
             new ParallelRaceGroup(
                 new DriveToPoint(rob, pose, deadzone),
                 rob.drivetrain.driveToPoint(pose, maxvel)
+            ),
+            new InstantCommand(rob.drivetrain::stopSwerve)
+        );
+    }
+
+    private Command alignTo(RobotContainer rob, Pose2d pose, double deadzone, double maxvel, double maxrotvel) {
+        if (isRightFlipped) pose = mirrorToRight(pose);
+        if (isAllianceFlipped) pose = mirrorAlliance(pose);
+        if (isCloser && pose == Waypoints.swipe1) pose = Waypoints.swipe1Close;
+        if (isCloser && pose == Waypoints.preSwipe1) pose = Waypoints.preSwipe1Close;
+        if (!rob.isRed()) maxvel *= -1;
+        maxrotvel = Math.toRadians(maxrotvel);
+
+        return new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                new DriveToPoint(rob, pose, deadzone),
+                rob.drivetrain.driveToPoint(pose, maxvel, maxrotvel)
             ),
             new InstantCommand(rob.drivetrain::stopSwerve)
         );

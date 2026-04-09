@@ -408,6 +408,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double angleVel = rotController.calculate(getPoseMeters().getRotation().getRadians(), targetPose.getRotation().getRadians());
 
             double clampedVel = Math.max(Math.min(maxvel, velocity), -maxvel);
+            // double clampedAngleVel = Math.max(Math.min(maxrotvel, angleVel), -maxrotvel);
 
             return alignRequest
                 .withVelocityX(Math.cos(angle)*clampedVel)
@@ -415,6 +416,31 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 .withRotationalRate(angleVel);
         }).withName("DriveToPoint");
     }
+
+    public Command driveToPoint(Pose2d targetPose, double maxvel, double maxrotvel) {
+        xyVelController.calculate(Double.MAX_VALUE, 0);
+        rotController.calculate(Double.MAX_VALUE, 0);
+        rotController.enableContinuousInput(0, 2*Math.PI);
+        xyVelController.setTolerance(3, 0);
+
+        SwerveRequest.FieldCentric alignRequest = new SwerveRequest.FieldCentric();
+
+        return applyRequest(() -> {
+            double distanceError = targetPose.getTranslation().getDistance(getPoseMeters().getTranslation());
+            double velocity = xyVelController.calculate(distanceError, 0);
+            double angle = (targetPose.getTranslation().minus(getPoseMeters().getTranslation())).getAngle().getRadians();
+            double angleVel = rotController.calculate(getPoseMeters().getRotation().getRadians(), targetPose.getRotation().getRadians());
+
+            double clampedVel = Math.max(Math.min(maxvel, velocity), -maxvel);
+            double clampedAngleVel = Math.max(Math.min(maxrotvel, angleVel), -maxrotvel);
+
+            return alignRequest
+                .withVelocityX(Math.cos(angle)*clampedVel)
+                .withVelocityY(Math.sin(angle)*clampedVel)
+                .withRotationalRate(clampedAngleVel);
+        }).withName("DriveToPoint");
+    }
+
 
     public void stopSwerve() {
         SwerveRequest.Idle stopRequest = new SwerveRequest.Idle();
