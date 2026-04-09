@@ -158,25 +158,57 @@ public class Autoes {
 
         redLeftDoubleSwipeBump = new SequentialCommandGroup(
             new InstantCommand(rob.shooterHood::enableAutoDecap),
-            // FIXME: these deadzones are only for sim, change for irl
             // alignTo(rob, Waypoints.startPosRotated, 0.1, 2.5),
-            alignTo(rob, Waypoints.preSwipe1, 0.5, 4),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+
+            new ParallelCommandGroup(
+                alignTo(rob, Waypoints.preSwipe1, 0.5, 5),
+                new SequentialCommandGroup(
+                    new ParallelDeadlineGroup(
+                        new WaitCommand(1),
+                        new InstantCommand(() -> rob.intakePivot.setPosition(15.9))
+                    ),
+                    new InstantCommand(() -> rob.intake.setVelocity(5000))
+                )
+            ),
             alignTo(rob, Waypoints.swipe1, 0.1, 4),
             alignTo(rob, Waypoints.postBumpIntake, 0.1, 4),
             alignTo(rob, Waypoints.preBump, 0.1, 5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7, 50),
-            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7, 50), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7, 50),
-            alignTo(rob, Waypoints.startPos, 0.1, 0.7),
-            alignTo(rob, Waypoints.preSwipe2, 0.5, 4),
-            alignTo(rob, Waypoints.swipe2, 0.1, 4),
-            alignTo(rob, Waypoints.postBumpIntakeRot, 0.1, 4),
-            alignTo(rob, Waypoints.postBumpIntake, 0.2, 4),
+            new InstantCommand(rob.shooterHood::disableAutoDecap),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new ParallelRaceGroup(
+                new SequentialCommandGroup(
+                    alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7, 50),
+                    alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7, 50), // FIXME: make more transition points to make it better? big deadzone 
+                    alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7, 50),
+                    alignTo(rob, Waypoints.startPos, 0.1, 0.7)
+                ),
+                new RunSpindexer(rob)
+            ),
+            new InstantCommand(rob.shooterHood::enableAutoDecap),
+            new ParallelCommandGroup(
+                new SequentialCommandGroup(
+                    alignTo(rob, Waypoints.preSwipe2, 0.5, 4.0)
+                ),
+                new InstantCommand(() -> rob.intakePivot.setPosition(15.9)),
+                new InstantCommand(() -> rob.intake.setVelocity(5000))
+            ),
+            alignTo(rob, Waypoints.swipe2, 0.1, 4.0),
+            alignTo(rob, Waypoints.postBumpIntakeRot, 0.1, 4.0),
+            alignTo(rob, Waypoints.postBumpIntake, 0.2, 4.0),
             alignTo(rob, Waypoints.preBump, 0.1, 5),
-            alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7, 50),
-            alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7, 50), // FIXME: make more transition points to make it better? big deadzone 
-            alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7, 50),
-            alignTo(rob, Waypoints.startPos, 0.1, 0.7),
+
+            new InstantCommand(rob.shooterHood::disableAutoDecap),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new ParallelRaceGroup(
+                new SequentialCommandGroup(
+                    alignTo(rob, Waypoints.bumpToTrenchTransition1, 0.2, 0.7, 50),
+                    alignTo(rob, Waypoints.bumpToTrenchTransition2, 0.2, 0.7, 50), // FIXME: make more transition points to make it better? big deadzone 
+                    alignTo(rob, Waypoints.bumpToTrenchTransition3, 0.2, 0.7, 50),
+                    alignTo(rob, Waypoints.startPos, 0.1, 0.7)
+                ),
+                new RunSpindexer(rob)
+            ),
             // add more
             new InstantCommand(rob.shooterHood::disableAutoDecap)
         );
@@ -212,7 +244,7 @@ public class Autoes {
             if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
             if (isRightFlipped) startingPos = mirrorToRight(startingPos);
 
-            rob.drivetrain.resetPose(startingPos);
+            // rob.drivetrain.resetPose(startingPos);
         } else {
             // FIXME: get middle starting position
             // rob.drivetrain.resetPose(null);
