@@ -60,13 +60,16 @@ public class Autoes {
     public SequentialCommandGroup redLeftDoubleSwipe;
     public SequentialCommandGroup middleDepot;
     public SequentialCommandGroup redLeftDoubleSwipeBump;
+    public SequentialCommandGroup redLeftDoubleSwipe1Bump;
 
     public Autoes(RobotContainer rob) {
         this.rob = rob;
     }
 
     private void buildAuto() {
-        redLeftDoubleSwipe = new SequentialCommandGroup(
+
+
+        redLeftDoubleSwipe1Bump = new SequentialCommandGroup(
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new InstantCommand(rob.shooterHood::enableAutoDecap),
             new ParallelCommandGroup(
@@ -146,6 +149,85 @@ public class Autoes {
             )
         );
 
+        redLeftDoubleSwipe = new SequentialCommandGroup(
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new InstantCommand(rob.shooterHood::enableAutoDecap),
+            new ParallelCommandGroup(
+                alignTo(rob, Waypoints.preSwipe1, 0.5, 6.0),
+                new SequentialCommandGroup(
+                    new ParallelDeadlineGroup(
+                        new WaitCommand(1),
+                        new InstantCommand(() -> rob.intakePivot.setPosition(15.9))
+                    ),
+                    new InstantCommand(() -> rob.intake.setVelocity(5000))
+                )
+            ),
+            alignTo(rob, Waypoints.swipe1, 0.1, 2.5),
+            alignTo(rob, Waypoints.pastTrench, 0.2, 4),
+            alignTo(rob, Waypoints.shootPos, 0.1, 4),
+            new InstantCommand(rob.shooterHood::disableAutoDecap),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new ParallelRaceGroup(
+                new WaitCommand(3.5),
+                new RunSpindexer(rob),
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(0.5),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(0.5),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(0.5)
+                )
+            ),
+            new InstantCommand(rob.shooterHood::enableAutoDecap),
+            new ParallelCommandGroup(
+                new SequentialCommandGroup(
+                    alignTo(rob, Waypoints.preSwipe2, 0.5, 4.0),
+                    alignTo(rob, Waypoints.swipe2, 0.1, 3)
+                ),
+                new InstantCommand(() -> rob.intakePivot.setPosition(15.9)),
+                new InstantCommand(() -> rob.intake.setVelocity(5000))
+            ),
+            alignTo(rob, Waypoints.pastTrench, 0.2, 4),
+            alignTo(rob, Waypoints.shootPos, 0.1, 4),
+            new InstantCommand(rob.shooterHood::disableAutoDecap),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new ParallelRaceGroup(
+                new WaitCommand(4),
+                new RunSpindexer(rob),
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(0.5),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(0.5),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(0.5)
+                )
+            )
+        );
+
+
+
         middleDepot = new SequentialCommandGroup(
             // start facing hub
             // drive back/lower hopper
@@ -216,20 +298,25 @@ public class Autoes {
 
     public Command runAuto(RobotContainer rob, String autoToRun) {
         boolean opAuto = false;
+        boolean doubleSwipe = false;
         switch (autoToRun) {
         case "blueleft":
+            doubleSwipe = true;
             isAllianceFlipped = true;
             isRightFlipped = true;
             break;
         case "blueright":
+            doubleSwipe = true;
             isAllianceFlipped = true;
             isRightFlipped = false;
             break;
         case "redright":
+            doubleSwipe = true;
             isAllianceFlipped = false;
             isRightFlipped = true;
             break;
         case "redleft":
+            doubleSwipe = true;
             isAllianceFlipped = false;
             isRightFlipped = false;
             break;
@@ -250,6 +337,22 @@ public class Autoes {
             break;
         case "opredleft":
             opAuto = true;
+            isAllianceFlipped = false;
+            isRightFlipped = false;
+            break;
+        case "blueleftbump":
+            isAllianceFlipped = true;
+            isRightFlipped = true;
+            break;
+        case "bluerightbump":
+            isAllianceFlipped = true;
+            isRightFlipped = false;
+            break;
+        case "redrightbump":
+            isAllianceFlipped = false;
+            isRightFlipped = true;
+            break;
+        case "redleftbump":
             isAllianceFlipped = false;
             isRightFlipped = false;
             break;
@@ -279,8 +382,10 @@ public class Autoes {
         SequentialCommandGroup auto = new SequentialCommandGroup();
         if (opAuto) {
             auto.addCommands(redLeftDoubleSwipeBump);
-        } else {
+        } else if (doubleSwipe){
             auto.addCommands(redLeftDoubleSwipe);
+        } else {
+            auto.addCommands(redLeftDoubleSwipe1Bump);
         }
 
         return auto;
