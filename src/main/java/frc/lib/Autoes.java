@@ -35,7 +35,7 @@ public class Autoes {
     
         // double swipe bump
         public static final Pose2d startPosRotated = new Pose2d(12.167, 0.463, Rotation2d.fromDegrees(-90)); // not in auto
-        public static final Pose2d postBumpIntake = new Pose2d(11, 2.6, Rotation2d.fromDegrees(180));
+        public static final Pose2d postBumpIntake = new Pose2d(10.5, 2.6, Rotation2d.fromDegrees(180));
         public static final Pose2d postBumpIntakeRot = new Pose2d(9.933, 2.7, Rotation2d.fromDegrees(-90));
         public static final Pose2d preBump = new Pose2d(12.943, 2.6, Rotation2d.fromDegrees(180));
         public static final Pose2d bumpToTrenchTransition1 = new Pose2d(12.75, 2.262, Rotation2d.fromDegrees(120));
@@ -215,6 +215,7 @@ public class Autoes {
     }
 
     public Command runAuto(RobotContainer rob, String autoToRun) {
+        boolean opAuto = false;
         switch (autoToRun) {
         case "blueleft":
             isAllianceFlipped = true;
@@ -232,6 +233,26 @@ public class Autoes {
             isAllianceFlipped = false;
             isRightFlipped = false;
             break;
+        case "opblueleft":
+            opAuto = true;
+            isAllianceFlipped = true;
+            isRightFlipped = true;
+            break;
+        case "opblueright":
+            opAuto = true;
+            isAllianceFlipped = true;
+            isRightFlipped = false;
+            break;
+        case "opredright":
+            opAuto = true;
+            isAllianceFlipped = false;
+            isRightFlipped = true;
+            break;
+        case "opredleft":
+            opAuto = true;
+            isAllianceFlipped = false;
+            isRightFlipped = false;
+            break;
         default:
             isAllianceFlipped = false;
             isRightFlipped = false;
@@ -240,7 +261,12 @@ public class Autoes {
 
         buildAuto();
         if (autoToRun != "middle") {
-            Pose2d startingPos = Waypoints.startPosRotated;
+            Pose2d startingPos;
+            if (opAuto) {
+                startingPos = Waypoints.startPosRotated;
+            } else {
+                startingPos = Waypoints.startPos;
+            }
             if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
             if (isRightFlipped) startingPos = mirrorToRight(startingPos);
 
@@ -251,8 +277,12 @@ public class Autoes {
         }
 
         SequentialCommandGroup auto = new SequentialCommandGroup();
-        // auto.addCommands(redLeftDoubleSwipe);
-        auto.addCommands(redLeftDoubleSwipeBump);
+        if (opAuto) {
+            auto.addCommands(redLeftDoubleSwipeBump);
+        } else {
+            auto.addCommands(redLeftDoubleSwipe);
+        }
+
         return auto;
     }
 

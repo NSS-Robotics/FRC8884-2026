@@ -80,7 +80,7 @@ public class Turret extends SubsystemBase {
 
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
         turretMotorConfig.Feedback.FeedbackRemoteSensorID = turretEncoder.getDeviceID();
-        turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
         turretMotorConfig.Feedback.RotorToSensorRatio = Constants.Turret.motorToEncoderRatio; 
         turretMotorConfig.Feedback.SensorToMechanismRatio = Constants.Turret.gearRatioWithAbsoluteEncoder;
         turretMotorConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);

@@ -127,8 +127,9 @@ public class Flywheels extends SubsystemBase {
 
         if (d <= 5.5) {
             // double ans = -4.19*Math.pow(d, 4) + 58.7*Math.pow(d,3) - 290*Math.pow(d, 2) + 721*d + 906;
-            double ans = -4.6*Math.pow(d, 4) + 67.3*Math.pow(d,3) - 333*Math.pow(d, 2) + 811*d + 695;
-            ans *= (22.0/18.0) / (2.0/3.0);
+            // double ans = -4.6*Math.pow(d, 4) + 67.3*Math.pow(d,3) - 333*Math.pow(d, 2) + 811*d + 695;
+            double ans = 10.9 * Math.pow(d, 3) - 127 * Math.pow(d, 2) + 672 * d + 1647;
+            // ans *= (22.0/18.0) / (2.0/3.0);
             return Math.max(Math.min(ans, 3700), 0);
         } else {
             // Copied from the thing abandoned on april 2
@@ -160,7 +161,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public double rpmToLob(double distance){
-        return 100*distance + 1100 + 200;
+        return 200*distance + 2600;
     }
 
     public void rpmToRest() {

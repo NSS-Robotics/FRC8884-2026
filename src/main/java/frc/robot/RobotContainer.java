@@ -88,6 +88,10 @@ public class RobotContainer {
         autoChooser.addOption("Blue Right", "blueright");
         autoChooser.addOption("Red Left", "redleft");
         autoChooser.addOption("Red Right", "redright");
+        autoChooser.addOption("OP Blue Left", "opblueleft");
+        autoChooser.addOption("OP Blue Right", "opblueright");
+        autoChooser.addOption("OP Red Left", "opredleft");
+        autoChooser.addOption("OP Red Right", "opredright");
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         configureBindings();

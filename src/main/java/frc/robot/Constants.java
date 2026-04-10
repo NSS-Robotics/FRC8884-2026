@@ -30,8 +30,8 @@ public class Constants {
     }
 
     public static class Flywheel {
-        public static final double currentLimit = 100;
-        public static final double supplyLimit = 60;
+        public static final double currentLimit = 80;
+        public static final double supplyLimit = 50;
 
         public static final double kP = 12;
         public static final double kI = 0.0;
