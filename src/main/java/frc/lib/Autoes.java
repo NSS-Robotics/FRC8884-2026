@@ -35,10 +35,10 @@ public class Autoes {
     
         // double swipe bump
         public static final Pose2d startPosRotated = new Pose2d(12.167, 0.463, Rotation2d.fromDegrees(-90)); // not in auto
-        public static final Pose2d postBumpIntake = new Pose2d(10.5, 2.6, Rotation2d.fromDegrees(180));
-        public static final Pose2d postBumpIntakeRot = new Pose2d(9.533, 2.7, Rotation2d.fromDegrees(-90));
+        public static final Pose2d postBumpIntake = new Pose2d(10.5, 2.5, Rotation2d.fromDegrees(180));
+        public static final Pose2d postBumpIntakeRot = new Pose2d(9.533, 2.5, Rotation2d.fromDegrees(-90));
         public static final Pose2d preBump = new Pose2d(12.943, 2.6, Rotation2d.fromDegrees(180));
-        public static final Pose2d bumpToTrenchTransition1 = new Pose2d(12.75, 2.262, Rotation2d.fromDegrees(120));
+        public static final Pose2d bumpToTrenchTransition1 = new Pose2d(13, 2.262, Rotation2d.fromDegrees(120));
         public static final Pose2d bumpToTrenchTransition2 = new Pose2d(13.303, 1.6, Rotation2d.fromDegrees(60));
         public static final Pose2d bumpToTrenchTransition3 = new Pose2d(12.75, 0.75, Rotation2d.fromDegrees(0));
 
@@ -254,7 +254,7 @@ public class Autoes {
                 )
             ),
             alignTo(rob, Waypoints.swipe1, 0.1, 4),
-            alignTo(rob, Waypoints.postBumpIntake, 0.1, 4),
+            alignTo(rob, Waypoints.postBumpIntake, 0.1, 5),
             alignTo(rob, Waypoints.preBump, 0.1, 5),
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
@@ -277,7 +277,7 @@ public class Autoes {
             ),
             alignTo(rob, Waypoints.swipe2, 0.1, 4.0),
             alignTo(rob, Waypoints.postBumpIntakeRot, 0.1, 4.0),
-            alignTo(rob, Waypoints.postBumpIntake, 0.2, 4.0),
+            alignTo(rob, Waypoints.postBumpIntake, 0.2, 5),
             alignTo(rob, Waypoints.preBump, 0.1, 5),
 
             new InstantCommand(rob.shooterHood::disableAutoDecap),
