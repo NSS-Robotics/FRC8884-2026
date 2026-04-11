@@ -239,8 +239,8 @@ public class ShooterHood extends SubsystemBase {
 
         if (rob.isShooting && !willGetDecapitated()) {
             if (rob.turret.isInAllianceZone()) {
-                alignHoodtoHub(sotmVI[0]);
-                // alignHoodtoHub(gavinsotm2ElectricBoogaloo[1]);
+                // alignHoodtoHub(sotmVI[0]);
+                alignHoodtoHub(gavinsotm2ElectricBoogaloo[1]);
             } else {
                 alignHoodtoLob();
             }

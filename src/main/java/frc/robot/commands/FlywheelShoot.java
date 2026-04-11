@@ -65,8 +65,8 @@ public class FlywheelShoot extends Command {
                 flywheels.setVelocity(flywheels.rpmToLob(sotmVILobLeft[0]));
             } 
         } else {
-            flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
-            // flywheels.setVelocity(flywheels.rpmToHub(gavinsotm2ElectricBoogaloo[2]));
+            // flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
+            flywheels.setVelocity(flywheels.rpmToHub(gavinsotm2ElectricBoogaloo[2]));
         }
 
         // flywheels.setVelocity(turret.velocityToRpm(turret.ans[0],
