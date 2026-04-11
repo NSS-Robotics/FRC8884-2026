@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -255,6 +256,7 @@ public class Turret extends SubsystemBase {
         setDistanceToTarget(Math.hypot(xDistance, yDistance));
 
         double sotmVI[] = sotmPredictVelocityIteration(currentPos, distanceToTarget, targetPos, useSOTM);
+        // double gavinsotm2ElectricBoogaloo[] = 
 
         double futureDegrees = sotmVI[1];
 
@@ -340,7 +342,53 @@ public class Turret extends SubsystemBase {
         }
     }
 
-    
+    public double[] sotmGavinVersion(Pose2d currentPose, double distance, Pose2d targetPose){
+        ChassisSpeeds speeds = swerve.getState().Speeds; //Get robot speed vector
+        double robotRadians = currentPose.getRotation().getRadians(); //Get robot rotations
+        double wheelRadius = 0.1016; //Wheel radius in meters
+
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians); //Determine turret offset from center of robot
+        Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null); //Determine turret position on field
+
+        double tangentalVX = -speeds.omegaRadiansPerSecond * turretOffset.getY();
+        double tangentalVY = speeds.omegaRadiansPerSecond * turretOffset.getX();
+
+        double vx = speeds.vxMetersPerSecond + tangentalVX;
+        double vy = speeds.vyMetersPerSecond + tangentalVY;
+
+        Pose2d deltaD = new Pose2d(turretPose.getX()-targetPose.getX(), turretPose.getY()-targetPose.getY(), null); //Determine displacement vector
+
+        Pose2d ballVel = new Pose2d(deltaD.getX()/distanceToTime(distance), deltaD.getY()/distanceToTime(distance), null); //Determine horizontal ball velocities
+        Pose2d newBallVel = new Pose2d(ballVel.getX()-vx,ballVel.getY()-vy, null); //Add robot velocity vector
+        double newBallVelXY = Math.sqrt(newBallVel.getX()*newBallVel.getX()+newBallVel.getY()*newBallVel.getY()); //Determine new XY velocity
+
+        double turretAngle = Math.atan(ballVel.getY()-vy/ballVel.getX()-vx); //Determine turret aim angle
+        
+        double hoodAngle1 = gavinHoodAngle(distance); //Determine original hood angle
+        double ballVelZ = Math.sin(hoodAngle1)*rpmToVelocity(flywheels.rpmToHub(distance), wheelRadius); //Determine needed Z velocity to have same time
+
+        double hoodAngle2 = Math.atan(ballVelZ/newBallVelXY); //Determine new hood angle based on needed XY and Z velocities
+        double shootVel = Math.sqrt(ballVelZ*ballVelZ+newBallVelXY*newBallVelXY); //Determine new shooter velocity
+        double shooterRPM = velocityToRpm(shootVel, wheelRadius); //Determine that velocity in RPM
+
+        return new double[]{turretAngle, hoodAngle2, shooterRPM};
+    }
+
+    public static double gavinHoodAngle(double distance){
+        double angle;
+        double d = Math.min(distance, 9);
+
+        if (d <= 5.5) {
+            // angle = 0.138*Math.pow(d, 4) - 1.89*Math.pow(d, 3) + 8.48*Math.pow(d, 2) - 11.1*d + 4.53;
+            // angle = 0.0656*Math.pow(d, 4) - 0.862*Math.pow(d, 3) + 3.39*Math.pow(d, 2) - 1.1*d -1.45;
+            angle = 0.102 * Math.pow(d, 3) - 1.32 *  Math.pow(d,2) + 7.54 * d - 6.5;
+
+        } else {
+            angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
+        }
+
+        return angle;
+    }
 
     public double rpmToVelocity(double rpm, double wheelRadiusMeters){
         double angularVelocity = rpm*2*Math.PI/60; // rad/s
