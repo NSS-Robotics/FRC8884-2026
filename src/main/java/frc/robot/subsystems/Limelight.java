@@ -62,8 +62,8 @@ public class Limelight extends SubsystemBase {
             SmartDashboard.putNumber(this.name + " tagcount", mt1.tagCount);
 
             if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
-                boolean isTooFarForComfort = mt1.rawFiducials[0].distToCamera > 5;
-                boolean isTooAmbiguiousForComfort = mt1.rawFiducials[0].ambiguity > 0.7;
+                boolean isTooFarForComfort = mt1.rawFiducials[0].distToCamera > 4.5;
+                boolean isTooAmbiguiousForComfort = mt1.rawFiducials[0].ambiguity > 0.5;
 
                 if (isTooAmbiguiousForComfort || isTooFarForComfort) {
                     shouldRejectUpdate = true;

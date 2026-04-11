@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     LimelightHelpers.SetIMUMode("limelight-side", 3);
 
     rob.isShooting = true;
-    rob.flywheels.rpmToRest();
+    // rob.flywheels.rpmToRest();
     m_autonomousCommand = rob.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
