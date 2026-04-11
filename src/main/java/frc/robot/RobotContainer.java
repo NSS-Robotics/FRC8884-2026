@@ -61,6 +61,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Limelight limelightFront = new Limelight(this, "front", drivetrain);
     public final Limelight limelightSide = new Limelight(this, "side", drivetrain);
+    public final Limelight limelightLeft = new Limelight(this, "left", drivetrain);
     public final IntakePivot intakePivot = new IntakePivot(this);
     public final Intake intake = new Intake();
     public final Spindexer spindexer = new Spindexer();
