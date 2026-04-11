@@ -47,6 +47,9 @@ public class FlywheelShoot extends Command {
         double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue, false);
         
+        double gavinsotm2ElectricBoogaloo[] = rob.turret.sotmGavinVersion(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
+                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+
         // double future[] = turret.aLookIntoTheFuture(swerve.getPoseMeters(),
         // turret.getDistanceToTarget(), Constants.targetPositionBlue);
 
@@ -63,6 +66,7 @@ public class FlywheelShoot extends Command {
             } 
         } else {
             flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
+            // flywheels.setVelocity(flywheels.rpmToHub(gavinsotm2ElectricBoogaloo[2]));
         }
 
         // flywheels.setVelocity(turret.velocityToRpm(turret.ans[0],

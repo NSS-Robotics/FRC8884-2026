@@ -230,20 +230,17 @@ public class ShooterHood extends SubsystemBase {
 
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
         // setDegrees();
-        // double future[] = rob.turret.aLookIntoTheFuture(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmV[] = rob.turret.sotmPredictVelocity(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmVA[] = rob.turret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmVAI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
+
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true);
+
+        double gavinsotm2ElectricBoogaloo[] = rob.turret.sotmGavinVersion(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
+                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
 
         if (rob.isShooting && !willGetDecapitated()) {
             if (rob.turret.isInAllianceZone()) {
                 alignHoodtoHub(sotmVI[0]);
+                // alignHoodtoHub(gavinsotm2ElectricBoogaloo[1]);
             } else {
                 alignHoodtoLob();
             }
