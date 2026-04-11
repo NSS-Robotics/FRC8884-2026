@@ -382,6 +382,47 @@ public class Turret extends SubsystemBase {
         return distance * 500; //INPUT RPM CALI CURVE
     }
 
+    public double[] sotmGavinVersion(Pose2d currentPose, double distance, Pose2d targetPose){
+        ChassisSpeeds speeds = swerve.getState().Speeds; //Get robot speed vector
+        double robotRadians = currentPose.getRotation().getRadians(); //Get robot rotations
+        double wheelRadius = 0.1016; //Wheel radius in meters
+
+        Pose2d turretOffset = calculateTurretOffset(offsetFromRobotCenter.getX(), offsetFromRobotCenter.getY(), robotRadians); //Determine turret offset from center of robot
+        Pose2d turretPose = new Pose2d(currentPose.getX() + turretOffset.getX(), currentPose.getY() + turretOffset.getY(), null); //Determine turret position on field
+
+        double tangentalVX = -speeds.omegaRadiansPerSecond * turretOffset.getY();
+        double tangentalVY = speeds.omegaRadiansPerSecond * turretOffset.getX();
+
+        double vx = speeds.vxMetersPerSecond + tangentalVX;
+        double vy = speeds.vyMetersPerSecond + tangentalVY;
+
+        double robotDist = Math.sqrt(turretPose.getX()*turretPose.getX()+turretPose.getY()*turretPose.getY()); //Robot Distance for Cali
+
+        Pose2d ballVel = new Pose2d(turretPose.getX()/distanceToTime(robotDist), turretPose.getY()/distanceToTime(robotDist), null); //Determine horizontal ball velocities
+        Pose2d newBallVel = new Pose2d(ballVel.getX()-vx,ballVel.getY()-vy, null); //Add robot velocity vector
+        double newBallVelXY = Math.sqrt(newBallVel.getX()*newBallVel.getX()+newBallVel.getY()*newBallVel.getY()); //Determine new XY velocity
+
+
+        double turretAngle = Math.atan(ballVel.getY()-vy/ballVel.getX()-vx); //Determine turret aim angle
+        
+        double hoodAngle1 = distanceToAngle(robotDist); //Determine original hood angle
+        double ballVelZ = Math.sin(hoodAngle1)*rpmToVelocity(distanceToVelocity(robotDist), wheelRadius); //Determine needed Z velocity to have same time
+
+        double hoodAngle2 = Math.atan(ballVelZ/newBallVelXY); //Determine new hood angle based on needed XY and Z velocities
+        double shootVel = Math.sqrt(ballVelZ*ballVelZ+newBallVelXY*newBallVelXY); //Determine new shooter velocity
+        double shooterRPM = velocityToRpm(shootVel, wheelRadius); //Determine that velocity in RPM
+
+        return new double[]{turretAngle, hoodAngle2, shooterRPM};
+    }
+
+    public double distanceToAngle(double distance){
+        return 90-4*distance; //INPUT ANGLE CALI CURVE
+    }
+
+    public double distanceToVelocity(double distance){
+        return distance * 500; //INPUT RPM CALI CURVE
+    }
+
     
 
     public double rpmToVelocity(double rpm, double wheelRadiusMeters){
