@@ -81,6 +81,7 @@ public class RobotContainer {
         DataLogManager.start();
         DriverStation.startDataLog(log);
 
+        Autoes.buildAuto();
         // ppAutoChooser = AutoBuilder.buildAutoChooser();
         // SmartDashboard.putData("PP Auto Chooser", ppAutoChooser);
         autoChooser = new SendableChooser<>();
@@ -97,6 +98,7 @@ public class RobotContainer {
         autoChooser.addOption("Red Left Bump", "redleftbump");
         autoChooser.addOption("Red Right Bump", "redrightbump");
         SmartDashboard.putData("Auto Chooser", autoChooser);
+
 
         configureBindings();
         configureFuelSim();

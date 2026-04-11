@@ -340,6 +340,8 @@ public class Turret extends SubsystemBase {
         }
     }
 
+    
+
     public double rpmToVelocity(double rpm, double wheelRadiusMeters){
         double angularVelocity = rpm*2*Math.PI/60; // rad/s
         return angularVelocity*wheelRadiusMeters * 0.85;

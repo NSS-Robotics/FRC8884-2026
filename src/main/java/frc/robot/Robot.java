@@ -54,8 +54,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    LimelightHelpers.SetIMUMode("limelight-front", 3);
-    LimelightHelpers.SetIMUMode("limelight-side", 3);
+    // LimelightHelpers.SetIMUMode("limelight-front", 4);
+    // LimelightHelpers.SetIMUMode("limelight-side", 4);
 
     rob.isShooting = true;
     // rob.flywheels.rpmToRest();

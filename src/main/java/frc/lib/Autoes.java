@@ -20,7 +20,7 @@ public class Autoes {
         // double swipe trench
 
         // ALWAYS IN THE POSITION OF LEFT RED, methods to flip sides and alliances
-        public static final Pose2d startPos = new Pose2d(12, 0.64, Rotation2d.fromDegrees(0));
+        public static final Pose2d startPos = new Pose2d(12.4, 0.64, Rotation2d.fromDegrees(0));
         public static final Pose2d pastTrench = new Pose2d(10.622, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d preSwipe1 = new Pose2d(7.900, 1, Rotation2d.fromDegrees(-110));
         public static final Pose2d preSwipe1Close = new Pose2d(8.626, 1, Rotation2d.fromDegrees(-110));
@@ -50,24 +50,23 @@ public class Autoes {
         // delayed bump: wait 5 seconds then go over bump (low priority)
     }   
 
-    private final RobotContainer rob;
+    private static RobotContainer rob;
 
-    public boolean isRightFlipped = true; // blue left, red right is true
-    public boolean isAllianceFlipped = false;
-    public boolean isCloser = false; // closer swipe1 is true
+    public static boolean isRightFlipped = true; // blue left, red right is true
+    public static boolean isAllianceFlipped = false;
+    public static boolean isCloser = false; // closer swipe1 is true
 
     // AUTOES
-    public SequentialCommandGroup redLeftDoubleSwipe;
-    public SequentialCommandGroup middleDepot;
-    public SequentialCommandGroup redLeftDoubleSwipeBump;
-    public SequentialCommandGroup redLeftDoubleSwipe1Bump;
+    public static SequentialCommandGroup redLeftDoubleSwipe;
+    public static SequentialCommandGroup middleDepot;
+    public static SequentialCommandGroup redLeftDoubleSwipeBump;
+    public static SequentialCommandGroup redLeftDoubleSwipe1Bump;
 
     public Autoes(RobotContainer rob) {
         this.rob = rob;
     }
 
-    private void buildAuto() {
-
+    public static void buildAuto() {
 
         redLeftDoubleSwipe1Bump = new SequentialCommandGroup(
             new InstantCommand(() -> rob.turret.autoShoot = true),
@@ -244,7 +243,7 @@ public class Autoes {
             new InstantCommand(() -> rob.turret.autoShoot = true),
 
             new ParallelCommandGroup(
-                alignTo(rob, Waypoints.preSwipe1, 0.5, 5),
+                alignTo(rob, Waypoints.preSwipe1, 0.5, 6),
                 new SequentialCommandGroup(
                     new ParallelDeadlineGroup(
                         new WaitCommand(1),
@@ -253,9 +252,9 @@ public class Autoes {
                     new InstantCommand(() -> rob.intake.setVelocity(5000))
                 )
             ),
-            alignTo(rob, Waypoints.swipe1, 0.1, 4),
-            alignTo(rob, Waypoints.postBumpIntake, 0.1, 5),
-            alignTo(rob, Waypoints.preBump, 0.1, 5),
+            alignTo(rob, Waypoints.swipe1, 0.1, 6),
+            alignTo(rob, Waypoints.postBumpIntake, 0.7, 6),
+            alignTo(rob, Waypoints.preBump, 0.1, 6),
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new ParallelRaceGroup(
@@ -270,15 +269,15 @@ public class Autoes {
             new InstantCommand(rob.shooterHood::enableAutoDecap),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
-                    alignTo(rob, Waypoints.preSwipe2, 0.5, 4.0)
+                    alignTo(rob, Waypoints.preSwipe2, 0.5, 6)
                 ),
                 new InstantCommand(() -> rob.intakePivot.setPosition(15.9)),
                 new InstantCommand(() -> rob.intake.setVelocity(5000))
             ),
-            alignTo(rob, Waypoints.swipe2, 0.1, 4.0),
-            alignTo(rob, Waypoints.postBumpIntakeRot, 0.1, 4.0),
-            alignTo(rob, Waypoints.postBumpIntake, 0.2, 5),
-            alignTo(rob, Waypoints.preBump, 0.1, 5),
+            alignTo(rob, Waypoints.swipe2, 0.1, 6),
+            alignTo(rob, Waypoints.postBumpIntakeRot, 0.2, 5),
+            alignTo(rob, Waypoints.postBumpIntake, 0.7, 6),
+            alignTo(rob, Waypoints.preBump, 0.1, 6),
 
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
@@ -391,7 +390,7 @@ public class Autoes {
         return auto;
     }
 
-    private Command alignTo(RobotContainer rob, Pose2d pose, double deadzone, double maxvel) {
+    private static Command alignTo(RobotContainer rob, Pose2d pose, double deadzone, double maxvel) {
         if (isRightFlipped) pose = mirrorToRight(pose);
         if (isAllianceFlipped) pose = mirrorAlliance(pose);
         if (isCloser && pose == Waypoints.swipe1) pose = Waypoints.swipe1Close;
@@ -407,7 +406,7 @@ public class Autoes {
         );
     }
 
-    private Command alignTo(RobotContainer rob, Pose2d pose, double deadzone, double maxvel, double maxrotvel) {
+    private static Command alignTo(RobotContainer rob, Pose2d pose, double deadzone, double maxvel, double maxrotvel) {
         if (isRightFlipped) pose = mirrorToRight(pose);
         if (isAllianceFlipped) pose = mirrorAlliance(pose);
         if (isCloser && pose == Waypoints.swipe1) pose = Waypoints.swipe1Close;
