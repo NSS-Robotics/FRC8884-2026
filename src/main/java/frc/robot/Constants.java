@@ -75,9 +75,12 @@ public class Constants {
         public static final double kV_0 = 0.0;
         public static final double kA_0 = 0.0;
 
-        public static final double kP_1 = 250.0;
-        public static final double kI_1 = 0.0;
-        public static final double kD_1 = 20.0;
+         
+        //public static final double kP_1 = 250.0;
+        public static final double kP_1 = 50.0;
+        public static final double kI_1 = 0.0;        
+        //public static final double kD_1 = 20.0;
+        public static final double kD_1 = 4.0;
         public static final double kS_1 = 0.0;
         public static final double kV_1 = 0.0;
         public static final double kA_1 = 0.0;
@@ -131,7 +134,7 @@ public class Constants {
     }
 
     public static class Intake {
-        public static final double currentLimit = 80;
+        public static final double currentLimit = 100;
         public static final double supplyLimit = 60;
         public static final double kP = 0.8;
         public static final double kI = 0.0;

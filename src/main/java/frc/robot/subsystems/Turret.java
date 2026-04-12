@@ -141,7 +141,7 @@ public class Turret extends SubsystemBase {
 
         SmartDashboard.putNumber("MM Turret Target Degrees", degrees);
         double error = degrees - getDegrees();
-        int slot = Math.abs(error) < 45.0  ? 0 : 1;  
+        int slot = Math.abs(error) < 135.0  ? 0 : 1;  
 
         setRotations(rotations, slot);
     }
@@ -270,7 +270,8 @@ public class Turret extends SubsystemBase {
     }
 
     public double distanceToTime(double distance){
-        return Math.min(Math.max(0.03 * Math.pow(distance, 3) - 0.37 * Math.pow(distance, 2) + 1.33 * distance - 0.43, 1), 2) + 0.03;
+        // return Math.min(Math.max(0.03 * Math.pow(distance, 3) - 0.37 * Math.pow(distance, 2) + 1.33 * distance - 0.43, 1), 2) + 0.03;
+        return distance < 4.0 ? 1.0 : 1.1;
         // return Math.min(Math.max(0.00404 * Math.pow(distance, 4) - 0.0483 * Math.pow(distance, 3) + 0.179 * Math.pow(distance, 2) - 0.107 * distance + 0.961, 1), 2) + 0.03;
     }   
 

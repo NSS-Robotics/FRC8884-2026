@@ -28,11 +28,11 @@ public class Limelight extends SubsystemBase {
 
     public final CommandSwerveDrivetrain swerve;
 
-    public Limelight(RobotContainer rob, String name, CommandSwerveDrivetrain swerve) {
+    public Limelight(RobotContainer rob, String name) {
         this.name = "limelight-" + name;
         table = NetworkTableInstance.getDefault().getTable(this.name);
 
-        this.swerve = swerve;
+        this.swerve = rob.drivetrain;
 
         tagCountLog = new IntegerLogEntry(rob.log, "/ll_"+name+"/tagcount");
     }
