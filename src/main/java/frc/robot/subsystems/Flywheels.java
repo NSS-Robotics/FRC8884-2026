@@ -142,7 +142,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public double rpmToLob(double distance){
-        return 1.6*(100*distance + 1300);
+        return 1.6*(100*distance + 1300); // FIXME: INCREASE AT COMP, SMALL AT DOGS BECAUSE WE DONT WANT TO HIT DRIVER
     }
 
     public void rpmToRest() {
