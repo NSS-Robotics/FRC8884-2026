@@ -160,7 +160,7 @@ public class RobotContainer {
         driverController.povLeft().whileTrue(new Snap(this, 5, 90));
         driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
         driverController.povRight().whileTrue(new Snap(this, 5, -90));
-        driverController.b().whileTrue(new RunIntake(this, -3200));
+        driverController.b().whileTrue(new RunIntake(this, -6000));
         driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
         // driverController.leftBumper().onTrue(new Align(this, Autoes.Waypoints.leftNeutralShootPos, 0.1));
     }
