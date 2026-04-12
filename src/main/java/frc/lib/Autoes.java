@@ -43,16 +43,16 @@ public class Autoes {
         public static final Pose2d bumpToTrenchTransition3 = new Pose2d(12.75, 0.75, Rotation2d.fromDegrees(0));
 
         // middle: shoot + depot
-        public static final Pose2d middleStart = new Pose2d();
-        public static final Pose2d middlePreDepot = new Pose2d();
-        public static final Pose2d middleInsideDepot = new Pose2d();
+        public static final Pose2d middleStart = new Pose2d(13, 4, Rotation2d.fromDegrees(0));
+        public static final Pose2d middlePreDepot = new Pose2d(14.5, 2.8, Rotation2d.fromDegrees(90));
+        public static final Pose2d middleInsideDepot = new Pose2d(16.142, 2.118, Rotation2d.fromDegrees(180)); // not 0
 
         // delayed bump: wait 5 seconds then go over bump (low priority)
     }   
 
     private static RobotContainer rob;
 
-    public static boolean isRightFlipped = true; // blue left, red right is true
+    public static boolean isRightFlipped = false; // blue left, red right is true
     public static boolean isAllianceFlipped = false;
     public static boolean isCloser = false; // closer swipe1 is true
 
@@ -225,16 +225,22 @@ public class Autoes {
             )
         );
 
-
-
         middleDepot = new SequentialCommandGroup(
-            // start facing hub
-            // drive back/lower hopper
-            // shoot
-            // near depot/raise intake
-            // depot/lower intake
-            // intake
-            // shoot
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new InstantCommand(rob.shooterHood::enableAutoDecap),
+            alignTo(rob, Waypoints.middleStart, 0.1, 5.0),
+            new ParallelCommandGroup(
+                alignTo(rob, Waypoints.middlePreDepot, 0.5, 5.0),
+                new SequentialCommandGroup(
+                    new ParallelDeadlineGroup(
+                        new WaitCommand(1),
+                        new InstantCommand(() -> rob.intakePivot.setPosition(15.9))
+                    ),
+                    new InstantCommand(() -> rob.intake.setVelocity(5000))
+                )
+            ),
+            alignTo(rob, Waypoints.middleInsideDepot, 0.1, 5.0),
+            new RunSpindexer(rob)
         );
 
         redLeftDoubleSwipeBump = new SequentialCommandGroup(
@@ -298,6 +304,7 @@ public class Autoes {
     public Command runAuto(RobotContainer rob, String autoToRun) {
         boolean opAuto = false;
         boolean doubleSwipe = false;
+        boolean middle = false;
         switch (autoToRun) {
         case "blueleft":
             doubleSwipe = true;
@@ -355,6 +362,12 @@ public class Autoes {
             isAllianceFlipped = false;
             isRightFlipped = false;
             break;
+        case "redmiddle":
+            middle = true;
+            isAllianceFlipped = false;
+        case "bluemiddle":
+            middle = true;
+            isAllianceFlipped = true;
         default:
             isAllianceFlipped = false;
             isRightFlipped = false;
@@ -372,9 +385,10 @@ public class Autoes {
             if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
             if (isRightFlipped) startingPos = mirrorToRight(startingPos);
 
-            // rob.drivetrain.resetPose(startingPos);
+            // rob.drivetrain.resetPose(startingPos); // FIXME: zia u said this was needed idk
         } else {
-            // FIXME: get middle starting position
+            // Pose2d startingPos;
+            // if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
             // rob.drivetrain.resetPose(null);
         }
 
@@ -383,6 +397,8 @@ public class Autoes {
             auto.addCommands(redLeftDoubleSwipeBump);
         } else if (doubleSwipe){
             auto.addCommands(redLeftDoubleSwipe);
+        } else if (middle) {
+            auto.addCommands(middleDepot);
         } else {
             auto.addCommands(redLeftDoubleSwipe1Bump);
         }

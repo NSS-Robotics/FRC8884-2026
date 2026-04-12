@@ -97,14 +97,16 @@ public class ShooterHood extends SubsystemBase {
         double angle;
         double d = Math.min(distance, 9);
 
-        if (d <= 5.5) {
-            // angle = 0.138*Math.pow(d, 4) - 1.89*Math.pow(d, 3) + 8.48*Math.pow(d, 2) - 11.1*d + 4.53;
-            // angle = 0.0656*Math.pow(d, 4) - 0.862*Math.pow(d, 3) + 3.39*Math.pow(d, 2) - 1.1*d -1.45;
-            angle = 0.102 * Math.pow(d, 3) - 1.32 *  Math.pow(d,2) + 7.54 * d - 6.5;
+        // if (d <= 5.5) {
+        //     // angle = 0.138*Math.pow(d, 4) - 1.89*Math.pow(d, 3) + 8.48*Math.pow(d, 2) - 11.1*d + 4.53;
+        //     // angle = 0.0656*Math.pow(d, 4) - 0.862*Math.pow(d, 3) + 3.39*Math.pow(d, 2) - 1.1*d -1.45;
+        //     angle = 0.102 * Math.pow(d, 3) - 1.32 *  Math.pow(d,2) + 7.54 * d - 6.5;
 
-        } else {
-            angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
-        }
+        // } else {
+        //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
+        // }
+
+        angle = -0.0104 * Math.pow(d, 4) + 0.231 * Math.pow(d, 3)  - 1.87 * Math.pow(d, 2) + 8.46 * d - 7.02;
 
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
         SmartDashboard.putNumber("HOOD ANGLE", angle);

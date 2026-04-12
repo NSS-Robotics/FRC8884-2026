@@ -271,6 +271,7 @@ public class Turret extends SubsystemBase {
 
     public double distanceToTime(double distance){
         return Math.min(Math.max(0.03 * Math.pow(distance, 3) - 0.37 * Math.pow(distance, 2) + 1.33 * distance - 0.43, 1), 2) + 0.03;
+        // return Math.min(Math.max(0.00404 * Math.pow(distance, 4) - 0.0483 * Math.pow(distance, 3) + 0.179 * Math.pow(distance, 2) - 0.107 * distance + 0.961, 1), 2) + 0.03;
     }   
 
     public double getAcceleration(double v1, double v2, double t1, double t2) {
@@ -390,6 +391,7 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
+
         if (!intakePivot.isIntakeUp()) {
             if (!isInAllianceZone()) { 
                 if (rob.isRed()){
@@ -417,6 +419,10 @@ public class Turret extends SubsystemBase {
                 }
             }
         }
+
+        // if (!intakePivot.isIntakeUp()){
+        //     pointAtTarget(Constants.targetPositionRed, true);
+        // }
         
         //else {
         //     setDegrees(90);

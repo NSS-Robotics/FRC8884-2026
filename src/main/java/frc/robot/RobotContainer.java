@@ -98,8 +98,9 @@ public class RobotContainer {
         autoChooser.addOption("Blue Right Bump", "bluerightbump");
         autoChooser.addOption("Red Left Bump", "redleftbump");
         autoChooser.addOption("Red Right Bump", "redrightbump");
+        autoChooser.addOption("Red Middle", "redmiddle");
+        autoChooser.addOption("Blue Middle", "bluemiddle");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-
 
         configureBindings();
         configureFuelSim();
