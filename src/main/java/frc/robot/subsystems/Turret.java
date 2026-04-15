@@ -433,7 +433,7 @@ public class Turret extends SubsystemBase {
         double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true); 
 
         if (autoShoot) {
-            flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0])); // FIXME: comment back in after tuning
+            flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
             shooterHood.setDegrees();
         }
 

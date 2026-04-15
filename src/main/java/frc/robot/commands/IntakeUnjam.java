@@ -23,7 +23,8 @@ public class IntakeUnjam extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        //intake.stopIntake();
+        // intake.stopIntake();
+        intake.setVelocity(4500);
         intakePivot.setPosition(15.5);
     }
 }
