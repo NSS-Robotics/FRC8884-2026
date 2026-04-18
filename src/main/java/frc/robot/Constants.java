@@ -20,8 +20,8 @@ public class Constants {
     public static final Pose2d leftCornerBlue = new Pose2d(0.05 + 3, 8.0 - 2.7, Rotation2d.fromDegrees(180)); 
     public static final Pose2d rightCornerBlue = new Pose2d(0.05 + 3, 0.05 + 2.7, Rotation2d.fromDegrees(180)); 
 
-    // public static final double fieldXMeter = 16.540988; // FIXME: ADJUST WHEN TESTING AUTOE FOR BLUE
-    public static final double fieldXMeter = 16.3; // we shall see...
+    public static final double fieldXMeter = 16.540988; // FIXME: ADJUST WHEN TESTING AUTOE FOR BLUE
+    // public static final double fieldXMeter = 16.3; // we shall see...
 
     public static final double fieldYMeter = 8.142656;
 

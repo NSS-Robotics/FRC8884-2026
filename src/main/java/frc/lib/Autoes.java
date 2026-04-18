@@ -22,7 +22,9 @@ public class Autoes {
         // ALWAYS IN THE POSITION OF LEFT RED, methods to flip sides and alliances
         public static final Pose2d startPos = new Pose2d(12.4, 0.64, Rotation2d.fromDegrees(0));
         public static final Pose2d pastTrench = new Pose2d(10.622, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d preSwipe1 = new Pose2d(7.900, 1, Rotation2d.fromDegrees(-90)); // go farther?
+        public static final Pose2d preSwipe1 = new Pose2d(8.2, 1, Rotation2d.fromDegrees(-90)); // go farther?
+        //public static final Pose2d preSwipe1 = new Pose2d(7.900, 1, Rotation2d.fromDegrees(-90)); // go farther?
+
         public static final Pose2d preSwipe1Close = new Pose2d(8.626, 1, Rotation2d.fromDegrees(-110));
         public static final Pose2d preSwipe1Greedy = new Pose2d(7, 1, Rotation2d.fromDegrees(-90));
         public static final Pose2d swipe1 = new Pose2d(8.200, 3.672, Rotation2d.fromDegrees(-120));
@@ -46,9 +48,9 @@ public class Autoes {
         public static final Pose2d bumpToTrenchTransition3 = new Pose2d(13.2, 0.75, Rotation2d.fromDegrees(0));
 
         // middle: shoot + depot
-        public static final Pose2d middleStart = new Pose2d(13, 4, Rotation2d.fromDegrees(0));
-        public static final Pose2d middlePreDepot = new Pose2d(14.5, 2.8, Rotation2d.fromDegrees(90));
-        public static final Pose2d middleInsideDepot = new Pose2d(16.142, 2.118, Rotation2d.fromDegrees(180)); // not 0
+        public static final Pose2d middleStart = new Pose2d(Constants.fieldXMeter - 13, Constants.fieldYMeter - 4, Rotation2d.fromDegrees(180-0));
+        public static final Pose2d middlePreDepot = new Pose2d(Constants.fieldXMeter - 14.5, Constants.fieldYMeter - 2.8, Rotation2d.fromDegrees(180-90));
+        public static final Pose2d middleInsideDepot = new Pose2d(Constants.fieldXMeter - 15.7, Constants.fieldYMeter - 2.118, Rotation2d.fromDegrees(180-180));
 
         // delayed bump: wait 5 seconds then go over bump (low priority)
     }   
@@ -230,11 +232,11 @@ public class Autoes {
 
         middleDepot = new SequentialCommandGroup(
             new InstantCommand(() -> rob.turret.autoShoot = true),
-            new InstantCommand(rob.shooterHood::enableAutoDecap),
-            alignTo(rob, Waypoints.middleStart, 0.1, 5.0),
+            // alignTo(rob, Waypoints.middleStart, 0.1, 5.0),
             new ParallelCommandGroup(
-                alignTo(rob, Waypoints.middlePreDepot, 0.5, 5.0),
+                alignTo(rob, Waypoints.middlePreDepot, 0.5, 2.0),
                 new SequentialCommandGroup(
+                    new WaitCommand(1),
                     new ParallelDeadlineGroup(
                         new WaitCommand(1),
                         new InstantCommand(() -> rob.intakePivot.setPosition(15.9))
@@ -242,7 +244,11 @@ public class Autoes {
                     new InstantCommand(() -> rob.intake.setVelocity(5000))
                 )
             ),
-            alignTo(rob, Waypoints.middleInsideDepot, 0.1, 5.0),
+            new ParallelDeadlineGroup(
+                new WaitCommand(2),
+                new RunSpindexer(rob)
+            ),
+            alignTo(rob, Waypoints.middleInsideDepot, 0.1, 2.0),
             new RunSpindexer(rob)
         );
 
@@ -298,7 +304,7 @@ public class Autoes {
             ),
             alignTo(rob, Waypoints.swipe2, 0.1, 6),
             //alignTo(rob, Waypoints.posterBumpIntake, 0.3, 5),
-            alignTo(rob, Waypoints.postBumpIntake_s2, 0.3, 6),
+            alignTo(rob, Waypoints.postBumpIntake_s2, 0.3, 3),
             alignTo(rob, Waypoints.postBump, 0.2, 6), // used to be preBump
 
             new InstantCommand(rob.shooterHood::disableAutoDecap),
@@ -392,8 +398,10 @@ public class Autoes {
         case "redmiddle":
             middle = true;
             isAllianceFlipped = false;
+            isRightFlipped = true;
         case "bluemiddle":
             middle = true;
+            isRightFlipped = false;
             isAllianceFlipped = true;
         default:
             isAllianceFlipped = false;
@@ -402,7 +410,7 @@ public class Autoes {
         }
 
         buildAuto();
-        if (autoToRun != "middle") {
+        if (autoToRun != "redmiddle" && autoToRun != "bluemiddle") {
             Pose2d startingPos;
             if (opAuto) {
                 startingPos = Waypoints.startPosRotated;
@@ -414,9 +422,11 @@ public class Autoes {
 
             rob.drivetrain.resetPose(startingPos);
         } else {
-            // Pose2d startingPos;
+            Pose2d startingPos;
+            startingPos = Waypoints.middleStart;
             // if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
-            // rob.drivetrain.resetPose(null);
+            startingPos = mirrorToRight(startingPos);
+            rob.drivetrain.resetPose(startingPos);
         }
 
         SequentialCommandGroup auto = new SequentialCommandGroup();

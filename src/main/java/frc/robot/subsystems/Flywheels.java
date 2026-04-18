@@ -157,9 +157,9 @@ public class Flywheels extends SubsystemBase {
 
         SmartDashboard.putBoolean("Flywheel Velocity Reached", velocityReached);
         
-        if (velocityReached && rob.isShooting && !DriverStation.isAutonomous()) {
-            operatorController.setRumble(RumbleType.kBothRumble, 0.5);
-        }
+        // if (velocityReached && rob.isShooting && !DriverStation.isAutonomous()) {
+        //     operatorController.setRumble(RumbleType.kBothRumble, 0.5);
+        // }
 
         // if (turret.isInAllianceZone()){
         //     rpmToHub(rob.turret.getDistanceToTarget());
