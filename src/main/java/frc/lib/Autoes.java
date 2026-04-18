@@ -48,9 +48,9 @@ public class Autoes {
         public static final Pose2d bumpToTrenchTransition3 = new Pose2d(13.2, 0.75, Rotation2d.fromDegrees(0));
 
         // middle: shoot + depot
-        public static final Pose2d middleStart = new Pose2d(Constants.fieldXMeter - 13, Constants.fieldYMeter - 4, Rotation2d.fromDegrees(180-0));
-        public static final Pose2d middlePreDepot = new Pose2d(Constants.fieldXMeter - 14.5, Constants.fieldYMeter - 2.8, Rotation2d.fromDegrees(180-90));
-        public static final Pose2d middleInsideDepot = new Pose2d(Constants.fieldXMeter - 15.7, Constants.fieldYMeter - 2.118, Rotation2d.fromDegrees(180-180));
+        public static final Pose2d middleStart = new Pose2d(13, 4, Rotation2d.fromDegrees(0));
+        public static final Pose2d middlePreDepot = new Pose2d(14.5, 2.8, Rotation2d.fromDegrees(90));
+        public static final Pose2d middleInsideDepot = new Pose2d(15.7, 2.118, Rotation2d.fromDegrees(180));
 
         // delayed bump: wait 5 seconds then go over bump (low priority)
     }   
@@ -398,11 +398,13 @@ public class Autoes {
         case "redmiddle":
             middle = true;
             isAllianceFlipped = false;
-            isRightFlipped = true;
+            isRightFlipped = false;
+            break;
         case "bluemiddle":
             middle = true;
-            isRightFlipped = false;
+            isRightFlipped = true;
             isAllianceFlipped = true;
+            break;
         default:
             isAllianceFlipped = false;
             isRightFlipped = false;
@@ -424,8 +426,8 @@ public class Autoes {
         } else {
             Pose2d startingPos;
             startingPos = Waypoints.middleStart;
-            // if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
-            startingPos = mirrorToRight(startingPos);
+            if (isAllianceFlipped) startingPos = mirrorAlliance(startingPos);
+            if (isRightFlipped) startingPos = mirrorToRight(startingPos);
             rob.drivetrain.resetPose(startingPos);
         }
 
