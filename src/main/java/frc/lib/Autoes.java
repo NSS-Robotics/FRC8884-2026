@@ -27,7 +27,7 @@ public class Autoes {
 
         public static final Pose2d preSwipe1Close = new Pose2d(8.626, 1, Rotation2d.fromDegrees(-110));
         public static final Pose2d preSwipe1Greedy = new Pose2d(7, 1, Rotation2d.fromDegrees(-90));
-        public static final Pose2d swipe1 = new Pose2d(8.200, 3.672, Rotation2d.fromDegrees(-120));
+        public static final Pose2d swipe1 = new Pose2d(8.500, 3.672, Rotation2d.fromDegrees(-120));
         public static final Pose2d swipe1Close = new Pose2d(8.626, 3.65, Rotation2d.fromDegrees(-110));
         public static final Pose2d shootPos = new Pose2d(12.929, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d preSwipe2 = new Pose2d(9.633, 0.712, Rotation2d.fromDegrees(0));
