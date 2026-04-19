@@ -311,9 +311,6 @@ public class Turret extends SubsystemBase {
 
             // lookaheadTurretPose = new Pose2d(turretPose.getX() + dvX, turretPose.getY() + dvY, null);
             lookaheadTurretPose = new Pose2d(turretPose.getTranslation().plus(new Translation2d(dvX, dvY)), null);
-            
-            // double xDistance = lookaheadTurretPose.getX() - targetPose.getX();
-            // double yDistance = lookaheadTurretPose.getY() - targetPose.getY();
 
             // lookaheadDistance = Math.hypot(xDistance, yDistance);
             lookaheadDistance = targetPose.getTranslation().getDistance(lookaheadTurretPose.getTranslation());
