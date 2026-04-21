@@ -29,23 +29,12 @@ public class FlywheelShoot extends Command {
 
     @Override
     public void execute() {
-
-        // double future[] = turret.aLookIntoTheFuture(swerve.getPoseMeters(), turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-
-        // double sotmV[] = turret.sotmPredictVelocity(swerve.getPoseMeters(), turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmVA[] = turret.sotmPredictVelocityAcceleration(swerve.getPoseMeters(), turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        // double sotmVAI[] = turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), turret.getDistanceToTarget(),
-        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-
         double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
                 rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true);
         double sotmVILobRight[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue, false);
+                rob.isRed() ? Constants.rightCornerRed : Constants.rightCornerBlue, true);
         double sotmVILobLeft[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue, false);
+                rob.isRed() ? Constants.leftCornerRed : Constants.leftCornerBlue, true);
         
         // double future[] = turret.aLookIntoTheFuture(swerve.getPoseMeters(),
         // turret.getDistanceToTarget(), Constants.targetPositionBlue);

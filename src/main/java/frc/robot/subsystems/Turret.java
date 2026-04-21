@@ -385,6 +385,14 @@ public class Turret extends SubsystemBase {
         return swerve.getPoseMeters().getX() < 4;
     }
 
+    public boolean isInOtherAllianceZone() {
+        if (rob.isRed()) {
+            return swerve.getPoseMeters().getX() < 4;
+        }
+
+        return swerve.getPoseMeters().getX() < 12.5;
+    }
+
     @Override
     public void periodic() {
         // point turret at target

@@ -110,12 +110,7 @@ public class Flywheels extends SubsystemBase {
     }
 
     public void stop() {
-        // targetVelocity = 500;
-        // VoltageOut voltageOut = new VoltageOut(0);
-        // rightFlywheelMotor.setControl(voltageOut);
-        // leftFlywheelMotor.setControl(voltageOut);
-        rpmToRest();
-        // :)
+        setVelocity(0);
     }
 
     public double rpmToHub(double distance) {
@@ -125,28 +120,18 @@ public class Flywheels extends SubsystemBase {
             d -= 0.1;
         }
 
-        // if (d <= 5.5) {
-        //     // double ans = -4.19*Math.pow(d, 4) + 58.7*Math.pow(d,3) - 290*Math.pow(d, 2) + 721*d + 906;
-        //     // double ans = -4.6*Math.pow(d, 4) + 67.3*Math.pow(d,3) - 333*Math.pow(d, 2) + 811*d + 695;
-        //     double ans = 10.9 * Math.pow(d, 3) - 127 * Math.pow(d, 2) + 672 * d + 1647;
-        //     // ans *= (22.0/18.0) / (2.0/3.0);
-        //     return Math.max(Math.min(ans, 3700), 0);
-        // } else {
-        //     // Copied from the thing abandoned on april 2
-        //     // The only time this curve is really used is when we are projecting motion over 5.5 metres from targets
-        //     return Math.max(Math.min(-33.41 * Math.pow(d, 3) + 692.5 * Math.pow(d, 2) - 4440.80 * d + 10990.35, 3500), 0);
-        // }
-
         double ans = -1.83 * Math.pow(d, 4) + 34.3 * Math.pow(d, 3) - 231 * Math.pow(d, 2) + 859 * d + 1535;
         return Math.max(Math.min(ans, 3700), 0);
     }
 
     public double rpmToLob(double distance){
-        return 2*(100*distance + 1300);
+        return (200*distance + 2600) *
+            (rob.turret.isInOtherAllianceZone() ? 3 : 1) +
+            (rob.turret.isInOtherAllianceZone() ? 1000 : 0);
     }
 
     public void rpmToRest() {
-        setVelocity(0); // TODO: 1000
+        setVelocity(0);
     }
 
     @Override

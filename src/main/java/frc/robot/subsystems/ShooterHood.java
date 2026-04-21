@@ -115,7 +115,7 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void alignHoodtoLob() {
-        degrees = 18;
+        degrees = 21;
         setDegrees();
     }
 
