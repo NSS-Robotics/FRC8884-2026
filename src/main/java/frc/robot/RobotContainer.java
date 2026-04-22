@@ -101,6 +101,11 @@ public class RobotContainer {
         autoChooser.addOption("Red Right Bump", "redrightbump");
         autoChooser.addOption("Red Middle", "redmiddle");
         autoChooser.addOption("Blue Middle", "bluemiddle");
+        autoChooser.addOption("Red Left Delayed", "reddelayedleft");
+        autoChooser.addOption("Red Right Delayed", "reddelayedright");
+        autoChooser.addOption("Blue Left Delayed", "bluedelayedleft");
+        autoChooser.addOption("Blue Right Delayed", "bluedelayedright");
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
         configureBindings();

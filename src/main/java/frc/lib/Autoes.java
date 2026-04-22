@@ -34,7 +34,8 @@ public class Autoes {
         public static final Pose2d swipe2 = new Pose2d(9.933, 3.657, Rotation2d.fromDegrees(-90));
         public static final Pose2d swipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
         public static final Pose2d postBump = new Pose2d(13.5, 2.5, Rotation2d.fromDegrees(0));
-        public static final Pose2d startPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
+        // public static final Pose2d startPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
+        public static final Pose2d startPosClose = new Pose2d(12.963, 0.64, Rotation2d.fromDegrees(0));
     
         // double swipe bump
         public static final Pose2d startPosRotated = new Pose2d(12.167, 0.463, Rotation2d.fromDegrees(-90)); // not in auto
@@ -43,6 +44,7 @@ public class Autoes {
         public static final Pose2d postBumpIntake_s2 = new Pose2d(10.5, 2.5, Rotation2d.fromDegrees(0));
 
         public static final Pose2d preBump = new Pose2d(13.4, 2.6, Rotation2d.fromDegrees(180));
+        public static final Pose2d preerBump = new Pose2d(14.5, 2.6, Rotation2d.fromDegrees(180));
         public static final Pose2d bumpToTrenchTransition1 = new Pose2d(13.2, 2.262, Rotation2d.fromDegrees(120));
         public static final Pose2d bumpToTrenchTransition2 = new Pose2d(13.303, 1.6, Rotation2d.fromDegrees(60));
         public static final Pose2d bumpToTrenchTransition3 = new Pose2d(13.2, 0.75, Rotation2d.fromDegrees(0));
@@ -66,6 +68,7 @@ public class Autoes {
     public SequentialCommandGroup middleDepot;
     public SequentialCommandGroup redLeftDoubleSwipeBump;
     public SequentialCommandGroup redLeftDoubleSwipe1Bump;
+    public SequentialCommandGroup redLeftSingleSwipeDelayed;
 
     public Autoes(RobotContainer rob) {
         this.rob = rob;
@@ -332,12 +335,51 @@ public class Autoes {
             ),
             new InstantCommand(rob.shooterHood::disableAutoDecap)
         );
+
+        redLeftSingleSwipeDelayed = new SequentialCommandGroup(
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            // alignTo(rob, Waypoints.startPosClose, 0, 0),
+            new WaitCommand(3),
+            new ParallelCommandGroup(
+                alignTo(rob, Waypoints.preSwipe1, 0.8, 6), 
+                new SequentialCommandGroup(
+                    new ParallelDeadlineGroup(
+                        new WaitCommand(1),
+                        new InstantCommand(() -> rob.intakePivot.setPosition(15.9))
+                    ),
+                    new InstantCommand(() -> rob.intake.setVelocity(5000))
+                )
+            ),
+            alignTo(rob, Waypoints.swipe1, 0.7, 6), 
+            alignTo(rob, Waypoints.postBumpIntake, 0.7, 6),
+            alignTo(rob, Waypoints.preBump, 0.2, 6),
+            alignTo(rob, Waypoints.preerBump, 0.2, 6),
+            new InstantCommand(rob.shooterHood::disableAutoDecap),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new ParallelDeadlineGroup(
+                new WaitCommand(4),
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(1),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    )
+                ),
+                new RunSpindexer(rob)
+            )
+        );
     }
 
     public Command runAuto(RobotContainer rob, String autoToRun) {
         boolean opAuto = false;
         boolean doubleSwipe = false;
         boolean middle = false;
+        boolean delayed = false;
         switch (autoToRun) {
         case "blueleft":
             doubleSwipe = true;
@@ -405,6 +447,26 @@ public class Autoes {
             isRightFlipped = true;
             isAllianceFlipped = true;
             break;
+        case "reddelayedleft":
+            delayed = true;
+            isRightFlipped = false;
+            isAllianceFlipped = false;
+            break;
+        case "reddelayedright":
+            delayed = true;
+            isRightFlipped = true;
+            isAllianceFlipped = false;
+            break;
+        case "bluedelayedleft":
+            delayed = true;
+            isRightFlipped = true;
+            isAllianceFlipped = true;
+            break;
+        case "bluedelayedright":
+            delayed = true;
+            isRightFlipped = false;
+            isAllianceFlipped = true;
+            break;
         default:
             isAllianceFlipped = false;
             isRightFlipped = false;
@@ -416,6 +478,8 @@ public class Autoes {
             Pose2d startingPos;
             if (opAuto) {
                 startingPos = Waypoints.startPosRotated;
+            } else if (delayed){
+                startingPos = Waypoints.startPosClose;
             } else {
                 startingPos = Waypoints.startPos;
             }
@@ -438,6 +502,8 @@ public class Autoes {
             auto.addCommands(redLeftDoubleSwipe);
         } else if (middle) {
             auto.addCommands(middleDepot);
+        } else if (delayed) {
+            auto.addCommands(redLeftSingleSwipeDelayed);
         } else {
             auto.addCommands(redLeftDoubleSwipe1Bump);
         }
