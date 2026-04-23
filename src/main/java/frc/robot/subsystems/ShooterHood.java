@@ -107,6 +107,8 @@ public class ShooterHood extends SubsystemBase {
         // }
 
         angle = -0.0104 * Math.pow(d, 4) + 0.231 * Math.pow(d, 3)  - 1.87 * Math.pow(d, 2) + 8.46 * d - 7.02;
+        //offset for new hood being higher
+        angle = angle - 1.0;
 
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
