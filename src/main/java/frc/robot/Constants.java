@@ -123,7 +123,7 @@ public class Constants {
 
         public static final double gearRatio = 16.0/14.0 * 172.0/10.0;
         public static final double minHoodAngle = 0.5;
-        public static final double maxHoodAngle = 19;
+        public static final double maxHoodAngle = 22;
         public static final double currentWhenStalling = 14.7;
         public static final double maxHubHoodAlign = 22;
         public static final double irlHoodDegrees = 12.5;

@@ -390,7 +390,7 @@ public class Turret extends SubsystemBase {
             return swerve.getPoseMeters().getX() < 4;
         }
 
-        return swerve.getPoseMeters().getX() < 12.5;
+        return swerve.getPoseMeters().getX() > 12.5;
     }
 
     @Override
