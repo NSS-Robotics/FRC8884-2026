@@ -105,6 +105,11 @@ public class RobotContainer {
         autoChooser.addOption("Red Right Delayed", "reddelayedright");
         autoChooser.addOption("Blue Left Delayed", "bluedelayedleft");
         autoChooser.addOption("Blue Right Delayed", "bluedelayedright");
+        autoChooser.addOption("Red Left DelayHub", "reddelayedlefthub");
+        autoChooser.addOption("Red Right DelayHub", "reddelayedrighthub");
+        autoChooser.addOption("Blue Left DelayHub", "bluedelayedlefthub");
+        autoChooser.addOption("Blue Right DelayHub", "bluedelayedrighthub");
+
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 

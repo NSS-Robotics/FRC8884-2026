@@ -22,16 +22,24 @@ public class Autoes {
         // ALWAYS IN THE POSITION OF LEFT RED, methods to flip sides and alliances
         public static final Pose2d startPos = new Pose2d(12.4, 0.64, Rotation2d.fromDegrees(0));
         public static final Pose2d pastTrench = new Pose2d(10.622, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d preSwipe1 = new Pose2d(8.2, 1, Rotation2d.fromDegrees(-90)); // go farther?
+        public static final Pose2d preSwipe1 = new Pose2d(8.884, 1, Rotation2d.fromDegrees(-90));
         //public static final Pose2d preSwipe1 = new Pose2d(7.900, 1, Rotation2d.fromDegrees(-90)); // go farther?
 
         public static final Pose2d preSwipe1Close = new Pose2d(8.626, 1, Rotation2d.fromDegrees(-110));
         public static final Pose2d preSwipe1Greedy = new Pose2d(7, 1, Rotation2d.fromDegrees(-90));
-        public static final Pose2d swipe1 = new Pose2d(8.500, 3.672, Rotation2d.fromDegrees(-120));
+        public static final Pose2d delayedPreSwipe1 = new Pose2d(9.1, 0.7, Rotation2d.fromDegrees(-90));
+
+        public static final Pose2d delayedPreSwipe1Hub = new Pose2d(10.3, 0.7, Rotation2d.fromDegrees(-90));
+        public static final Pose2d delayedSwipe1Hub = new Pose2d(10.8, 5, Rotation2d.fromDegrees(-90));
+        public static final Pose2d delayedPostBumpIntake = new Pose2d(9.5, 2.4, Rotation2d.fromDegrees(180));
+
+
+        public static final Pose2d delayedSwipe1 = new Pose2d(9.1, 3.672, Rotation2d.fromDegrees(-120));
+        public static final Pose2d swipe1 = new Pose2d(8.9, 3.45, Rotation2d.fromDegrees(-120));
         public static final Pose2d swipe1Close = new Pose2d(8.626, 3.65, Rotation2d.fromDegrees(-110));
         public static final Pose2d shootPos = new Pose2d(12.929, 0.712, Rotation2d.fromDegrees(0));
         public static final Pose2d preSwipe2 = new Pose2d(9.633, 0.712, Rotation2d.fromDegrees(0));
-        public static final Pose2d swipe2 = new Pose2d(9.933, 3.657, Rotation2d.fromDegrees(-90));
+        public static final Pose2d swipe2 = new Pose2d(9.933, 3.4, Rotation2d.fromDegrees(-90));
         public static final Pose2d swipe4 = new Pose2d(8.0, 2.5, Rotation2d.fromDegrees(45));
         public static final Pose2d postBump = new Pose2d(13.5, 2.5, Rotation2d.fromDegrees(0));
         // public static final Pose2d startPosClose = new Pose2d(12.94, 0.712, Rotation2d.fromDegrees(0)); // not auto start pos
@@ -44,7 +52,9 @@ public class Autoes {
         public static final Pose2d postBumpIntake_s2 = new Pose2d(10.5, 2.5, Rotation2d.fromDegrees(0));
 
         public static final Pose2d preBump = new Pose2d(13.4, 2.6, Rotation2d.fromDegrees(180));
-        public static final Pose2d preerBump = new Pose2d(14.5, 2.6, Rotation2d.fromDegrees(180));
+        public static final Pose2d preerBump = new Pose2d(15.5, 1.6, Rotation2d.fromDegrees(180));
+        // public static final Pose2d preerBump = new Pose2d(14.3, 5.36, Rotation2d.fromDegrees(180)); // specific to a team 
+
         public static final Pose2d bumpToTrenchTransition1 = new Pose2d(13.2, 2.262, Rotation2d.fromDegrees(120));
         public static final Pose2d bumpToTrenchTransition2 = new Pose2d(13.303, 1.6, Rotation2d.fromDegrees(60));
         public static final Pose2d bumpToTrenchTransition3 = new Pose2d(13.2, 0.75, Rotation2d.fromDegrees(0));
@@ -69,6 +79,7 @@ public class Autoes {
     public SequentialCommandGroup redLeftDoubleSwipeBump;
     public SequentialCommandGroup redLeftDoubleSwipe1Bump;
     public SequentialCommandGroup redLeftSingleSwipeDelayed;
+    public SequentialCommandGroup redLeftSingleSwipeDelayedHub;
 
     public Autoes(RobotContainer rob) {
         this.rob = rob;
@@ -337,11 +348,11 @@ public class Autoes {
         );
 
         redLeftSingleSwipeDelayed = new SequentialCommandGroup(
-            new InstantCommand(() -> rob.turret.autoShoot = true),
-            // alignTo(rob, Waypoints.startPosClose, 0, 0),
             new WaitCommand(3),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new InstantCommand(rob.shooterHood::enableAutoDecap),
             new ParallelCommandGroup(
-                alignTo(rob, Waypoints.preSwipe1, 0.8, 6), 
+                alignTo(rob, Waypoints.delayedPreSwipe1, 0.8, 6),
                 new SequentialCommandGroup(
                     new ParallelDeadlineGroup(
                         new WaitCommand(1),
@@ -350,10 +361,50 @@ public class Autoes {
                     new InstantCommand(() -> rob.intake.setVelocity(5000))
                 )
             ),
-            alignTo(rob, Waypoints.swipe1, 0.7, 6), 
+            alignTo(rob, Waypoints.delayedSwipe1, 0.7, 6), 
             alignTo(rob, Waypoints.postBumpIntake, 0.7, 6),
             alignTo(rob, Waypoints.preBump, 0.2, 6),
             alignTo(rob, Waypoints.preerBump, 0.2, 6),
+            new InstantCommand(rob.shooterHood::disableAutoDecap),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new ParallelDeadlineGroup(
+                new WaitCommand(4),
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    ),
+                    new WaitCommand(1),
+                    new ParallelRaceGroup(
+                        new AutoIntakeUnjam(rob),
+                        new WaitCommand(0.5)
+                    )
+                ),
+                new RunSpindexer(rob)
+            )
+        );
+
+        redLeftSingleSwipeDelayedHub = new SequentialCommandGroup(
+            new WaitCommand(3),
+            new InstantCommand(() -> rob.turret.autoShoot = true),
+            new InstantCommand(rob.shooterHood::enableAutoDecap),
+            new ParallelCommandGroup(
+                alignTo(rob, Waypoints.delayedPreSwipe1Hub, 0.8, 6),
+                new SequentialCommandGroup(
+                    new ParallelDeadlineGroup(
+                        new WaitCommand(1),
+                        new InstantCommand(() -> rob.intakePivot.setPosition(15.9))
+                    ),
+                    new InstantCommand(() -> rob.intake.setVelocity(5000))
+                )
+            ),
+            alignTo(rob, Waypoints.delayedSwipe1Hub, 0.7, 6), 
+            alignTo(rob, Waypoints.delayedPostBumpIntake, 0.7, 6),
+            new WaitCommand(3),
+            alignTo(rob, Waypoints.preBump, 0.2, 6),
+            // alignTo(rob, Waypoints.preerBump, 0.2, 6),
+            alignTo(rob, Waypoints.middleInsideDepot, 0.1, 2.0),
             new InstantCommand(rob.shooterHood::disableAutoDecap),
             new InstantCommand(() -> rob.turret.autoShoot = true),
             new ParallelDeadlineGroup(
@@ -380,6 +431,7 @@ public class Autoes {
         boolean doubleSwipe = false;
         boolean middle = false;
         boolean delayed = false;
+        boolean delayedhub = false;
         switch (autoToRun) {
         case "blueleft":
             doubleSwipe = true;
@@ -467,6 +519,26 @@ public class Autoes {
             isRightFlipped = false;
             isAllianceFlipped = true;
             break;
+        case "reddelayedlefthub":
+            isRightFlipped = false;
+            isAllianceFlipped = false;
+            delayedhub = true;
+            break;
+        case "reddelayedrighthub":
+            isRightFlipped = true;
+            isAllianceFlipped = false;
+            delayedhub = true;
+            break;
+        case "bluedelayedlefthub":
+            isRightFlipped = true;
+            isAllianceFlipped = true;
+            delayedhub = true;
+            break;
+        case "bluedelayedrighthub":
+            isRightFlipped = false;
+            isAllianceFlipped = true;
+            delayedhub = true;
+            break;
         default:
             isAllianceFlipped = false;
             isRightFlipped = false;
@@ -478,7 +550,7 @@ public class Autoes {
             Pose2d startingPos;
             if (opAuto) {
                 startingPos = Waypoints.startPosRotated;
-            } else if (delayed){
+            } else if (delayed || delayedhub){
                 startingPos = Waypoints.startPosClose;
             } else {
                 startingPos = Waypoints.startPos;
@@ -504,6 +576,8 @@ public class Autoes {
             auto.addCommands(middleDepot);
         } else if (delayed) {
             auto.addCommands(redLeftSingleSwipeDelayed);
+        } else if (delayedhub){
+            auto.addCommands(redLeftSingleSwipeDelayedHub);
         } else {
             auto.addCommands(redLeftDoubleSwipe1Bump);
         }

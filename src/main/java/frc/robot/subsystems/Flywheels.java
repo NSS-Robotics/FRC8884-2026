@@ -126,7 +126,7 @@ public class Flywheels extends SubsystemBase {
 
     public double rpmToLob(double distance){
         return (200*distance + 2600) *
-            (rob.turret.isInOtherAllianceZone() ? 3 : 1) +
+            (rob.turret.isInOtherAllianceZone() ? 1.6 : 1) +
             (rob.turret.isInOtherAllianceZone() ? 1000 : 0);
     }
 
