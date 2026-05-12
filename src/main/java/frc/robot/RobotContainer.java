@@ -148,15 +148,13 @@ public class RobotContainer {
         driverController.a().onTrue(new InstantCommand(() -> intakePivot.setPosition(15.3)));
 
         /* longer commands */
-        // operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
-        // operatorController.rightBumper().whileTrue(new RunSpindexer(this));
-        operatorController.rightBumper().whileTrue(
+        driverController.rightBumper().whileTrue(
             new ParallelCommandGroup(
                 new FlywheelShoot(this),
                 new RunSpindexer(this)
             )
         );
-        operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
+       
         operatorController.b().whileTrue(new Unjam(this));
         
         operatorController.povDown().onTrue(new InstantCommand(() -> turret.manualOffsetX += 0.05));
@@ -166,14 +164,14 @@ public class RobotContainer {
         operatorController.back().onTrue(new InstantCommand(intakePivot::zeroIntake));
         operatorController.start().onTrue(new InstantCommand(shooterHood::zeroHood));
 
+        driverController.leftBumper().whileTrue(new IntakeUnjam(this));
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 4500));
-        driverController.povUp().whileTrue(new Snap(this, 5, 179));
-        driverController.povLeft().whileTrue(new Snap(this, 5, 90));
-        driverController.povDown().whileTrue(new Snap(this, 5, 0)); 
-        driverController.povRight().whileTrue(new Snap(this, 5, -90));
+        driverController.povUp().whileTrue(new InstantCommand(() -> shooterHood.degrees+=4));
+        driverController.povDown().whileTrue(new InstantCommand(() -> shooterHood.degrees-=4));
+        driverController.povLeft().whileTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() + 20)));
+        driverController.povRight().whileTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() - 20)));
         driverController.b().whileTrue(new RunIntake(this, -6000));
-        driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
-        // driverController.leftBumper().onTrue(new Align(this, Autoes.Waypoints.leftNeutralShootPos, 0.1));
+        //driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
     }
 
     private void configureFuelSim() {

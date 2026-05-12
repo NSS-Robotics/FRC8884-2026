@@ -347,10 +347,6 @@ public class Turret extends SubsystemBase {
 
     }
 
-    public double velocityToRpm(double velocity, double wheelRadiusMeters){
-        return velocity * 60 / (2 * Math.PI * wheelRadiusMeters);
-    }
-
     public void setDistanceToTarget(double dist) {
         distanceToTarget = dist;
     }
@@ -398,33 +394,33 @@ public class Turret extends SubsystemBase {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
 
-        if (!intakePivot.isIntakeUp()) {
-            if (!isInAllianceZone()) { 
-                if (rob.isRed()){
-                    if (swerve.getPoseMeters().getY() > 4){
-                        pointAtTarget(Constants.leftCornerRed, false);
-                    } else{
-                        pointAtTarget(Constants.rightCornerRed, false);
-                    }
-                } else {
-                    if (swerve.getPoseMeters().getY() > 4){
-                        pointAtTarget(Constants.leftCornerBlue, false);
-                    } else{
-                        pointAtTarget(Constants.rightCornerBlue, false);
-                    }
-                }
-            } else {      
-                if (rob.isRed()){
-                    // pointAtTarget(Constants.targetPositionBlue);
+        // if (!intakePivot.isIntakeUp()) {
+        //     if (!isInAllianceZone()) { 
+        //         if (rob.isRed()){
+        //             if (swerve.getPoseMeters().getY() > 4){
+        //                 pointAtTarget(Constants.leftCornerRed, false);
+        //             } else{
+        //                 pointAtTarget(Constants.rightCornerRed, false);
+        //             }
+        //         } else {
+        //             if (swerve.getPoseMeters().getY() > 4){
+        //                 pointAtTarget(Constants.leftCornerBlue, false);
+        //             } else{
+        //                 pointAtTarget(Constants.rightCornerBlue, false);
+        //             }
+        //         }
+        //     } else {      
+        //         if (rob.isRed()){
+        //             // pointAtTarget(Constants.targetPositionBlue);
 
-                    pointAtTarget(Constants.targetPositionRed, true);
-                } else {
-                    pointAtTarget(Constants.targetPositionBlue, true);
-                    // pointAtTarget(Constants.targetPositionRed);
+        //             pointAtTarget(Constants.targetPositionRed, true);
+        //         } else {
+        //             pointAtTarget(Constants.targetPositionBlue, true);
+        //             // pointAtTarget(Constants.targetPositionRed);
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
 
         // if (!intakePivot.isIntakeUp()){
         //     pointAtTarget(Constants.targetPositionRed, true);
@@ -435,15 +431,8 @@ public class Turret extends SubsystemBase {
         //     isdocking = false;
         // }
 
-        double sotmVI[] = sotmPredictVelocityIteration(swerve.getPoseMeters(), distanceToTarget, rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true); 
-
-        if (autoShoot) {
-            flywheels.setVelocity(flywheels.rpmToHub(sotmVI[0]));
-            shooterHood.setDegrees();
-        }
-
-        SmartDashboard.putNumber("MMT SOTMVI DISTANCE", sotmVI[0]);
-        SmartDashboard.putNumber("MMT SOTMVI ANGLE", sotmVI[1]);
+        // SmartDashboard.putNumber("MMT SOTMVI DISTANCE", sotmVI[0]);
+        // SmartDashboard.putNumber("MMT SOTMVI ANGLE", sotmVI[1]);
 
         SmartDashboard.putNumber("MM Turret Angle Degrees", getDegrees());
         SmartDashboard.putNumber("MM Turret Rotation", getRotations());
