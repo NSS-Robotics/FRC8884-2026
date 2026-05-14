@@ -394,33 +394,32 @@ public class Turret extends SubsystemBase {
         // point turret at target
         // see: celtx 2022 ShooterSubsystem.java line 339
 
-        // if (!intakePivot.isIntakeUp()) {
-        //     if (!isInAllianceZone()) { 
-        //         if (rob.isRed()){
-        //             if (swerve.getPoseMeters().getY() > 4){
-        //                 pointAtTarget(Constants.leftCornerRed, false);
-        //             } else{
-        //                 pointAtTarget(Constants.rightCornerRed, false);
-        //             }
-        //         } else {
-        //             if (swerve.getPoseMeters().getY() > 4){
-        //                 pointAtTarget(Constants.leftCornerBlue, false);
-        //             } else{
-        //                 pointAtTarget(Constants.rightCornerBlue, false);
-        //             }
-        //         }
-        //     } else {      
-        //         if (rob.isRed()){
-        //             // pointAtTarget(Constants.targetPositionBlue);
+        if (!rob.manualControl) {
+            if (!intakePivot.isIntakeUp()) {
+                if (!isInAllianceZone()) { 
+                    if (rob.isRed()){
+                        if (swerve.getPoseMeters().getY() > 4){
+                            pointAtTarget(Constants.leftCornerRed, false);
+                        } else{
+                            pointAtTarget(Constants.rightCornerRed, false);
+                        }
+                    } else {
+                        if (swerve.getPoseMeters().getY() > 4){
+                            pointAtTarget(Constants.leftCornerBlue, false);
+                        } else {
+                            pointAtTarget(Constants.rightCornerBlue, false);
+                        }
+                    }
+                } else {      
+                    if (rob.isRed()){
+                        pointAtTarget(Constants.targetPositionRed, true);
+                    } else {
+                        pointAtTarget(Constants.targetPositionBlue, true);
 
-        //             pointAtTarget(Constants.targetPositionRed, true);
-        //         } else {
-        //             pointAtTarget(Constants.targetPositionBlue, true);
-        //             // pointAtTarget(Constants.targetPositionRed);
-
-        //         }
-        //     }
-        // }
+                    }
+                }
+            }
+        }
 
         // if (!intakePivot.isIntakeUp()){
         //     pointAtTarget(Constants.targetPositionRed, true);

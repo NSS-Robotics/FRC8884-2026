@@ -137,10 +137,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putString("Shift", shift.toString());
 
-    // operator controller rumble
-    // if (rob.isShooting && rob.flywheels.isAtTargetVelocity(2)) {
-    //   operatorController.setRumble(RumbleType.kBothRumble, 0.7);
-    // }
+    SmartDashboard.putBoolean("Manual Mode Enabled?", true);
+    rob.manualControl = SmartDashboard.getBoolean("Manual Mode Enabled?", true);
   }
 
   @Override

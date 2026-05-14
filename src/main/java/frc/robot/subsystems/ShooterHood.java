@@ -233,6 +233,23 @@ public class ShooterHood extends SubsystemBase {
         // }
 
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
-        setDegrees();
+
+        if (rob.manualControl) {
+            setDegrees();
+        } else {
+            double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
+            rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true);
+
+            if (rob.isShooting && !willGetDecapitated()) {
+                if (rob.turret.isInAllianceZone()) {
+                    alignHoodtoHub(sotmVI[0]);
+                } else {
+                    alignHoodtoLob();
+                }
+            } else {
+                degrees = 0.5;
+                setDegrees();
+            }
+        }
     }
 }

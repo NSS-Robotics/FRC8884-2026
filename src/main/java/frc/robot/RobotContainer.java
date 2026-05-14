@@ -76,6 +76,7 @@ public class RobotContainer {
     public final Field2d fieldMap = new Field2d();
 
     public boolean isShooting = false;
+    public boolean manualControl = true;
 
     public RobotContainer() {
         addCommandsToPathplanner();
