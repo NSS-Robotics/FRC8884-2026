@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
 
     LimelightHelpers.SetIMUMode("limelight-front", 1);
     LimelightHelpers.SetIMUMode("limelight-side", 1);
+
+    SmartDashboard.putBoolean("Manual Mode Enabled?", true);
   }
 
   @Override
@@ -137,7 +139,6 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putString("Shift", shift.toString());
 
-    SmartDashboard.putBoolean("Manual Mode Enabled?", true);
     rob.manualControl = SmartDashboard.getBoolean("Manual Mode Enabled?", true);
   }
 

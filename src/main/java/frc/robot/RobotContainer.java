@@ -167,11 +167,15 @@ public class RobotContainer {
 
         driverController.leftBumper().whileTrue(new IntakeUnjam(this));
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 4500));
-        driverController.povUp().whileTrue(new InstantCommand(() -> shooterHood.degrees+=4));
-        driverController.povDown().whileTrue(new InstantCommand(() -> shooterHood.degrees-=4));
-        driverController.povLeft().whileTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() + 20)));
-        driverController.povRight().whileTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() - 20)));
+        driverController.povUp().onTrue(new InstantCommand(() -> shooterHood.degrees+=4));
+        driverController.povDown().onTrue(new InstantCommand(() -> shooterHood.degrees-=4));
+        driverController.povLeft().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() + 20)));
+        driverController.povRight().onTrue(new InstantCommand(() -> turret.setDegrees(turret.getDegrees() - 20)));
         driverController.b().whileTrue(new RunIntake(this, -6000));
+        driverController.back().onTrue(new InstantCommand(() -> {
+            shooterHood.zeroHood();
+            intakePivot.zeroIntake();
+        }));
         //driverController.leftBumper().whileTrue(drivetrain.applyRequest(() -> xLockWheels));
     }
 

@@ -19,6 +19,7 @@ public class Spindexer extends SubsystemBase {
     private double targetSpeed = 0.0;
 
     public Spindexer() {
+        SmartDashboard.putNumber("Set Spindexer Speed", -5000);
         CurrentLimitsConfigs currentLimitConfig = new CurrentLimitsConfigs();
         currentLimitConfig.StatorCurrentLimit = Constants.Spindexer.currentLimit;
         currentLimitConfig.SupplyCurrentLimit = Constants.Spindexer.supplyLimit;
