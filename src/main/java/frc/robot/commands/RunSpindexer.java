@@ -23,7 +23,7 @@ public class RunSpindexer extends Command {
     public void execute() {
         double spindexerSpeed = -5000;
         if (rob.manualControl) {
-            SmartDashboard.getNumber("Set Spindexer Speed", -5000);
+            spindexerSpeed = SmartDashboard.getNumber("Set Spindexer Speed", -5000);
         }
         spindexer.setSpeed(spindexerSpeed);
         // spindexer.makeSpin(-0.23);
