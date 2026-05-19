@@ -10,15 +10,21 @@ public class RunSpindexer extends Command {
     private final Feeder feeder;
     private final Spindexer spindexer;
 
+    private final RobotContainer rob;
+
     public RunSpindexer(RobotContainer rob) {
         feeder = rob.feeder;
         spindexer = rob.spindexer;
+        this.rob = rob;
         addRequirements(rob.spindexer, rob.feeder);
     }
 
     @Override
     public void execute() {
-        double spindexerSpeed = SmartDashboard.getNumber("Set Spindexer Speed", -5000);
+        double spindexerSpeed = -5000;
+        if (rob.manualControl) {
+            SmartDashboard.getNumber("Set Spindexer Speed", -5000);
+        }
         spindexer.setSpeed(spindexerSpeed);
         // spindexer.makeSpin(-0.23);
         // feeder.makeSpin(-1.0/2.0);

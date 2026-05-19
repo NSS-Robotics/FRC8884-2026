@@ -6,8 +6,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
+    public static final double outreachHubOffset = Units.inchesToMeters(5);
+
     // Red positions
-    public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.03, Rotation2d.fromDegrees(180));
+    public static final Pose2d targetPositionRed = new Pose2d(11.915 + outreachHubOffset, 4.03, Rotation2d.fromDegrees(180));
     //public static final Pose2d targetPositionRed = new Pose2d(11.915, 4.20, Rotation2d.fromDegrees(180));
     //public static final Pose2d targetPositionRed = new Pose2d(11.515, 4.20, Rotation2d.fromDegrees(180));
 
@@ -15,7 +17,7 @@ public class Constants {
     public static final Pose2d rightCornerRed = new Pose2d(16 - 3, 0.05 + 2.7, Rotation2d.fromDegrees(180));
 
     // Blue positions
-    public static final Pose2d targetPositionBlue = new Pose2d(4.625, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
+    public static final Pose2d targetPositionBlue = new Pose2d(4.625 - outreachHubOffset, 4.03, Rotation2d.fromDegrees(180)); //this is the correct one
     //public static final Pose2d targetPositionBlue = new Pose2d(4.625, 3.95, Rotation2d.fromDegrees(180));
     public static final Pose2d leftCornerBlue = new Pose2d(0.05 + 3, 8.0 - 2.7, Rotation2d.fromDegrees(180)); 
     public static final Pose2d rightCornerBlue = new Pose2d(0.05 + 3, 0.05 + 2.7, Rotation2d.fromDegrees(180)); 
