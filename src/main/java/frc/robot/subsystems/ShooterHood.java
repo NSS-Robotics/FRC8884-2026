@@ -95,7 +95,7 @@ public class ShooterHood extends SubsystemBase {
 
     public void alignHoodtoHub(double distance) {
         double angle;
-        double d = Math.min(distance, 9);
+        double d = Math.min(distance, 4);
 
         // if (d <= 5.5) {
         //     // angle = 0.138*Math.pow(d, 4) - 1.89*Math.pow(d, 3) + 8.48*Math.pow(d, 2) - 11.1*d + 4.53;
@@ -106,9 +106,12 @@ public class ShooterHood extends SubsystemBase {
         //     angle = 0.15 * Math.pow(d, 3) - 2.68 * Math.pow(d, 2) + 16.77 * d - 26.51;
         // }
 
-        angle = -0.0104 * Math.pow(d, 4) + 0.231 * Math.pow(d, 3)  - 1.87 * Math.pow(d, 2) + 8.46 * d - 7.02;
-        //offset for new hood being higher
-        angle = angle - 1.0;
+        // angle = -0.0104 * Math.pow(d, 4) + 0.231 * Math.pow(d, 3)  - 1.87 * Math.pow(d, 2) + 8.46 * d - 7.02;
+        // //offset for new hood being higher
+        // angle = angle - 1.0;
+
+        // angle = -10.6 + 26.9*d - 16.3*d*d + 5.07*d*d*d - 0.606*d*d*d*d; // jun 1 2026 for gr9 night
+        angle = -0.5 + 4*d; // jun 2 2026 for gr9 night - why is it a line...
 
         angle = Math.max(Math.min(Constants.Hood.maxHubHoodAlign, angle), Constants.Hood.minHoodAngle);
         SmartDashboard.putNumber("HOOD ANGLE", angle);
@@ -232,7 +235,9 @@ public class ShooterHood extends SubsystemBase {
         //     hoodMotor.getConfigurator().apply(tuningPIDConfigs);
         // }
 
+        // used for cali
         // degrees = SmartDashboard.getNumber("Set Angles", 0);
+        // setDegrees();
 
         if (rob.manualControl) {
             setDegrees();

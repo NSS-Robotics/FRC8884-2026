@@ -40,6 +40,7 @@ public class FlywheelShoot extends Command {
         // turret.getDistanceToTarget(), Constants.targetPositionBlue);
 
         rob.isShooting = true;
+        // flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));
 
         if (rob.manualControl) {
             flywheels.setVelocity(SmartDashboard.getNumber("Set RPM", 0));

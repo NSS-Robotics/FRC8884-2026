@@ -116,12 +116,15 @@ public class Flywheels extends SubsystemBase {
     public double rpmToHub(double distance) {
         double d = Math.min(distance, 9);
 
-        if (d > 3.0) {
-            d -= 0.1;
-        }
+        // if (d > 3.0) {
+        //     d -= 0.1;
+        // }
 
-        double ans = -1.83 * Math.pow(d, 4) + 34.3 * Math.pow(d, 3) - 231 * Math.pow(d, 2) + 859 * d + 1535;
-        return Math.max(Math.min(ans, 3700), 0);
+        // double ans = -1.83 * Math.pow(d, 4) + 34.3 * Math.pow(d, 3) - 231 * Math.pow(d, 2) + 859 * d + 1535;
+        // return Math.max(Math.min(ans, 3700), 0);
+
+        // return 2409 -1918*d + 2211*d*d - 870*d*d*d +115*d*d*d*d; // jun 1 2026 for gr9 night
+        return 1850 + 200*d; // jun 2 2026 for gr9 night - why is it a line...
     }
 
     public double rpmToLob(double distance){
