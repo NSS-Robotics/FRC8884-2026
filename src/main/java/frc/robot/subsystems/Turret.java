@@ -73,7 +73,7 @@ public class Turret extends SubsystemBase {
 
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
         encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        encoderConfig.MagnetSensor.MagnetOffset = Constants.Turret.encoderOffset;
+        // encoderConfig.MagnetSensor.MagnetOffset = Constants.Turret.encoderOffset;
         encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         turretEncoder.clearStickyFaults();
         turretEncoder.getConfigurator().apply(encoderConfig);

@@ -144,6 +144,8 @@ public class Flywheels extends SubsystemBase {
         SmartDashboard.putNumber("Flywheel Target Velocity", targetVelocity*60);
 
         SmartDashboard.putBoolean("Flywheel Velocity Reached", velocityReached);
+
+        SmartDashboard.putNumber("Voltage Draw", (leftFlywheelMotor.getStatorCurrent().getValueAsDouble() + rightFlywheelMotor.getStatorCurrent().getValueAsDouble())/2);
         
         // if (velocityReached && rob.isShooting && !DriverStation.isAutonomous()) {
         //     operatorController.setRumble(RumbleType.kBothRumble, 0.5);
