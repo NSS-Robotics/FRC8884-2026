@@ -134,6 +134,10 @@ public class Flywheels extends SubsystemBase {
         setVelocity(0);
     }
 
+
+    double oldCurrentDraw = 0;
+    double ballsShot = 0;
+    boolean ballJustShot = false;
     @Override
     public void periodic() {
         boolean velocityReached = targetVelocity <= getVelocity() - 3;
@@ -141,7 +145,17 @@ public class Flywheels extends SubsystemBase {
         SmartDashboard.putNumber("Flywheel Target Velocity", targetVelocity*60);
 
         SmartDashboard.putBoolean("Flywheel Velocity Reached", velocityReached);
-        
+
+        double currentDraw = (leftFlywheelMotor.getStatorCurrent().getValueAsDouble() + rightFlywheelMotor.getStatorCurrent().getValueAsDouble()) / 2;
+
+        SmartDashboard.putNumber("Flywheel Current Draw", currentDraw);
+        if (targetVelocity > 0 && currentDraw > oldCurrentDraw + 10 && ballJustShot == false) {
+            ballsShot++;
+            ballJustShot = true;
+        } else if (currentDraw < oldCurrentDraw) {
+            ballJustShot = false;
+        }
+
         // if (velocityReached && rob.isShooting && !DriverStation.isAutonomous()) {
         //     operatorController.setRumble(RumbleType.kBothRumble, 0.5);
         // }
