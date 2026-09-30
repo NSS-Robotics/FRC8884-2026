@@ -24,7 +24,7 @@ public class ShooterHood extends SubsystemBase {
     private final RobotContainer rob;
     private final CommandSwerveDrivetrain swerve;
 
-    private double degrees = 0;
+    public double degrees = 0;
     private double manualOffset = 0;
 
     private boolean autoDecap = false;
@@ -87,7 +87,7 @@ public class ShooterHood extends SubsystemBase {
     }
 
     public void setDegrees() {
-        degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0) + manualOffset;
+        degrees = Math.max(Math.min(Constants.Hood.maxHoodAngle, degrees), 0) + manualOffset; 
 
         double rotations = degrees * Constants.Hood.gearRatio / 360;
         setRotations(rotations);
@@ -242,18 +242,23 @@ public class ShooterHood extends SubsystemBase {
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
         // double sotmVAI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
         //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue);
-        double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
-                rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true);
+        // double sotmVI[] = rob.turret.sotmPredictVelocityIteration(swerve.getPoseMeters(), rob.turret.getDistanceToTarget(),
+        //         rob.isRed() ? Constants.targetPositionRed : Constants.targetPositionBlue, true);
 
-        if (rob.isShooting && !willGetDecapitated()) {
-            if (rob.turret.isInAllianceZone()) {
-                alignHoodtoHub(sotmVI[0]);
-            } else {
-                alignHoodtoLob();
-            }
-        } else {
-            degrees = 0.5;
-            setDegrees();
+        // if (rob.isShooting && !willGetDecapitated()) {
+        //     if (rob.turret.isInAllianceZone()) {
+        //         alignHoodtoHub(sotmVI[0]);
+        //     } else {
+        //         alignHoodtoLob();
+        //     }
+        // } else {
+        //     degrees = 0.5;
+        //     setDegrees();
+        // }
+        degrees = 0.1;
+        if (rob.driverController.rightBumper().getAsBoolean()){
+            degrees = 10;
         }
+        setDegrees();
     }
 }

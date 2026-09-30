@@ -125,10 +125,10 @@ public class RobotContainer {
                 double cappedMaxSpeed = MaxSpeed;
                 double cappedMaxAngularVelocity = MaxAngularRate;
 
-                if (driverController.rightTrigger(0.3).getAsBoolean()) {
-                    cappedMaxSpeed = 0.7;
+                // if (driverController.rightTrigger(0.3).getAsBoolean()) {
+                    cappedMaxSpeed = 1.4;
                     cappedMaxAngularVelocity *= 0.5;
-                }
+                // }
 
                 double xVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftY() * MaxSpeed));
                 double yVel = Math.max(-cappedMaxSpeed, Math.min(cappedMaxSpeed,-driverController.getLeftX() * MaxSpeed));
@@ -150,12 +150,13 @@ public class RobotContainer {
         /* longer commands */
         // operatorController.rightTrigger().whileTrue(new FlywheelShoot(this));
         // operatorController.rightBumper().whileTrue(new RunSpindexer(this));
-        operatorController.rightBumper().whileTrue(
-            new ParallelCommandGroup(
-                new FlywheelShoot(this),
-                new RunSpindexer(this)
-            )
-        );
+        // operatorController.rightBumper().whileTrue(
+        //     new ParallelCommandGroup(
+        //         new FlywheelShoot(this),
+        //         new RunSpindexer(this)
+        //     )
+        // );
+        driverController.rightBumper().whileTrue(new InstantCommand(() -> shooterHood.degrees = 10));
         operatorController.leftBumper().whileTrue(new IntakeUnjam(this));
         operatorController.b().whileTrue(new Unjam(this));
         
@@ -164,7 +165,9 @@ public class RobotContainer {
         operatorController.povRight().onTrue(new InstantCommand(() -> turret.manualOffsetY += 0.05));
         operatorController.povLeft().onTrue(new InstantCommand(() -> turret.manualOffsetY -= 0.05));
         operatorController.back().onTrue(new InstantCommand(intakePivot::zeroIntake));
-        operatorController.start().onTrue(new InstantCommand(shooterHood::zeroHood));
+        // operatorController.start().onTrue(new InstantCommand(shooterHood::zeroHood));
+        
+        driverController.y().onTrue(new InstantCommand(shooterHood::zeroHood));
 
         driverController.leftTrigger(0.3).whileTrue(new RunIntake(this, 4500));
         driverController.povUp().whileTrue(new Snap(this, 5, 179));
