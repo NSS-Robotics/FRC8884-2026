@@ -18,7 +18,7 @@ public class AutoIntakeUnjam extends Command {
     @Override
     public void execute() {
         intake.setVelocity(2500);
-        intakePivot.setPosition(7.5);
+        intakePivot.setPosition(8);
     }
 
     @Override
