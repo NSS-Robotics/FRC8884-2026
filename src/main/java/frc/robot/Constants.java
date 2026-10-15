@@ -102,7 +102,8 @@ public class Constants {
         // - get value from elastic
         // - multiply by gearRatioWithAbsoluteEncoder
         // - set it here
-        public static final double encoderOffset = 0.5948907162657471;
+        // public static final double encoderOffset = 0.5948907162657471;
+        public static final double encoderOffset = 0.04638671875;
     }
 
     public static class Hood {

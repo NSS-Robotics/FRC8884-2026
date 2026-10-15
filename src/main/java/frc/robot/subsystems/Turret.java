@@ -80,7 +80,7 @@ public class Turret extends SubsystemBase {
 
         TalonFXConfiguration turretMotorConfig = new TalonFXConfiguration();
         turretMotorConfig.Feedback.FeedbackRemoteSensorID = turretEncoder.getDeviceID();
-        turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
+        turretMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         turretMotorConfig.Feedback.RotorToSensorRatio = Constants.Turret.motorToEncoderRatio; 
         turretMotorConfig.Feedback.SensorToMechanismRatio = Constants.Turret.gearRatioWithAbsoluteEncoder;
         turretMotorConfig.TorqueCurrent.withPeakForwardTorqueCurrent(40).withPeakReverseTorqueCurrent(-40);
@@ -128,6 +128,9 @@ public class Turret extends SubsystemBase {
 
     public double getRotations() {
         return turretMotor.getPosition().getValueAsDouble();
+    }
+    public double getEncoderRotations(){
+        return turretEncoder.getAbsolutePosition().getValueAsDouble();
     }
     
     public void stop() {
@@ -455,6 +458,8 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putBoolean("ALLIANCEZONE", isInAllianceZone());
 
         SmartDashboard.putNumber("Manual Distance Offset", manualDistanceOffset);
+
+        SmartDashboard.putNumber("encoder pos", getEncoderRotations());
 
         // Log to logs
         errorLog.append(targetDegrees-getDegrees());
